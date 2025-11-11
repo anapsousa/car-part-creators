@@ -2,10 +2,19 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, Loader2, FileText, Clock } from "lucide-react";
+import { Download, Loader2, FileText, Clock, Heart, Eye, Filter } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import ModelViewer from "./ModelViewer";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Design {
   id: string;
@@ -14,6 +23,12 @@ interface Design {
   stl_file_url: string | null;
   blend_file_url: string | null;
   created_at: string;
+  category: string;
+  material: string | null;
+  width: number | null;
+  height: number | null;
+  depth: number | null;
+  is_favorited: boolean;
 }
 
 interface DesignHistoryProps {
@@ -23,6 +38,8 @@ interface DesignHistoryProps {
 const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [previewDesign, setPreviewDesign] = useState<Design | null>(null);
 
   useEffect(() => {
     fetchDesigns();
@@ -51,10 +68,20 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
 
   const fetchDesigns = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("designs")
         .select("*")
         .order("created_at", { ascending: false });
+
+      if (categoryFilter !== "all") {
+        if (categoryFilter === "favorites") {
+          query = query.eq("is_favorited", true);
+        } else {
+          query = query.eq("category", categoryFilter);
+        }
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setDesigns(data || []);
@@ -63,6 +90,23 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
       toast.error("Failed to load designs");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const toggleFavorite = async (designId: string, currentFavorite: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("designs")
+        .update({ is_favorited: !currentFavorite })
+        .eq("id", designId);
+
+      if (error) throw error;
+      
+      toast.success(currentFavorite ? "Removed from favorites" : "Added to favorites");
+      fetchDesigns();
+    } catch (error: any) {
+      console.error("Error updating favorite:", error);
+      toast.error("Failed to update favorite");
     }
   };
 
@@ -108,73 +152,174 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
     );
   }
 
+  useEffect(() => {
+    fetchDesigns();
+
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('designs-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'designs'
+        },
+        (payload) => {
+          console.log('Design updated:', payload);
+          fetchDesigns();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [categoryFilter, refreshTrigger]);
+
   return (
-    <Card className="border-border/50 backdrop-blur-sm bg-card/95">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5 text-primary" />
-          Your Designs
-        </CardTitle>
-        <CardDescription>
-          View and download your generated 3D models
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {designs.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No designs yet. Create your first 3D model above!
+    <>
+      <Card className="border-border/50 backdrop-blur-sm bg-card/95">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                Your Designs
+              </CardTitle>
+              <CardDescription>
+                View and download your generated 3D models
+              </CardDescription>
+            </div>
           </div>
-        ) : (
-          designs.map((design) => (
-            <Card key={design.id} className="border-border/30">
-              <CardContent className="pt-6">
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-medium line-clamp-2">
-                        {design.prompt_text}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        {formatDistanceToNow(new Date(design.created_at), { addSuffix: true })}
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Tabs value={categoryFilter} onValueChange={setCategoryFilter}>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="favorites">
+                <Heart className="h-4 w-4 mr-1" />
+                Favorites
+              </TabsTrigger>
+              <TabsTrigger value="car_parts">Car Parts</TabsTrigger>
+              <TabsTrigger value="home_decorations">Home Decor</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          {designs.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {categoryFilter === "all" 
+                ? "No designs yet. Create your first 3D model above!"
+                : `No ${categoryFilter === "favorites" ? "favorite" : categoryFilter.replace("_", " ")} designs yet.`
+              }
+            </div>
+          ) : (
+            designs.map((design) => (
+              <Card key={design.id} className="border-border/30">
+                <CardContent className="pt-6">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-start gap-2">
+                          <p className="text-sm font-medium line-clamp-2 flex-1">
+                            {design.prompt_text}
+                          </p>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8 shrink-0"
+                            onClick={() => toggleFavorite(design.id, design.is_favorited)}
+                          >
+                            <Heart
+                              className={`h-4 w-4 ${
+                                design.is_favorited
+                                  ? "fill-destructive text-destructive"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                          </Button>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="outline" className="text-xs">
+                            {design.category.replace("_", " ")}
+                          </Badge>
+                          {design.material && (
+                            <Badge variant="secondary" className="text-xs">
+                              {design.material}
+                            </Badge>
+                          )}
+                          {(design.width || design.height || design.depth) && (
+                            <Badge variant="secondary" className="text-xs">
+                              {[design.width, design.height, design.depth]
+                                .filter(Boolean)
+                                .join(" × ")} mm
+                            </Badge>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          {formatDistanceToNow(new Date(design.created_at), { addSuffix: true })}
+                        </div>
                       </div>
+                      {getStatusBadge(design.status)}
                     </div>
-                    {getStatusBadge(design.status)}
+                    
+                    {design.status === "completed" && (
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setPreviewDesign(design)}
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Preview
+                        </Button>
+                        {design.stl_file_url && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDownload(design.stl_file_url!, `model-${design.id}.stl`)}
+                          >
+                            <Download className="mr-2 h-4 w-4" />
+                            STL
+                          </Button>
+                        )}
+                        {design.blend_file_url && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDownload(design.blend_file_url!, `model-${design.id}.blend`)}
+                          >
+                            <Download className="mr-2 h-4 w-4" />
+                            BLEND
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  
-                  {design.status === "completed" && (
-                    <div className="flex gap-2 pt-2">
-                      {design.stl_file_url && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDownload(design.stl_file_url!, `model-${design.id}.stl`)}
-                          className="flex-1"
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Download STL
-                        </Button>
-                      )}
-                      {design.blend_file_url && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDownload(design.blend_file_url!, `model-${design.id}.blend`)}
-                          className="flex-1"
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Download BLEND
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </CardContent>
-    </Card>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!previewDesign} onOpenChange={() => setPreviewDesign(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>3D Model Preview</DialogTitle>
+            <DialogDescription>
+              {previewDesign?.prompt_text}
+            </DialogDescription>
+          </DialogHeader>
+          {previewDesign?.stl_file_url && (
+            <ModelViewer modelUrl={previewDesign.stl_file_url} />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

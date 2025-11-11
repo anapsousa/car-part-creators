@@ -19,40 +19,58 @@ export type Database = {
           blend_file_url: string | null
           car_model: string | null
           car_year: number | null
+          category: string | null
           created_at: string
+          depth: number | null
+          height: number | null
           home_decoration_type: string | null
           id: string
+          is_favorited: boolean | null
+          material: string | null
           part_name: string | null
           prompt_text: string
           status: string
           stl_file_url: string | null
           user_id: string
+          width: number | null
         }
         Insert: {
           blend_file_url?: string | null
           car_model?: string | null
           car_year?: number | null
+          category?: string | null
           created_at?: string
+          depth?: number | null
+          height?: number | null
           home_decoration_type?: string | null
           id?: string
+          is_favorited?: boolean | null
+          material?: string | null
           part_name?: string | null
           prompt_text: string
           status?: string
           stl_file_url?: string | null
           user_id: string
+          width?: number | null
         }
         Update: {
           blend_file_url?: string | null
           car_model?: string | null
           car_year?: number | null
+          category?: string | null
           created_at?: string
+          depth?: number | null
+          height?: number | null
           home_decoration_type?: string | null
           id?: string
+          is_favorited?: boolean | null
+          material?: string | null
           part_name?: string | null
           prompt_text?: string
           status?: string
           stl_file_url?: string | null
           user_id?: string
+          width?: number | null
         }
         Relationships: []
       }
