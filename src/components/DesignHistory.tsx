@@ -64,7 +64,7 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [refreshTrigger]);
+  }, [categoryFilter, refreshTrigger]);
 
   const fetchDesigns = async () => {
     try {
@@ -151,31 +151,6 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
       </Card>
     );
   }
-
-  useEffect(() => {
-    fetchDesigns();
-
-    // Subscribe to realtime updates
-    const channel = supabase
-      .channel('designs-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'designs'
-        },
-        (payload) => {
-          console.log('Design updated:', payload);
-          fetchDesigns();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [categoryFilter, refreshTrigger]);
 
   return (
     <>
