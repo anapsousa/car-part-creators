@@ -4,14 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import GenerateForm from "@/components/GenerateForm";
 import DesignHistory from "@/components/DesignHistory";
-import { LogOut, Box } from "lucide-react";
+import { LogOut, Menu, HelpCircle, Mail, Info, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import pompousweekLogo from "@/assets/pompousweek-logo.png";
 
 const Index = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Check authentication status
@@ -20,6 +23,7 @@ const Index = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
+        checkAdminStatus(session.user.id);
       }
     });
 
@@ -28,11 +32,23 @@ const Index = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
+        checkAdminStatus(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const checkAdminStatus = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .single();
+    
+    setIsAdmin(!!data);
+  };
 
   const handleLogout = async () => {
     try {
@@ -58,19 +74,46 @@ const Index = () => {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-                <Box className="h-6 w-6 text-primary-foreground" />
-              </div>
+            <div className="flex items-center gap-4">
+              <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
               <div>
                 <h1 className="text-xl font-bold">3D Model Generator</h1>
                 <p className="text-xs text-muted-foreground">AI-Powered Design Tool</p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/faq")}>
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    FAQ
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/contact")}>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Contact Us
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/about")}>
+                    <Info className="mr-2 h-4 w-4" />
+                    About Us
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => navigate("/admin")}>
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Admin Dashboard
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="outline" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>

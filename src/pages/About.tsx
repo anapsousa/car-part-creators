@@ -1,0 +1,154 @@
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Zap, Shield, Users, Heart } from "lucide-react";
+import pompousweekLogo from "@/assets/pompousweek-logo.png";
+
+const About = () => {
+  const navigate = useNavigate();
+
+  const values = [
+    {
+      icon: Zap,
+      title: "Innovation",
+      description: "Leveraging cutting-edge AI technology to make 3D modeling accessible to everyone"
+    },
+    {
+      icon: Shield,
+      title: "Quality",
+      description: "Delivering high-quality, print-ready models that meet professional standards"
+    },
+    {
+      icon: Users,
+      title: "Community",
+      description: "Building a community of makers, designers, and 3D printing enthusiasts"
+    },
+    {
+      icon: Heart,
+      title: "Passion",
+      description: "Driven by our love for innovation, design, and helping others create"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-mesh">
+      {/* Header */}
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
+              <div>
+                <h1 className="text-xl font-bold">About Us</h1>
+                <p className="text-xs text-muted-foreground">Our Story</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto space-y-12">
+          {/* Hero Section */}
+          <div className="text-center space-y-4">
+            <img src={pompousweekLogo} alt="Pompousweek" className="h-20 w-auto mx-auto mb-6" />
+            <h2 className="text-4xl font-bold">
+              Empowering{" "}
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                Creators
+              </span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              We're on a mission to democratize 3D design and make custom manufacturing accessible to everyone
+            </p>
+          </div>
+
+          {/* Story Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Our Story</CardTitle>
+              <CardDescription>How it all began</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-muted-foreground">
+              <p>
+                Founded in 2024, Pompousweek started with a simple idea: what if anyone could create 
+                professional-quality 3D models without years of CAD training? We saw the rise of 3D printing 
+                and AI technology converging, creating a unique opportunity to bridge the gap between imagination 
+                and reality.
+              </p>
+              <p>
+                Our team of engineers, designers, and AI specialists came together to build a platform that 
+                understands your needs and translates them into print-ready 3D models. Whether you're a hobbyist 
+                looking to create custom car parts or a designer crafting unique home decorations, we're here to 
+                help you bring your ideas to life.
+              </p>
+              <p>
+                Today, we're proud to serve a growing community of makers, DIY enthusiasts, and professional 
+                designers who use our platform to create everything from functional prototypes to artistic masterpieces.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Values Section */}
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold mb-2">Our Values</h3>
+              <p className="text-muted-foreground">What drives us every day</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              {values.map((value, index) => {
+                const Icon = value.icon;
+                return (
+                  <Card key={index}>
+                    <CardHeader>
+                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2">
+                        <Icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <CardTitle>{value.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground">{value.description}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <Card className="bg-gradient-primary text-primary-foreground">
+            <CardHeader className="text-center">
+              <CardTitle>Join Our Community</CardTitle>
+              <CardDescription className="text-primary-foreground/80">
+                Start creating amazing 3D models today
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center gap-4">
+              <Button 
+                variant="secondary" 
+                size="lg"
+                onClick={() => navigate("/")}
+              >
+                Get Started
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => navigate("/contact")}
+                className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
+              >
+                Contact Us
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default About;

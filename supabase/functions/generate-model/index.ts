@@ -30,7 +30,7 @@ serve(async (req) => {
 
     console.log("Starting 3D model generation for design:", designId);
 
-    // Call Lovable AI to analyze the prompt and provide guidance
+    // Call Lovable AI to analyze the prompt and extract specifications
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -42,13 +42,56 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a 3D modeling assistant. Analyze user prompts for creating 3D printable models and extract key specifications like dimensions, materials, mounting points, and design features.",
+            content: "You are a 3D modeling assistant. Analyze user prompts for creating 3D printable models and extract key specifications.",
           },
           {
             role: "user",
-            content: `Analyze this 3D model request and extract specifications: "${prompt}"`,
+            content: `Analyze this 3D model request: "${prompt}". Provide detailed specifications for 3D modeling including dimensions, features, mounting points, and printability considerations.`,
           },
         ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "extract_model_specs",
+              description: "Extract 3D model specifications from user prompt",
+              parameters: {
+                type: "object",
+                properties: {
+                  dimensions: {
+                    type: "object",
+                    properties: {
+                      length: { type: "number" },
+                      width: { type: "number" },
+                      height: { type: "number" },
+                      unit: { type: "string", enum: ["mm", "cm", "in"] }
+                    }
+                  },
+                  features: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "Key features and design elements"
+                  },
+                  printability: {
+                    type: "object",
+                    properties: {
+                      supports_needed: { type: "boolean" },
+                      recommended_orientation: { type: "string" },
+                      estimated_print_time: { type: "string" }
+                    }
+                  },
+                  material_recommendations: {
+                    type: "array",
+                    items: { type: "string" }
+                  }
+                },
+                required: ["features"],
+                additionalProperties: false
+              }
+            }
+          }
+        ],
+        tool_choice: { type: "function", function: { name: "extract_model_specs" } }
       }),
     });
 
@@ -56,7 +99,23 @@ serve(async (req) => {
       const errorText = await aiResponse.text();
       console.error("AI gateway error:", aiResponse.status, errorText);
       
-      // Update design status to failed
+      // Handle rate limiting and payment errors
+      if (aiResponse.status === 429) {
+        await supabase
+          .from("designs")
+          .update({ status: "failed" })
+          .eq("id", designId);
+        throw new Error("Rate limit exceeded. Please try again later.");
+      }
+      
+      if (aiResponse.status === 402) {
+        await supabase
+          .from("designs")
+          .update({ status: "failed" })
+          .eq("id", designId);
+        throw new Error("AI credits exhausted. Please add credits to continue.");
+      }
+      
       await supabase
         .from("designs")
         .update({ status: "failed" })
@@ -66,7 +125,9 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
-    const analysis = aiData.choices[0].message.content;
+    const toolCall = aiData.choices[0].message.tool_calls?.[0];
+    const specifications = toolCall ? JSON.parse(toolCall.function.arguments) : {};
+    const analysis = JSON.stringify(specifications, null, 2);
 
     console.log("AI Analysis:", analysis);
 
