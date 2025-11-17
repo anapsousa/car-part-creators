@@ -131,28 +131,121 @@ serve(async (req) => {
 
     console.log("AI Analysis:", analysis);
 
-    // Note: In a real implementation, you would integrate with a 3D model generation API
-    // For now, we'll simulate the process and return mock URLs
-    // In v2, this could integrate with services like:
-    // - OpenAI's 3D generation APIs (when available)
-    // - Meshy.ai
-    // - Kaedim
-    // - Point-E or Shap-E
+    // Get Meshy API key
+    const meshyApiKey = Deno.env.get("MESHY_API_KEY");
+    if (!meshyApiKey) {
+      console.error("MESHY_API_KEY not configured");
+      await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+      throw new Error("MESHY_API_KEY is not configured");
+    }
 
-    // Simulate processing time
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Create Meshy text-to-3D task
+    console.log("Creating Meshy.ai generation task...");
+    const meshyCreateResponse = await fetch("https://api.meshy.ai/v2/text-to-3d", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${meshyApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: "preview",
+        prompt: prompt,
+        art_style: "realistic",
+        negative_prompt: "low quality, low resolution, low poly, ugly"
+      }),
+    });
 
-    // Generate mock file URLs (in production, these would be actual generated files)
-    const mockStlUrl = `https://example.com/models/${designId}.stl`;
-    const mockBlendUrl = `https://example.com/models/${designId}.blend`;
+    if (!meshyCreateResponse.ok) {
+      const errorText = await meshyCreateResponse.text();
+      console.error("Meshy.ai task creation failed:", meshyCreateResponse.status, errorText);
+      await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+      throw new Error(`Meshy.ai error: ${errorText}`);
+    }
 
-    // Update design with completed status and file URLs
+    const meshyTask = await meshyCreateResponse.json();
+    const taskId = meshyTask.result;
+    console.log("Meshy task created:", taskId);
+
+    // Poll for completion (max 5 minutes)
+    let attempts = 0;
+    const maxAttempts = 60;
+    let modelUrl = null;
+
+    while (attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+      
+      const statusResponse = await fetch(`https://api.meshy.ai/v2/text-to-3d/${taskId}`, {
+        headers: {
+          "Authorization": `Bearer ${meshyApiKey}`,
+        },
+      });
+
+      if (!statusResponse.ok) {
+        console.error("Failed to check task status");
+        attempts++;
+        continue;
+      }
+
+      const statusData = await statusResponse.json();
+      console.log(`Task status (attempt ${attempts + 1}):`, statusData.status);
+
+      if (statusData.status === "SUCCEEDED") {
+        modelUrl = statusData.model_urls?.glb || statusData.model_urls?.fbx;
+        console.log("Model generation succeeded! URL:", modelUrl);
+        break;
+      } else if (statusData.status === "FAILED") {
+        await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+        throw new Error("Meshy.ai generation failed");
+      }
+
+      attempts++;
+    }
+
+    if (!modelUrl) {
+      await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+      throw new Error("Model generation timed out");
+    }
+
+    // Download the generated model
+    console.log("Downloading generated model...");
+    const modelResponse = await fetch(modelUrl);
+    if (!modelResponse.ok) {
+      throw new Error("Failed to download generated model");
+    }
+
+    const modelBlob = await modelResponse.blob();
+    const modelBuffer = await modelBlob.arrayBuffer();
+
+    // Upload to Supabase Storage
+    console.log("Uploading to storage...");
+    const fileName = `${designId}.glb`;
+    const { error: uploadError } = await supabase.storage
+      .from("design-files")
+      .upload(fileName, modelBuffer, {
+        contentType: "model/gltf-binary",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("Storage upload error:", uploadError);
+      throw uploadError;
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from("design-files")
+      .getPublicUrl(fileName);
+
+    const fileUrl = urlData.publicUrl;
+    console.log("Model uploaded to:", fileUrl);
+
+    // Update design with completed status
     const { error: updateError } = await supabase
       .from("designs")
       .update({
         status: "completed",
-        stl_file_url: mockStlUrl,
-        blend_file_url: mockBlendUrl,
+        stl_file_url: fileUrl,
+        blend_file_url: fileUrl, // GLB format for both
       })
       .eq("id", designId);
 
@@ -168,8 +261,8 @@ serve(async (req) => {
         success: true,
         designId,
         analysis,
-        stlUrl: mockStlUrl,
-        blendUrl: mockBlendUrl,
+        stlUrl: fileUrl,
+        blendUrl: fileUrl,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
