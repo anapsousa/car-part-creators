@@ -2,10 +2,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ArrowLeft, CreditCard, Smartphone, Loader2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
@@ -14,73 +11,40 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const designId = searchParams.get("design");
-  
-  const [paymentMethod, setPaymentMethod] = useState<"mbway" | "paypal">("mbway");
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePayment = async () => {
+    if (!designId) {
+      toast.error("No design selected");
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
         toast.error("Please login to continue");
         navigate("/auth");
         return;
       }
 
-      // Create payment record
-      const { data: payment, error: paymentError } = await supabase
-        .from("payments")
-        .insert({
-          user_id: user.id,
-          design_id: designId,
-          amount: 9.99,
-          currency: "EUR",
-          payment_method: paymentMethod,
-          payment_status: "pending",
-          metadata: {
-            phone: paymentMethod === "mbway" ? phoneNumber : null
-          }
-        })
-        .select()
-        .single();
+      // Create Stripe checkout session
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { designId },
+      });
 
-      if (paymentError) throw paymentError;
+      if (error) throw error;
 
-      if (paymentMethod === "mbway") {
-        // Simulate MB Way flow
-        toast.success("MB Way request sent! Check your phone to approve the payment.");
-        
-        // Simulate payment confirmation after 3 seconds
-        setTimeout(async () => {
-          const { error: updateError } = await supabase
-            .from("payments")
-            .update({ 
-              payment_status: "completed",
-              payment_reference: `MBWAY-${Date.now()}`
-            })
-            .eq("id", payment.id);
-
-          if (!updateError) {
-            toast.success("Payment confirmed! Your model is ready.");
-            navigate("/");
-          }
-        }, 3000);
+      if (data?.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
       } else {
-        // Simulate PayPal redirect
-        toast.info("Redirecting to PayPal...");
-        // In production, redirect to PayPal checkout
-        setTimeout(() => {
-          toast.success("Payment completed via PayPal!");
-          navigate("/");
-        }, 2000);
+        throw new Error("No checkout URL returned");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Payment error:", error);
-      toast.error("Payment failed. Please try again.");
-    } finally {
+      toast.error(error.message || "Failed to initiate payment. Please try again.");
       setIsProcessing(false);
     }
   };
@@ -120,68 +84,51 @@ const Checkout = () => {
             </CardContent>
           </Card>
 
-          {/* Payment Method */}
+          {/* Payment Info */}
           <Card>
             <CardHeader>
               <CardTitle>Payment Method</CardTitle>
-              <CardDescription>Select your preferred payment option</CardDescription>
+              <CardDescription>
+                Secure payment powered by Stripe
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <RadioGroup value={paymentMethod} onValueChange={(value) => setPaymentMethod(value as "mbway" | "paypal")}>
-                <div className="flex items-center space-x-2 p-4 border border-border rounded-lg hover:bg-secondary/50 cursor-pointer">
-                  <RadioGroupItem value="mbway" id="mbway" />
-                  <Label htmlFor="mbway" className="flex-1 cursor-pointer flex items-center gap-2">
-                    <Smartphone className="h-5 w-5 text-primary" />
-                    <div>
-                      <div className="font-medium">MB Way</div>
-                      <div className="text-xs text-muted-foreground">Pay with your phone number</div>
-                    </div>
-                  </Label>
+            <CardContent className="space-y-4">
+              <div className="p-4 border border-border rounded-lg bg-muted/30">
+                <div className="flex items-start gap-3">
+                  <CreditCard className="h-5 w-5 mt-0.5 text-primary" />
+                  <div className="flex-1 space-y-1">
+                    <p className="font-medium">Accepted Payment Methods</p>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Credit & Debit Cards (Visa, Mastercard, Amex)</li>
+                      <li>• PayPal</li>
+                      <li>• Multibanco (Portugal)</li>
+                      <li>• MB WAY available through Multibanco</li>
+                    </ul>
+                  </div>
                 </div>
-
-                <div className="flex items-center space-x-2 p-4 border border-border rounded-lg hover:bg-secondary/50 cursor-pointer">
-                  <RadioGroupItem value="paypal" id="paypal" />
-                  <Label htmlFor="paypal" className="flex-1 cursor-pointer flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-primary" />
-                    <div>
-                      <div className="font-medium">PayPal</div>
-                      <div className="text-xs text-muted-foreground">Pay securely with PayPal</div>
-                    </div>
-                  </Label>
-                </div>
-              </RadioGroup>
-
-              {paymentMethod === "mbway" && (
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+351 912 345 678"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    You'll receive a payment request on your MB Way app
-                  </p>
-                </div>
-              )}
+              </div>
 
               <Button 
                 onClick={handlePayment} 
                 className="w-full" 
                 size="lg"
-                disabled={isProcessing || (paymentMethod === "mbway" && !phoneNumber)}
+                disabled={isProcessing}
               >
                 {isProcessing ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
+                    Redirecting to Stripe...
                   </>
                 ) : (
-                  `Pay €9.99 with ${paymentMethod === "mbway" ? "MB Way" : "PayPal"}`
+                  `Pay €9.99 with Stripe`
                 )}
               </Button>
+
+              <div className="text-xs text-muted-foreground space-y-1 text-center">
+                <p>🔒 Your payment is secured by Stripe</p>
+                <p>💳 All major payment methods accepted</p>
+                <p>🇵🇹 Portuguese payment methods supported</p>
+              </div>
 
               <p className="text-xs text-center text-muted-foreground">
                 By completing this purchase, you agree to our Terms of Service
