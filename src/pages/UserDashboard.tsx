@@ -28,7 +28,8 @@ interface Payment {
 interface Profile {
   id: string;
   email: string;
-  full_name?: string;
+  first_name: string;
+  last_name: string;
   phone?: string;
   address?: string;
   city?: string;
@@ -83,15 +84,61 @@ const UserDashboard = () => {
     }
   };
 
+  const validateName = (name: string): boolean => {
+    // Name should contain only letters, spaces, hyphens, and apostrophes
+    // At least 2 characters, no numbers or special characters except - and '
+    const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
+    return nameRegex.test(name.trim());
+  };
+
   const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validate first and last name
+    if (!profile?.first_name?.trim() || !profile?.last_name?.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "First name and last name are required for shipping addresses.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validateName(profile.first_name)) {
+      toast({
+        title: "Invalid First Name",
+        description: "First name should only contain letters, spaces, hyphens, and apostrophes (2-50 characters).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validateName(profile.last_name)) {
+      toast({
+        title: "Invalid Last Name",
+        description: "Last name should only contain letters, spaces, hyphens, and apostrophes (2-50 characters).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSaving(true);
 
     try {
       const { error } = await supabase
         .from("profiles")
-        .update(profile!)
-        .eq("id", profile!.id);
+        .update({
+          first_name: profile.first_name.trim(),
+          last_name: profile.last_name.trim(),
+          phone: profile.phone,
+          address: profile.address,
+          city: profile.city,
+          postal_code: profile.postal_code,
+          country: profile.country,
+          vat_number: profile.vat_number,
+          company_name: profile.company_name,
+        })
+        .eq("id", profile.id);
 
       if (error) throw error;
 
@@ -197,23 +244,42 @@ const UserDashboard = () => {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleProfileUpdate} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={profile?.email || ""}
+                      disabled
+                    />
+                  </div>
+                  
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="first_name">
+                        First Name <span className="text-destructive">*</span>
+                      </Label>
                       <Input
-                        id="email"
-                        type="email"
-                        value={profile?.email || ""}
-                        disabled
+                        id="first_name"
+                        value={profile?.first_name || ""}
+                        onChange={(e) => setProfile({ ...profile!, first_name: e.target.value })}
+                        placeholder="John"
+                        required
                       />
+                      <p className="text-xs text-muted-foreground">Required for shipping</p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="full_name">Full Name</Label>
+                      <Label htmlFor="last_name">
+                        Last Name <span className="text-destructive">*</span>
+                      </Label>
                       <Input
-                        id="full_name"
-                        value={profile?.full_name || ""}
-                        onChange={(e) => setProfile({ ...profile!, full_name: e.target.value })}
+                        id="last_name"
+                        value={profile?.last_name || ""}
+                        onChange={(e) => setProfile({ ...profile!, last_name: e.target.value })}
+                        placeholder="Doe"
+                        required
                       />
+                      <p className="text-xs text-muted-foreground">Required for shipping</p>
                     </div>
                   </div>
                   <div className="space-y-2">
