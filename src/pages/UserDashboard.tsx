@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Download, Calendar, CreditCard, User, MapPin } from "lucide-react";
 import DesignHistory from "@/components/DesignHistory";
+import { CreditsDisplay } from "@/components/CreditsDisplay";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
 import { 

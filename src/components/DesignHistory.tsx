@@ -157,15 +157,19 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
       });
 
       if (functionError) {
-        // Check if it's a Replicate credits error (402)
-        if (data?.code === "REPLICATE_INSUFFICIENT_CREDITS") {
-          toast.error("Insufficient Replicate credits. Please add credits to your Replicate account.", {
-            duration: 6000,
+        // Check error codes
+        if (data?.code === "INSUFFICIENT_CREDITS") {
+          toast.error("You don't have enough credits. Please purchase more to continue.", {
+            duration: 5000,
             action: {
-              label: "Add Credits",
-              onClick: () => window.open("https://replicate.com/account/billing", "_blank")
+              label: "Buy Credits",
+              onClick: () => window.location.href = "/dashboard?tab=credits"
             }
           });
+          return;
+        }
+        if (data?.code === "SERVICE_UNAVAILABLE") {
+          toast.error("Service temporarily unavailable. Your credit has been refunded.");
           return;
         }
         throw functionError;
