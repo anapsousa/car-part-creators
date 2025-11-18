@@ -185,6 +185,8 @@ const AdminStats = () => {
               <p className="text-xs text-muted-foreground">Models generated</p>
             </CardContent>
           </Card>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-2 mb-8">
           <Card className="border-destructive/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
