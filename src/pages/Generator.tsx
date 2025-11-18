@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { LogOut, User as UserIcon, ShoppingCart, HelpCircle, Mail, Info, ShieldCheck, Menu } from "lucide-react";
-import { User } from "@supabase/supabase-js";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import pompousweekLogo from "@/assets/pompousweek-logo.png";
-import { toast } from "sonner";
-import GenerateForm from "@/components/GenerateForm";
-import DesignHistory from "@/components/DesignHistory";
+import { GenerateForm } from "@/components/GenerateForm";
+import { DesignHistory } from "@/components/DesignHistory";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function Generator() {
   const navigate = useNavigate();

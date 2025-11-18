@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowLeft, HelpCircle } from "lucide-react";
-import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import { HelpCircle } from "lucide-react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const FAQ = () => {
   const navigate = useNavigate();
@@ -45,23 +46,7 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
-              <div>
-                <h1 className="text-xl font-bold">FAQ</h1>
-                <p className="text-xs text-muted-foreground">Frequently Asked Questions</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header pageTitle="FAQ" pageSubtitle="Frequently Asked Questions" />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">

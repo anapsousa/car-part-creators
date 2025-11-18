@@ -1,8 +1,10 @@
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Minus, Plus, Trash2, ArrowLeft } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, cartCount } = useCart();
@@ -20,33 +22,20 @@ export default function Cart() {
   if (cartCount === 0) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b bg-card">
-          <div className="container mx-auto px-4 py-4">
-            <Button variant="ghost" onClick={() => navigate("/shop")}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Shop
-            </Button>
-          </div>
-        </header>
+        <Header pageTitle="Shopping Cart" pageSubtitle="Your Items" />
         <main className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
           <p className="text-muted-foreground mb-8">Add some products to get started</p>
           <Button onClick={() => navigate("/shop")}>Browse Products</Button>
         </main>
+        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <Button variant="ghost" onClick={() => navigate("/shop")}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Shop
-          </Button>
-        </div>
-      </header>
+      <Header pageTitle="Shopping Cart" pageSubtitle={`${cartCount} items`} />
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Shopping Cart ({cartCount} items)</h1>

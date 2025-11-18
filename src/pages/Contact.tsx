@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Mail, MessageSquare, Send } from "lucide-react";
+import { Mail, MessageSquare, Send } from "lucide-react";
 import { toast } from "sonner";
-import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -33,23 +34,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
-              <div>
-                <h1 className="text-xl font-bold">Contact Us</h1>
-                <p className="text-xs text-muted-foreground">Get in Touch</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header pageTitle="Contact Us" pageSubtitle="Get in Touch" />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
