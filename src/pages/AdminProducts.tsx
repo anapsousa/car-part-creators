@@ -143,21 +143,17 @@ export default function AdminProducts() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate("/admin")}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Admin
-          </Button>
-          <h1 className="text-2xl font-bold">Product Management</h1>
+      <Header pageTitle="Manage Products" pageSubtitle="Admin Dashboard" />
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Product Management</h2>
           <Button onClick={() => navigate("/admin/products/new")}>
             <Plus className="mr-2 h-4 w-4" />
             Add Product
           </Button>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-8">
         {isLoading ? (
           <div className="text-center py-8">Loading products...</div>
         ) : products.length === 0 ? (

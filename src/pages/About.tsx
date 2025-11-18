@@ -33,30 +33,13 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
-              <div>
-                <h1 className="text-xl font-bold">About Us</h1>
-                <p className="text-xs text-muted-foreground">Our Story</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header pageTitle="About Us" pageSubtitle="Our Story" />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Hero Section */}
           <div className="text-center space-y-4">
-            <img src={pompousweekLogo} alt="Pompousweek" className="h-20 w-auto mx-auto mb-6" />
             <h2 className="text-4xl font-bold">
               Empowering{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
