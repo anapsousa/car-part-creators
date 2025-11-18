@@ -6,10 +6,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Estimated costs per service
+const COSTS = {
+  LOVABLE_AI_IMAGE: 0.02, // ~$0.02 per image
+  REPLICATE_3D: 0.10, // ~$0.10 per 3D model
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
     const { prompt, designId } = await req.json();
@@ -18,20 +28,57 @@ serve(async (req) => {
       throw new Error("Missing required parameters");
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    // Get user from design
+    const { data: design, error: designError } = await supabase
+      .from("designs")
+      .select("user_id")
+      .eq("id", designId)
+      .single();
+
+    if (designError || !design) throw new Error("Design not found");
+
+    const userId = design.user_id;
+
+    // Check user credits
+    const { data: userCredits, error: creditsError } = await supabase
+      .from("user_credits")
+      .select("credits_remaining")
+      .eq("user_id", userId)
+      .single();
+
+    if (creditsError || !userCredits) {
+      // Initialize credits if not exists
+      await supabase.from("user_credits").insert({
+        user_id: userId,
+        credits_remaining: 5,
+        credits_purchased: 0
+      });
+    } else if (userCredits.credits_remaining < 1) {
+      await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+      return new Response(
+        JSON.stringify({
+          error: "Insufficient credits. Please purchase more credits to continue.",
+          code: "INSUFFICIENT_CREDITS"
+        }),
+        {
+          status: 402,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    // Deduct credit
+    await supabase
+      .from("user_credits")
+      .update({ credits_remaining: (userCredits?.credits_remaining || 5) - 1 })
+      .eq("user_id", userId);
+
     const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
     const replicateApiKey = Deno.env.get("REPLICATE_API_KEY");
 
-    if (!lovableApiKey) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!lovableApiKey || !replicateApiKey) {
+      throw new Error("API keys not configured");
     }
-
-    if (!replicateApiKey) {
-      throw new Error("REPLICATE_API_KEY is not configured");
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
 
     console.log("Starting 3D model generation for design:", designId);
 
@@ -65,17 +112,32 @@ serve(async (req) => {
       const errorText = await imageResponse.text();
       console.error("Image generation error:", imageResponse.status, errorText);
       
-      if (imageResponse.status === 429) {
-        await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
-        throw new Error("Rate limit exceeded. Please try again later.");
-      }
-      
-      if (imageResponse.status === 402) {
-        await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
-        throw new Error("AI credits exhausted. Please add credits to continue.");
-      }
-      
       await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+      
+      // Refund credit on API failure
+      const { data: currentCredits } = await supabase
+        .from("user_credits")
+        .select("credits_remaining")
+        .eq("user_id", userId)
+        .single();
+      
+      if (currentCredits) {
+        await supabase
+          .from("user_credits")
+          .update({ credits_remaining: currentCredits.credits_remaining + 1 })
+          .eq("user_id", userId);
+      }
+
+      if (imageResponse.status === 429 || imageResponse.status === 402) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Service temporarily unavailable. Your credit has been refunded.",
+            code: "SERVICE_UNAVAILABLE"
+          }),
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
       throw new Error("Image generation failed");
     }
 
@@ -86,6 +148,15 @@ serve(async (req) => {
       await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
       throw new Error("No image generated from AI");
     }
+
+    // Track AI cost
+    await supabase.from("generation_costs").insert({
+      design_id: designId,
+      user_id: userId,
+      cost_usd: COSTS.LOVABLE_AI_IMAGE,
+      service: "lovable_ai",
+      status: "completed"
+    });
 
     console.log("Image generated successfully");
 
@@ -112,17 +183,36 @@ serve(async (req) => {
       console.error("Replicate API error:", replicateResponse.status, errorText);
       await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
       
-      // Return appropriate status code based on Replicate error
+      // Track failed cost for admin
+      await supabase.from("generation_costs").insert({
+        design_id: designId,
+        user_id: userId,
+        cost_usd: 0,
+        service: "replicate",
+        status: "failed"
+      });
+
+      // Refund credit on Replicate failure
+      const { data: currentCredits } = await supabase
+        .from("user_credits")
+        .select("credits_remaining")
+        .eq("user_id", userId)
+        .single();
+      
+      if (currentCredits) {
+        await supabase
+          .from("user_credits")
+          .update({ credits_remaining: currentCredits.credits_remaining + 1 })
+          .eq("user_id", userId);
+      }
+
       if (replicateResponse.status === 402) {
         return new Response(
           JSON.stringify({ 
-            error: "Insufficient Replicate credits. Please add credits to your Replicate account at https://replicate.com/account/billing",
-            code: "REPLICATE_INSUFFICIENT_CREDITS"
+            error: "Service temporarily unavailable. Your credit has been refunded.",
+            code: "SERVICE_UNAVAILABLE"
           }),
-          { 
-            status: 402,
-            headers: { ...corsHeaders, "Content-Type": "application/json" }
-          }
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       
@@ -160,6 +250,16 @@ serve(async (req) => {
         // TRELLIS returns GLB and other formats
         modelUrl = statusData.output?.glb || statusData.output;
         console.log("3D model generation succeeded! URL:", modelUrl);
+        
+        // Track Replicate cost
+        await supabase.from("generation_costs").insert({
+          design_id: designId,
+          user_id: userId,
+          cost_usd: COSTS.REPLICATE_3D,
+          service: "replicate",
+          status: "completed"
+        });
+        
         break;
       } else if (statusData.status === "failed" || statusData.status === "canceled") {
         await supabase.from("designs").update({ status: "failed" }).eq("id", designId);

@@ -14,6 +14,9 @@ interface Stats {
   totalDesigns: number;
   recentPayments: any[];
   popularCategories: { category: string; count: number }[];
+  totalCosts: number;
+  monthlyProjection: number;
+  aiCosts: any[];
 }
 
 const AdminStats = () => {
@@ -49,19 +52,34 @@ const AdminStats = () => {
 
   const fetchStats = async () => {
     try {
-      const [paymentsRes, designsRes, usersRes] = await Promise.all([
+      const [paymentsRes, designsRes, usersRes, costsRes] = await Promise.all([
         supabase.from("payments").select("*"),
         supabase.from("designs").select("*"),
-        supabase.from("profiles").select("*")
+        supabase.from("profiles").select("*"),
+        supabase.from("generation_costs").select("*")
       ]);
 
       const payments = paymentsRes.data || [];
       const designs = designsRes.data || [];
       const users = usersRes.data || [];
+      const costs = costsRes.data || [];
 
       const totalRevenue = payments
         .filter(p => p.payment_status === "completed")
         .reduce((sum, p) => sum + Number(p.amount), 0);
+
+      const totalCosts = costs
+        .filter(c => c.status === "completed")
+        .reduce((sum, c) => sum + Number(c.cost_usd), 0);
+
+      // Calculate monthly projection
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const recentCosts = costs.filter(c => 
+        new Date(c.created_at) >= thirtyDaysAgo && c.status === "completed"
+      );
+      const last30DaysCost = recentCosts.reduce((sum, c) => sum + Number(c.cost_usd), 0);
+      const monthlyProjection = last30DaysCost; // 30 days average
 
       const categoryCount = designs.reduce((acc: Record<string, number>, d) => {
         acc[d.category || "other"] = (acc[d.category || "other"] || 0) + 1;
@@ -78,7 +96,10 @@ const AdminStats = () => {
         totalUsers: users.length,
         totalDesigns: designs.length,
         recentPayments: payments.slice(0, 10),
-        popularCategories: popularCategories.slice(0, 5)
+        popularCategories: popularCategories.slice(0, 5),
+        totalCosts,
+        monthlyProjection,
+        aiCosts: costs
       });
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -162,6 +183,38 @@ const AdminStats = () => {
             <CardContent>
               <div className="text-2xl font-bold">{stats?.totalDesigns}</div>
               <p className="text-xs text-muted-foreground">Models generated</p>
+            </CardContent>
+          </Card>
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          <Card className="border-destructive/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">AI Generation Costs</CardTitle>
+              <TrendingUp className="h-4 w-4 text-destructive" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-destructive">${stats?.totalCosts.toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground">Total spent on AI services</p>
+              <div className="mt-2 pt-2 border-t border-border/50 space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Lovable AI:</span>
+                  <span className="font-medium">${stats?.aiCosts.filter(c => c.service === 'lovable_ai' && c.status === 'completed').reduce((s, c) => s + Number(c.cost_usd), 0).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Replicate:</span>
+                  <span className="font-medium">${stats?.aiCosts.filter(c => c.service === 'replicate' && c.status === 'completed').reduce((s, c) => s + Number(c.cost_usd), 0).toFixed(2)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-primary/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Monthly Projection</CardTitle>
+              <DollarSign className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-primary">${stats?.monthlyProjection.toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground">Est. monthly AI cost (based on last 30 days)</p>
             </CardContent>
           </Card>
         </div>
