@@ -74,9 +74,12 @@ const About = () => {
             <div className="grid md:grid-cols-2 gap-6">
               {values.map((value, index) => {
               const Icon = value.icon;
-              return <Card key={index}>
+              return <Card 
+                key={index}
+                className="transition-all duration-300 hover:scale-105 hover:shadow-glow hover:border-primary/50"
+              >
                     <CardHeader>
-                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2">
+                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2 transition-all duration-300 group-hover:bg-primary/30">
                         <Icon className="h-6 w-6 text-primary" />
                       </div>
                       <CardTitle>{value.title}</CardTitle>
@@ -102,7 +105,7 @@ const About = () => {
                 variant="secondary" 
                 size="lg" 
                 onClick={() => navigate("/")} 
-                className="bg-slate-800 hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                className="transition-all duration-300 hover:scale-105 hover:shadow-glow"
               >
                 Get Started
               </Button>
@@ -110,7 +113,7 @@ const About = () => {
                 variant="secondary" 
                 size="lg" 
                 onClick={() => navigate("/contact")} 
-                className="bg-slate-800 hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                className="transition-all duration-300 hover:scale-105 hover:shadow-glow"
               >
                 Contact Us
               </Button>
