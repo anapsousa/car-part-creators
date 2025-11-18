@@ -104,6 +104,10 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
     }
   };
 
+  const isFileAvailable = (url: string | null) => {
+    return url && !url.includes('example.com');
+  };
+
   const toggleFavorite = async (designId: string, currentFavorite: boolean) => {
     try {
       const { error } = await supabase
@@ -118,6 +122,47 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
     } catch (error: any) {
       console.error("Error updating favorite:", error);
       toast.error("Failed to update favorite");
+    }
+  };
+
+  const handleRegenerate = async (design: Design) => {
+    try {
+      toast.info("Regenerating model...");
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please sign in to regenerate models");
+        return;
+      }
+
+      // Update status to generating
+      const { error: updateError } = await supabase
+        .from("designs")
+        .update({ status: "generating" })
+        .eq("id", design.id);
+
+      if (updateError) throw updateError;
+
+      // Call the generate-model function
+      const { error: functionError } = await supabase.functions.invoke('generate-model', {
+        body: {
+          designId: design.id,
+          prompt: design.prompt_text,
+          category: design.category,
+          material: design.material,
+          width: design.width,
+          height: design.height,
+          depth: design.depth,
+        }
+      });
+
+      if (functionError) throw functionError;
+
+      toast.success("Model regeneration started! This may take a few minutes.");
+      fetchDesigns();
+    } catch (error: any) {
+      console.error("Error regenerating model:", error);
+      toast.error("Failed to regenerate model");
     }
   };
 
@@ -301,9 +346,11 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                         <>
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant={isFileAvailable(design.stl_file_url) ? "outline" : "ghost"}
+                            disabled={!isFileAvailable(design.stl_file_url)}
+                            className={!isFileAvailable(design.stl_file_url) ? "opacity-50 cursor-not-allowed" : ""}
                             onClick={() => {
-                              if (design.stl_file_url && !design.stl_file_url.includes('example.com')) {
+                              if (isFileAvailable(design.stl_file_url)) {
                                 setPreviewDesign(design);
                               } else {
                                 toast.error("Preview not available. File may be missing.");
@@ -315,10 +362,12 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                           </Button>
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant={isFileAvailable(design.stl_file_url) ? "outline" : "ghost"}
+                            disabled={!isFileAvailable(design.stl_file_url)}
+                            className={!isFileAvailable(design.stl_file_url) ? "opacity-50 cursor-not-allowed" : ""}
                             onClick={() => {
-                              if (design.stl_file_url && !design.stl_file_url.includes('example.com')) {
-                                handleDownload(design.stl_file_url, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.stl`);
+                              if (isFileAvailable(design.stl_file_url)) {
+                                handleDownload(design.stl_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.stl`);
                               } else {
                                 toast.error("STL file not available. Please regenerate this design.");
                               }
@@ -329,10 +378,12 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                           </Button>
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant={isFileAvailable(design.blend_file_url) ? "outline" : "ghost"}
+                            disabled={!isFileAvailable(design.blend_file_url)}
+                            className={!isFileAvailable(design.blend_file_url) ? "opacity-50 cursor-not-allowed" : ""}
                             onClick={() => {
-                              if (design.blend_file_url && !design.blend_file_url.includes('example.com')) {
-                                handleDownload(design.blend_file_url, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.blend`);
+                              if (isFileAvailable(design.blend_file_url)) {
+                                handleDownload(design.blend_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.blend`);
                               } else {
                                 toast.error("BLEND file not available. Please regenerate this design.");
                               }
@@ -341,6 +392,16 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                             <Download className="mr-2 h-4 w-4" />
                             BLEND
                           </Button>
+                          {(!isFileAvailable(design.stl_file_url) || !isFileAvailable(design.blend_file_url)) && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => handleRegenerate(design)}
+                            >
+                              <Loader2 className="mr-2 h-4 w-4" />
+                              Regenerate
+                            </Button>
+                          )}
                         </>
                       )}
                       <Button
