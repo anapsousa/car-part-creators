@@ -111,6 +111,21 @@ serve(async (req) => {
       const errorText = await replicateResponse.text();
       console.error("Replicate API error:", replicateResponse.status, errorText);
       await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+      
+      // Return appropriate status code based on Replicate error
+      if (replicateResponse.status === 402) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Insufficient Replicate credits. Please add credits to your Replicate account at https://replicate.com/account/billing",
+            code: "REPLICATE_INSUFFICIENT_CREDITS"
+          }),
+          { 
+            status: 402,
+            headers: { ...corsHeaders, "Content-Type": "application/json" }
+          }
+        );
+      }
+      
       throw new Error(`Replicate API error: ${errorText}`);
     }
 

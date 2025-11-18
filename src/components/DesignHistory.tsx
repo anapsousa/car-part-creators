@@ -144,7 +144,7 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
       if (updateError) throw updateError;
 
       // Call the generate-model function
-      const { error: functionError } = await supabase.functions.invoke('generate-model', {
+      const { data, error: functionError } = await supabase.functions.invoke('generate-model', {
         body: {
           designId: design.id,
           prompt: design.prompt_text,
@@ -156,13 +156,26 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
         }
       });
 
-      if (functionError) throw functionError;
+      if (functionError) {
+        // Check if it's a Replicate credits error (402)
+        if (data?.code === "REPLICATE_INSUFFICIENT_CREDITS") {
+          toast.error("Insufficient Replicate credits. Please add credits to your Replicate account.", {
+            duration: 6000,
+            action: {
+              label: "Add Credits",
+              onClick: () => window.open("https://replicate.com/account/billing", "_blank")
+            }
+          });
+          return;
+        }
+        throw functionError;
+      }
 
       toast.success("Model regeneration started! This may take a few minutes.");
       fetchDesigns();
     } catch (error: any) {
       console.error("Error regenerating model:", error);
-      toast.error("Failed to regenerate model");
+      toast.error(error.message || "Failed to regenerate model");
     }
   };
 

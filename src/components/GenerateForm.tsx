@@ -111,7 +111,20 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a Replicate credits error (402)
+        if (data?.code === "REPLICATE_INSUFFICIENT_CREDITS") {
+          toast.error("Insufficient Replicate credits. Please add credits to your Replicate account.", {
+            duration: 6000,
+            action: {
+              label: "Add Credits",
+              onClick: () => window.open("https://replicate.com/account/billing", "_blank")
+            }
+          });
+          return;
+        }
+        throw error;
+      }
 
       toast.success("3D model generation started!");
       setPrompt("");
