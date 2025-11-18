@@ -89,8 +89,8 @@ serve(async (req) => {
 
     console.log("Image generated successfully");
 
-    // Step 2: Use Replicate's TripoSR to convert image to 3D model
-    console.log("Converting image to 3D model with TripoSR...");
+    // Step 2: Use Replicate's TRELLIS to convert image to 3D model
+    console.log("Converting image to 3D model with TRELLIS...");
     const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
@@ -98,12 +98,11 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        version: "e9cfd5a1f9e4de9b66e21a6052f6cb1a9e9b7a6e6e8e0a6e8e0a6e8e0a6e8e0",
+        version: "45606f9ae85f52cce622be1c47aa753c5079fc3463ec1b43f60a624962f81321",
         input: {
           image: generatedImageUrl,
-          foreground_ratio: 0.85,
-          mc_resolution: 256,
-          chunk_size: 8192
+          seed: 0,
+          randomize_seed: true
         }
       }),
     });
@@ -143,8 +142,8 @@ serve(async (req) => {
       console.log(`Prediction status (attempt ${attempts + 1}):`, statusData.status);
 
       if (statusData.status === "succeeded") {
-        // TripoSR returns a GLB file URL
-        modelUrl = statusData.output;
+        // TRELLIS returns GLB and other formats
+        modelUrl = statusData.output?.glb || statusData.output;
         console.log("3D model generation succeeded! URL:", modelUrl);
         break;
       } else if (statusData.status === "failed" || statusData.status === "canceled") {
