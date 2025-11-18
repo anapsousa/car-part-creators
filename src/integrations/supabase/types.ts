@@ -302,8 +302,9 @@ export type Database = {
           country: string | null
           created_at: string
           email: string | null
-          full_name: string | null
+          first_name: string
           id: string
+          last_name: string
           phone: string | null
           postal_code: string | null
           updated_at: string
@@ -316,8 +317,9 @@ export type Database = {
           country?: string | null
           created_at?: string
           email?: string | null
-          full_name?: string | null
+          first_name: string
           id: string
+          last_name: string
           phone?: string | null
           postal_code?: string | null
           updated_at?: string
@@ -330,8 +332,9 @@ export type Database = {
           country?: string | null
           created_at?: string
           email?: string | null
-          full_name?: string | null
+          first_name?: string
           id?: string
+          last_name?: string
           phone?: string | null
           postal_code?: string | null
           updated_at?: string
