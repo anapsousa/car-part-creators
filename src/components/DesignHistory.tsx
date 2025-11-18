@@ -299,36 +299,48 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                     <div className="flex flex-wrap gap-2 pt-2">
                       {design.status === "completed" && (
                         <>
-                          {design.stl_file_url && !design.stl_file_url.includes('example.com') && (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setPreviewDesign(design)}
-                              >
-                                <Eye className="mr-2 h-4 w-4" />
-                                Preview
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleDownload(design.stl_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.stl`)}
-                              >
-                                <Download className="mr-2 h-4 w-4" />
-                                Download STL
-                              </Button>
-                            </>
-                          )}
-                          {design.blend_file_url && !design.blend_file_url.includes('example.com') && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleDownload(design.blend_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.blend`)}
-                            >
-                              <Download className="mr-2 h-4 w-4" />
-                              Download BLEND
-                            </Button>
-                          )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              if (design.stl_file_url && !design.stl_file_url.includes('example.com')) {
+                                setPreviewDesign(design);
+                              } else {
+                                toast.error("Preview not available. File may be missing.");
+                              }
+                            }}
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            Preview
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              if (design.stl_file_url && !design.stl_file_url.includes('example.com')) {
+                                handleDownload(design.stl_file_url, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.stl`);
+                              } else {
+                                toast.error("STL file not available. Please regenerate this design.");
+                              }
+                            }}
+                          >
+                            <Download className="mr-2 h-4 w-4" />
+                            STL
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              if (design.blend_file_url && !design.blend_file_url.includes('example.com')) {
+                                handleDownload(design.blend_file_url, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.blend`);
+                              } else {
+                                toast.error("BLEND file not available. Please regenerate this design.");
+                              }
+                            }}
+                          >
+                            <Download className="mr-2 h-4 w-4" />
+                            BLEND
+                          </Button>
                         </>
                       )}
                       <Button
