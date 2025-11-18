@@ -50,10 +50,7 @@ const About = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                Founded in 2024, Pompousweek started with a simple idea: what if anyone could create 
-                professional-quality 3D models without years of CAD training? We saw the rise of 3D printing 
-                and AI technology converging, creating a unique opportunity to bridge the gap between imagination 
-                and reality.
+                Founded in 2021, Pompousweek started with a simple idea around Quality Assurance. Then we decided to grow as company and had this idea: what if anyone could create professional-quality 3D models without years of CAD training? We saw the rise of 3D printing and AI technology converging, creating a unique opportunity to bridge the gap between imagination and reality.
               </p>
               <p>
                 Our team of engineers, designers, and AI specialists came together to build a platform that 
@@ -104,7 +101,7 @@ const About = () => {
               <Button variant="secondary" size="lg" onClick={() => navigate("/")} className="bg-slate-800 hover:bg-slate-700">
                 Get Started
               </Button>
-              <Button variant="outline" size="lg" onClick={() => navigate("/contact")} className="border-primary-foreground/20 bg-slate-800 hover:bg-slate-700 text-slate-50">
+              <Button variant="outline" size="lg" onClick={() => navigate("/contact")} className="border-primary-foreground/20 bg-slate-800 hover:bg-slate-700 text-slate-50 font-medium">
                 Contact Us
               </Button>
             </CardContent>
