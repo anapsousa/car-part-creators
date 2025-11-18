@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShoppingBag, Sparkles, Zap, Shield, ArrowRight, Menu, LogOut, User as UserIcon, ShoppingCart } from "lucide-react";
+import { ShoppingBag, Sparkles, Zap, Shield, ArrowRight, Menu, LogOut, User as UserIcon, ShoppingCart, HelpCircle, Mail, Info, ShieldCheck } from "lucide-react";
 import { User } from "@supabase/supabase-js";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
+import GenerateForm from "@/components/GenerateForm";
+import DesignHistory from "@/components/DesignHistory";
 
 const Index = () => {
   const navigate = useNavigate();
