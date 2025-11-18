@@ -118,6 +118,44 @@ export type Database = {
         }
         Relationships: []
       }
+      generation_costs: {
+        Row: {
+          cost_usd: number
+          created_at: string | null
+          design_id: string | null
+          id: string
+          service: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          cost_usd: number
+          created_at?: string | null
+          design_id?: string | null
+          id?: string
+          service: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          cost_usd?: number
+          created_at?: string | null
+          design_id?: string | null
+          id?: string
+          service?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_costs_design_id_fkey"
+            columns: ["design_id"]
+            isOneToOne: false
+            referencedRelation: "designs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
@@ -376,6 +414,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_credits: {
+        Row: {
+          created_at: string | null
+          credits_purchased: number
+          credits_remaining: number
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_purchased?: number
+          credits_remaining?: number
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_purchased?: number
+          credits_remaining?: number
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
