@@ -98,10 +98,20 @@ const About = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center gap-4">
-              <Button variant="secondary" size="lg" onClick={() => navigate("/")} className="bg-slate-800 hover:bg-slate-700">
+              <Button 
+                variant="secondary" 
+                size="lg" 
+                onClick={() => navigate("/")} 
+                className="bg-slate-800 hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              >
                 Get Started
               </Button>
-              <Button variant="secondary" size="lg" onClick={() => navigate("/contact")} className="bg-slate-800 hover:bg-slate-700">
+              <Button 
+                variant="secondary" 
+                size="lg" 
+                onClick={() => navigate("/contact")} 
+                className="bg-slate-800 hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              >
                 Contact Us
               </Button>
             </CardContent>
