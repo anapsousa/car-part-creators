@@ -123,20 +123,43 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
 
   const handleDownload = async (url: string, filename: string) => {
     try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(downloadUrl);
-      toast.success("Download started");
-    } catch (error) {
+      // Check if URL is valid
+      if (!url || url.includes('example.com')) {
+        toast.error("File not available. Please regenerate this design.");
+        return;
+      }
+
+      // Check if it's a Supabase storage URL
+      if (url.includes('supabase')) {
+        // For Supabase storage, download directly
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("Download started");
+      } else {
+        // For external URLs, fetch and download
+        const response = await fetch(url, { mode: 'cors' });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+        toast.success("Download started");
+      }
+    } catch (error: any) {
       console.error("Download error:", error);
-      toast.error("Failed to download file");
+      toast.error(error.message || "Failed to download file. The file may not exist or be accessible.");
     }
   };
 
@@ -273,46 +296,50 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                       {getStatusBadge(design.status)}
                     </div>
                     
-                    {design.status === "completed" && (
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setPreviewDesign(design)}
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Preview
-                        </Button>
-                        {design.stl_file_url && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDownload(design.stl_file_url!, `model-${design.id}.stl`)}
-                          >
-                            <Download className="mr-2 h-4 w-4" />
-                            STL
-                          </Button>
-                        )}
-                        {design.blend_file_url && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDownload(design.blend_file_url!, `model-${design.id}.blend`)}
-                          >
-                            <Download className="mr-2 h-4 w-4" />
-                            BLEND
-                          </Button>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => setDeleteId(design.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {design.status === "completed" && (
+                        <>
+                          {design.stl_file_url && !design.stl_file_url.includes('example.com') && (
+                            <>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setPreviewDesign(design)}
+                              >
+                                <Eye className="mr-2 h-4 w-4" />
+                                Preview
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDownload(design.stl_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.stl`)}
+                              >
+                                <Download className="mr-2 h-4 w-4" />
+                                Download STL
+                              </Button>
+                            </>
+                          )}
+                          {design.blend_file_url && !design.blend_file_url.includes('example.com') && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDownload(design.blend_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.blend`)}
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Download BLEND
+                            </Button>
+                          )}
+                        </>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => setDeleteId(design.id)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -322,16 +349,42 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
       </Card>
 
       <Dialog open={!!previewDesign} onOpenChange={() => setPreviewDesign(null)}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-4xl h-[80vh]">
           <DialogHeader>
             <DialogTitle>3D Model Preview</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="line-clamp-2">
               {previewDesign?.prompt_text}
             </DialogDescription>
           </DialogHeader>
-          {previewDesign?.stl_file_url && (
-            <ModelViewer modelUrl={previewDesign.stl_file_url} />
+          {previewDesign?.stl_file_url && !previewDesign.stl_file_url.includes('example.com') ? (
+            <div className="flex-1 min-h-0">
+              <ModelViewer modelUrl={previewDesign.stl_file_url} />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-64 text-muted-foreground">
+              Preview not available. The model file may not exist or be accessible.
+            </div>
           )}
+          <div className="flex gap-2 justify-end pt-4">
+            {previewDesign?.stl_file_url && !previewDesign.stl_file_url.includes('example.com') && (
+              <Button
+                variant="outline"
+                onClick={() => handleDownload(previewDesign.stl_file_url!, `${previewDesign.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${previewDesign.id.slice(0, 8)}.stl`)}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download STL
+              </Button>
+            )}
+            {previewDesign?.blend_file_url && !previewDesign.blend_file_url.includes('example.com') && (
+              <Button
+                variant="outline"
+                onClick={() => handleDownload(previewDesign.blend_file_url!, `${previewDesign.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${previewDesign.id.slice(0, 8)}.blend`)}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download BLEND
+              </Button>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 
