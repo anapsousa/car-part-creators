@@ -12,6 +12,12 @@ import { Loader2, Download, Calendar, CreditCard, User, MapPin } from "lucide-re
 import DesignHistory from "@/components/DesignHistory";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
+import { 
+  validatePhone, 
+  validateShippingAddress, 
+  formatPhoneNumber,
+  validatePostalCode 
+} from "@/lib/validation";
 
 interface Payment {
   id: string;
@@ -85,10 +91,50 @@ const UserDashboard = () => {
   };
 
   const validateName = (name: string): boolean => {
-    // Name should contain only letters, spaces, hyphens, and apostrophes
-    // At least 2 characters, no numbers or special characters except - and '
     const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
     return nameRegex.test(name.trim());
+  };
+
+  const validateBillingInfo = (): boolean => {
+    if (!profile) return false;
+
+    const errors: string[] = [];
+
+    // Validate phone if provided
+    if (profile.phone && profile.phone.trim()) {
+      const phoneValidation = validatePhone(profile.phone, profile.country || undefined);
+      if (!phoneValidation.isValid) {
+        errors.push(phoneValidation.error!);
+      }
+    }
+
+    // If any address field is filled, validate all address fields
+    const hasAnyAddressField = profile.address || profile.city || profile.postal_code || profile.country;
+    
+    if (hasAnyAddressField) {
+      const addressValidation = validateShippingAddress(
+        profile.address || '',
+        profile.city || '',
+        profile.postal_code || '',
+        profile.country || '',
+        profile.phone || ''
+      );
+
+      if (!addressValidation.isValid) {
+        Object.values(addressValidation.errors).forEach(error => errors.push(error));
+      }
+    }
+
+    if (errors.length > 0) {
+      toast({
+        title: "Validation Error",
+        description: errors[0], // Show first error
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
   };
 
   const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -122,21 +168,28 @@ const UserDashboard = () => {
       return;
     }
 
+    if (!validateBillingInfo()) {
+      return;
+    }
+
     setSaving(true);
 
     try {
+      // Format phone number before saving
+      const formattedPhone = profile.phone ? formatPhoneNumber(profile.phone, profile.country || undefined) : null;
+
       const { error } = await supabase
         .from("profiles")
         .update({
           first_name: profile.first_name.trim(),
           last_name: profile.last_name.trim(),
-          phone: profile.phone,
-          address: profile.address,
-          city: profile.city,
-          postal_code: profile.postal_code,
-          country: profile.country,
-          vat_number: profile.vat_number,
-          company_name: profile.company_name,
+          phone: formattedPhone,
+          address: profile.address?.trim() || null,
+          city: profile.city?.trim() || null,
+          postal_code: profile.postal_code?.trim() || null,
+          country: profile.country?.trim() || null,
+          vat_number: profile.vat_number?.trim() || null,
+          company_name: profile.company_name?.trim() || null,
         })
         .eq("id", profile.id);
 
@@ -283,12 +336,21 @@ const UserDashboard = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                    <Label htmlFor="phone">
+                      Phone Number <span className="text-destructive">*</span>
+                    </Label>
                     <Input
                       id="phone"
+                      type="tel"
                       value={profile?.phone || ""}
                       onChange={(e) => setProfile({ ...profile!, phone: e.target.value })}
+                      placeholder="+1234567890"
+                      autoComplete="tel"
+                      required
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Required for order updates. Use international format (e.g., +1234567890)
+                    </p>
                   </div>
                   <Button type="submit" disabled={saving}>
                     {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -327,37 +389,60 @@ const UserDashboard = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="address">Address</Label>
+                    <Label htmlFor="address">
+                      Street Address <span className="text-destructive">*</span>
+                    </Label>
                     <Textarea
                       id="address"
                       value={profile?.address || ""}
                       onChange={(e) => setProfile({ ...profile!, address: e.target.value })}
+                      placeholder="123 Main Street, Apt 4B"
+                      autoComplete="street-address"
+                      required
+                      rows={2}
                     />
+                    <p className="text-xs text-muted-foreground">Required for product shipping</p>
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="city">City</Label>
+                      <Label htmlFor="city">
+                        City <span className="text-destructive">*</span>
+                      </Label>
                       <Input
                         id="city"
                         value={profile?.city || ""}
                         onChange={(e) => setProfile({ ...profile!, city: e.target.value })}
+                        placeholder="London"
+                        autoComplete="address-level2"
+                        required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="postal_code">Postal Code</Label>
+                      <Label htmlFor="postal_code">
+                        Postal Code <span className="text-destructive">*</span>
+                      </Label>
                       <Input
                         id="postal_code"
                         value={profile?.postal_code || ""}
                         onChange={(e) => setProfile({ ...profile!, postal_code: e.target.value })}
+                        placeholder="SW1A 1AA"
+                        autoComplete="postal-code"
+                        required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="country">Country</Label>
+                      <Label htmlFor="country">
+                        Country <span className="text-destructive">*</span>
+                      </Label>
                       <Input
                         id="country"
                         value={profile?.country || ""}
                         onChange={(e) => setProfile({ ...profile!, country: e.target.value })}
+                        placeholder="United Kingdom"
+                        autoComplete="country-name"
+                        required
                       />
+                      <p className="text-xs text-muted-foreground">Use 2-letter code (e.g., GB, US, DE)</p>
                     </div>
                   </div>
                   <Button type="submit" disabled={saving}>
