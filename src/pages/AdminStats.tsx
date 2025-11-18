@@ -142,46 +142,46 @@ const AdminStats = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card>
+          <Card className="border-success/30 shadow-glow-green">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <DollarSign className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">€{stats?.totalRevenue.toFixed(2)}</div>
+              <div className="text-2xl font-bold text-success">€{stats?.totalRevenue.toFixed(2)}</div>
               <p className="text-xs text-muted-foreground">From completed orders</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-primary/30">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
+              <Package className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalOrders}</div>
+              <div className="text-2xl font-bold text-primary">{stats?.totalOrders}</div>
               <p className="text-xs text-muted-foreground">All time payments</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-secondary/30">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <Users className="h-4 w-4 text-secondary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalUsers}</div>
+              <div className="text-2xl font-bold text-secondary">{stats?.totalUsers}</div>
               <p className="text-xs text-muted-foreground">Registered accounts</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-warning/30 shadow-glow-yellow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Designs</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <TrendingUp className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalDesigns}</div>
+              <div className="text-2xl font-bold text-warning">{stats?.totalDesigns}</div>
               <p className="text-xs text-muted-foreground">Models generated</p>
             </CardContent>
           </Card>
@@ -209,20 +209,20 @@ const AdminStats = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20">
+          <Card className="border-warning/30 shadow-glow-yellow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Monthly Projection</CardTitle>
-              <DollarSign className="h-4 w-4 text-primary" />
+              <DollarSign className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">${stats?.monthlyProjection.toFixed(2)}</div>
+              <div className="text-2xl font-bold text-warning">${stats?.monthlyProjection.toFixed(2)}</div>
               <p className="text-xs text-muted-foreground">Est. monthly AI cost (based on last 30 days)</p>
             </CardContent>
           </Card>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
               <CardTitle>Popular Categories</CardTitle>
               <CardDescription>Most requested design types</CardDescription>
