@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Cpu, Box, Sparkles, Users, Package } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import heroCarParts from "@/assets/hero-car-parts.jpg";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -54,8 +55,12 @@ export default function Index() {
               </div>
             </div>
             <div className="flex-1">
-              <div className="bg-muted/50 rounded-lg p-8 aspect-video flex items-center justify-center">
-                <Package className="h-32 w-32 text-muted-foreground/30" />
+              <div className="bg-muted/50 rounded-lg overflow-hidden aspect-video">
+                <img 
+                  src={heroCarParts} 
+                  alt="Car Parts Collection" 
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
