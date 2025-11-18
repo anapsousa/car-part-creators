@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, Loader2, FileText, Clock, Heart, Eye, Filter } from "lucide-react";
+import { Download, Loader2, FileText, Clock, Heart, Eye, Filter, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import ModelViewer from "./ModelViewer";
@@ -15,6 +15,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Design {
   id: string;
@@ -40,6 +50,7 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [previewDesign, setPreviewDesign] = useState<Design | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchDesigns();
@@ -126,6 +137,27 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
     } catch (error) {
       console.error("Download error:", error);
       toast.error("Failed to download file");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+
+    try {
+      const { error } = await supabase
+        .from("designs")
+        .delete()
+        .eq("id", deleteId);
+
+      if (error) throw error;
+
+      toast.success("Design deleted successfully");
+      fetchDesigns();
+    } catch (error: any) {
+      toast.error("Failed to delete design");
+      console.error("Delete error:", error);
+    } finally {
+      setDeleteId(null);
     }
   };
 
@@ -271,6 +303,14 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                             BLEND
                           </Button>
                         )}
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => setDeleteId(design.id)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -294,6 +334,23 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
           )}
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Design</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this design? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
