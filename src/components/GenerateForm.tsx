@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, Upload, X, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface GenerateFormProps {
@@ -21,6 +21,52 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [depth, setDepth] = useState("");
+  const [referenceImages, setReferenceImages] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    if (referenceImages.length + files.length > 3) {
+      toast.error("You can only upload up to 3 reference images");
+      return;
+    }
+
+    setUploadingImages(true);
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `reference-images/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('design-files')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('design-files')
+          .getPublicUrl(filePath);
+
+        return publicUrl;
+      });
+
+      const uploadedUrls = await Promise.all(uploadPromises);
+      setReferenceImages([...referenceImages, ...uploadedUrls]);
+      toast.success("Reference images uploaded");
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      toast.error("Failed to upload images");
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setReferenceImages(referenceImages.filter((_, i) => i !== index));
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -58,13 +104,18 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
 
       // Call edge function for AI generation
       const { data, error } = await supabase.functions.invoke("generate-model", {
-        body: { prompt, designId: design.id },
+        body: { 
+          prompt, 
+          designId: design.id,
+          referenceImages: referenceImages.length > 0 ? referenceImages : undefined
+        },
       });
 
       if (error) throw error;
 
       toast.success("3D model generation started!");
       setPrompt("");
+      setReferenceImages([]);
       onGenerate();
     } catch (error: any) {
       console.error("Generation error:", error);
@@ -111,6 +162,49 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
             rows={4}
             className="resize-none"
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Reference Images (Optional)</Label>
+          <p className="text-xs text-muted-foreground mb-2">Upload up to 3 reference images to guide the AI generation</p>
+          <div className="grid grid-cols-3 gap-3">
+            {referenceImages.map((url, index) => (
+              <div key={index} className="relative aspect-square bg-muted rounded-lg overflow-hidden group">
+                <img src={url} alt={`Reference ${index + 1}`} className="w-full h-full object-cover" />
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => removeImage(index)}
+                  disabled={isGenerating}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+            {referenceImages.length < 3 && (
+              <label className="aspect-square bg-muted rounded-lg border-2 border-dashed border-border hover:border-primary cursor-pointer flex items-center justify-center transition-colors">
+                <div className="text-center">
+                  {uploadingImages ? (
+                    <Loader2 className="h-6 w-6 mx-auto animate-spin text-muted-foreground" />
+                  ) : (
+                    <>
+                      <ImageIcon className="h-6 w-6 mx-auto mb-1 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground">Upload</p>
+                    </>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  disabled={isGenerating || uploadingImages}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

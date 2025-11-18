@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -147,6 +148,7 @@ const Auth = () => {
           </div>
         </CardContent>
       </Card>
+      <Footer />
     </div>
   );
 };

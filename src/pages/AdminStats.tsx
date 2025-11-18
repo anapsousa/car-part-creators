@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, TrendingUp, Users, Package, DollarSign, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import { Footer } from "@/components/Footer";
 
 interface Stats {
   totalRevenue: number;
@@ -212,6 +213,8 @@ const AdminStats = () => {
           </Card>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };

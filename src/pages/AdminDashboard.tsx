@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import ModelViewer from "@/components/ModelViewer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Footer } from "@/components/Footer";
 
 interface Design {
   id: string;
@@ -249,6 +250,8 @@ const AdminDashboard = () => {
           )}
         </DialogContent>
       </Dialog>
+      
+      <Footer />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { ArrowLeft, CreditCard, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import { Footer } from "@/components/Footer";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -137,6 +138,7 @@ const Checkout = () => {
           </Card>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

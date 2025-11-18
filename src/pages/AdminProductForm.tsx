@@ -15,6 +15,7 @@ import {
 import { ImageUpload } from "@/components/ImageUpload";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Footer } from "@/components/Footer";
 
 export default function AdminProductForm() {
   const { id } = useParams();
@@ -264,6 +265,8 @@ export default function AdminProductForm() {
           </div>
         </form>
       </main>
+      
+      <Footer />
     </div>
   );
 }

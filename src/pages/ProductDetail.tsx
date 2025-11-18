@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Footer } from "@/components/Footer";
 
 interface Product {
   id: string;
@@ -197,6 +198,7 @@ export default function ProductDetail() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
