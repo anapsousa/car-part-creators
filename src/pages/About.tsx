@@ -4,35 +4,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Zap, Shield, Users, Heart } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-
 const About = () => {
   const navigate = useNavigate();
-
-  const values = [
-    {
-      icon: Zap,
-      title: "Innovation",
-      description: "Leveraging cutting-edge AI technology to make 3D modeling accessible to everyone"
-    },
-    {
-      icon: Shield,
-      title: "Quality",
-      description: "Delivering high-quality, print-ready models that meet professional standards"
-    },
-    {
-      icon: Users,
-      title: "Community",
-      description: "Building a community of makers, designers, and 3D printing enthusiasts"
-    },
-    {
-      icon: Heart,
-      title: "Passion",
-      description: "Driven by our love for innovation, design, and helping others create"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-mesh">
+  const values = [{
+    icon: Zap,
+    title: "Innovation",
+    description: "Leveraging cutting-edge AI technology to make 3D modeling accessible to everyone"
+  }, {
+    icon: Shield,
+    title: "Quality",
+    description: "Delivering high-quality, print-ready models that meet professional standards"
+  }, {
+    icon: Users,
+    title: "Community",
+    description: "Building a community of makers, designers, and 3D printing enthusiasts"
+  }, {
+    icon: Heart,
+    title: "Passion",
+    description: "Driven by our love for innovation, design, and helping others create"
+  }];
+  return <div className="min-h-screen bg-gradient-mesh">
       <Header pageTitle="About Us" pageSubtitle="Our Story" />
 
       {/* Main Content */}
@@ -85,9 +76,8 @@ const About = () => {
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               {values.map((value, index) => {
-                const Icon = value.icon;
-                return (
-                  <Card key={index}>
+              const Icon = value.icon;
+              return <Card key={index}>
                     <CardHeader>
                       <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2">
                         <Icon className="h-6 w-6 text-primary" />
@@ -97,9 +87,8 @@ const About = () => {
                     <CardContent>
                       <p className="text-muted-foreground">{value.description}</p>
                     </CardContent>
-                  </Card>
-                );
-              })}
+                  </Card>;
+            })}
             </div>
           </div>
 
@@ -112,27 +101,16 @@ const About = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center gap-4">
-              <Button 
-                variant="secondary" 
-                size="lg"
-                onClick={() => navigate("/")}
-              >
+              <Button variant="secondary" size="lg" onClick={() => navigate("/")} className="bg-slate-800 hover:bg-slate-700">
                 Get Started
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                onClick={() => navigate("/contact")}
-                className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
-              >
+              <Button variant="outline" size="lg" onClick={() => navigate("/contact")} className="border-primary-foreground/20 bg-slate-800 hover:bg-slate-700 text-slate-50">
                 Contact Us
               </Button>
             </CardContent>
           </Card>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default About;
