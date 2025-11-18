@@ -24,7 +24,7 @@ export default function Index() {
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold">
                 Restore Your Classic.{" "}
-                <span className="text-primary">Enhance Your Home.</span>
+                <span className="bg-gradient-primary bg-clip-text text-transparent">Enhance Your Home.</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl">
                 Precision 3D printed classic car parts and custom home decor. From vintage restoration components to modern interior accents, we bring your vision to life with cutting-edge technology.
@@ -40,15 +40,15 @@ export default function Index() {
               </div>
               <div className="flex gap-8 pt-4">
                 <div>
-                  <div className="text-3xl font-bold text-primary">500+</div>
+                  <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">500+</div>
                   <div className="text-sm text-muted-foreground">Parts Printed</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary">98%</div>
+                  <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">98%</div>
                   <div className="text-sm text-muted-foreground">Satisfaction Rate</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary">24h</div>
+                  <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">24h</div>
                   <div className="text-sm text-muted-foreground">Fast Turnaround</div>
                 </div>
               </div>
@@ -72,8 +72,8 @@ export default function Index() {
             </Card>
             <Card className="text-center p-6">
               <CardContent className="pt-6">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <Users className="h-6 w-6 text-primary" />
+                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-secondary" />
                 </div>
                 <div className="text-3xl font-bold mb-1">100%</div>
                 <p className="text-muted-foreground">Quality Guarantee</p>
@@ -81,8 +81,8 @@ export default function Index() {
             </Card>
             <Card className="text-center p-6">
               <CardContent className="pt-6">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <Sparkles className="h-6 w-6 text-primary" />
+                <div className="mx-auto w-12 h-12 bg-tertiary/10 rounded-full flex items-center justify-center mb-4">
+                  <Sparkles className="h-6 w-6 text-tertiary" />
                 </div>
                 <div className="text-3xl font-bold mb-1">24/7</div>
                 <p className="text-muted-foreground">Customer Support</p>
@@ -96,11 +96,11 @@ export default function Index() {
       <section className="py-20 bg-card/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why Choose Pompousweek?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Choose <span className="bg-gradient-primary bg-clip-text text-transparent">Pompousweek?</span></h2>
             <p className="text-muted-foreground">Specialized expertise in classic automotive and home decor 3D printing</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
+            <Card className="border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
               <CardContent className="pt-6 space-y-2">
                 <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <Package className="h-6 w-6 text-primary" />
@@ -109,19 +109,19 @@ export default function Index() {
                 <p className="text-sm text-muted-foreground">Specialized in reproducing hard-to-find classic car parts with museum-quality accuracy</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
               <CardContent className="pt-6 space-y-2">
-                <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Box className="h-6 w-6 text-primary" />
+                <div className="h-12 w-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Box className="h-6 w-6 text-secondary" />
                 </div>
                 <h3 className="font-semibold text-lg">Custom Home Decor</h3>
                 <p className="text-sm text-muted-foreground">Transform your living space with bespoke 3D printed decorative pieces and functional art</p>
               </CardContent>
             </Card>
-            <Card className="md:col-span-2 flex flex-col">
+            <Card className="md:col-span-2 flex flex-col border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
               <CardContent className="space-y-4 flex-1 flex flex-col justify-center">
                 <div className="flex items-center gap-2">
-                  <Cpu className="h-5 w-5 text-primary" />
+                  <Cpu className="h-5 w-5 text-tertiary" />
                   <h3 className="font-semibold">AI-Powered Generation</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -129,10 +129,10 @@ export default function Index() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="md:col-span-2 flex flex-col">
+            <Card className="md:col-span-2 flex flex-col border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
               <CardContent className="space-y-4 flex-1 flex flex-col justify-center">
                 <div className="flex items-center gap-2">
-                  <Box className="h-5 w-5 text-primary" />
+                  <Box className="h-5 w-5 text-secondary" />
                   <h3 className="font-semibold">Premium Quality</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -147,9 +147,9 @@ export default function Index() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/5 to-background">
         <div className="container mx-auto px-4">
-          <Card className="border-primary/20 bg-card/50 backdrop-blur">
+          <Card className="border-2 border-transparent bg-gradient-to-br from-primary/10 via-secondary/10 to-tertiary/10 backdrop-blur shadow-glow">
             <CardContent className="p-12 text-center space-y-6">
-              <h2 className="text-3xl font-bold">Ready to Create Something Amazing?</h2>
+              <h2 className="text-3xl font-bold">Ready to Create <span className="bg-gradient-primary bg-clip-text text-transparent">Something Amazing?</span></h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Join thousands of satisfied customers who've brought their visions to life with our precision 3D printing services.
               </p>
