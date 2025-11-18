@@ -3,9 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
-import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { ArrowLeft, ShoppingCart, Minus, Plus, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Footer } from "@/components/Footer";
+import { Model3DViewer } from "@/components/Model3DViewer";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Product {
   id: string;
@@ -25,10 +28,13 @@ export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart, isLoading: cartLoading } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  
+  const inWishlist = product ? isInWishlist(product.id) : false;
 
   useEffect(() => {
     if (id) fetchProduct();
@@ -54,6 +60,16 @@ export default function ProductDetail() {
   const handleAddToCart = async () => {
     if (product) {
       await addToCart(product.id, quantity);
+    }
+  };
+
+  const handleToggleWishlist = async () => {
+    if (product) {
+      if (inWishlist) {
+        await removeFromWishlist(product.id);
+      } else {
+        await addToWishlist(product.id);
+      }
     }
   };
 
@@ -104,33 +120,59 @@ export default function ProductDetail() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-4">
-              <img
-                src={mainImage}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {product.images && product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.map((img, idx) => (
-                  <div
-                    key={idx}
-                    className={`aspect-square bg-muted rounded cursor-pointer overflow-hidden ${
-                      selectedImageIndex === idx ? "ring-2 ring-primary" : ""
-                    }`}
-                    onClick={() => setSelectedImageIndex(idx)}
-                  >
-                    <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
+          <div className="space-y-4">
+            <Tabs defaultValue="images" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="images">Images</TabsTrigger>
+                <TabsTrigger value="3d-view">3D View</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="images" className="mt-4">
+                <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-4">
+                  <img
+                    src={mainImage}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {product.images && product.images.length > 1 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {product.images.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className={`aspect-square bg-muted rounded cursor-pointer overflow-hidden ${
+                          selectedImageIndex === idx ? "ring-2 ring-primary" : ""
+                        }`}
+                        onClick={() => setSelectedImageIndex(idx)}
+                      >
+                        <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
+                )}
+              </TabsContent>
+              
+              <TabsContent value="3d-view" className="mt-4">
+                <Model3DViewer modelUrl={undefined} />
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  Interactive 3D preview - Product visualization coming soon
+                </p>
+              </TabsContent>
+            </Tabs>
           </div>
 
           <div>
-            <Badge className="mb-2">{categoryLabels[product.category]}</Badge>
+            <div className="flex items-center justify-between mb-2">
+              <Badge className="mb-2">{categoryLabels[product.category]}</Badge>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleToggleWishlist}
+                className="hover:scale-110 transition-transform"
+              >
+                <Heart className={`h-5 w-5 ${inWishlist ? 'fill-primary text-primary' : ''}`} />
+              </Button>
+            </div>
             <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
             <p className="text-3xl font-bold text-primary mb-6">€{product.price.toFixed(2)}</p>
 
@@ -186,13 +228,14 @@ export default function ProductDetail() {
               </div>
 
               <Button
+                variant="gradient"
                 size="lg"
                 className="w-full"
                 onClick={handleAddToCart}
                 disabled={product.stock_quantity === 0 || cartLoading}
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
-                Add to Cart
+                {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
               </Button>
             </div>
           </div>
