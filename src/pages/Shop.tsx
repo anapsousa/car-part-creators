@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductCard } from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, ShoppingBag } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 interface Product {
   id: string;
@@ -23,7 +23,6 @@ export default function Shop() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -69,17 +68,7 @@ export default function Shop() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-            <ShoppingBag className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">Shop</h1>
-          </div>
-          <Button variant="outline" onClick={() => navigate("/cart")}>
-            View Cart
-          </Button>
-        </div>
-      </header>
+      <Header pageTitle="Shop" pageSubtitle="Browse Our Products" />
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -127,6 +116,8 @@ export default function Shop() {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 }

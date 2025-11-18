@@ -1,67 +1,16 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShoppingBag, Sparkles, Zap, Shield, ArrowRight, Menu, LogOut, User as UserIcon, ShoppingCart, HelpCircle, Mail, Info, ShieldCheck } from "lucide-react";
-import { User } from "@supabase/supabase-js";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import pompousweekLogo from "@/assets/pompousweek-logo.png";
-import { useCart } from "@/contexts/CartContext";
-import { toast } from "sonner";
-import GenerateForm from "@/components/GenerateForm";
-import DesignHistory from "@/components/DesignHistory";
+import { Cpu, Cube, Sparkles, Users } from "lucide-react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
-const Index = () => {
+export default function Index() {
   const navigate = useNavigate();
-  const { cartItems } = useCart();
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate("/")}>
-              <ShoppingBag className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold">ClassicPrint3D</span>
-            </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <Button variant="ghost" onClick={() => navigate("/shop")}>Products</Button>
-              <Button variant="ghost" onClick={() => user ? navigate("/generator") : navigate("/auth")}>
-                <Sparkles className="mr-2 h-4 w-4" />
-                AI Generator
-              </Button>
-              <Button variant="ghost" onClick={() => navigate("/cart")}>
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Cart {cartItems.length > 0 && `(${cartItems.length})`}
-              </Button>
-              {user ? (
-                <Button variant="outline" onClick={() => navigate("/dashboard")}>
-                  <UserIcon className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Button>
-              ) : (
-                <Button onClick={() => navigate("/auth")}>Sign In</Button>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-mesh">
+      <Header />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20">
@@ -80,13 +29,13 @@ const Index = () => {
                 Precision 3D printed classic car parts and custom home decor. From vintage restoration components to modern interior accents, we bring your vision to life with cutting-edge technology.
               </p>
               <div className="flex gap-4">
-                <Button size="lg" onClick={() => navigate("/shop")}>
-                  Browse Catalog
-                </Button>
-                <Button size="lg" variant="outline" onClick={() => user ? navigate("/generator") : navigate("/auth")}>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Try AI Generator
-                </Button>
+              <Button size="lg" onClick={() => navigate("/shop")}>
+                Browse Catalog
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
+                <Sparkles className="mr-2 h-4 w-4" />
+                Try AI Generator
+              </Button>
               </div>
               <div className="flex gap-8 pt-4">
                 <div>
