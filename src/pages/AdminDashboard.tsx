@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, CheckCircle, XCircle, Loader2, Eye } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, Loader2, Eye, Download } from "lucide-react";
 import { toast } from "sonner";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import ModelViewer from "@/components/ModelViewer";
@@ -130,18 +130,20 @@ const AdminDashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
               <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
               <div>
                 <h1 className="text-xl font-bold">Admin Dashboard</h1>
                 <p className="text-xs text-muted-foreground">Model Review & Management</p>
               </div>
             </div>
-            <Badge variant="secondary">
-              {designs.length} Pending
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => navigate("/admin/stats")}>
+                View Stats
+              </Button>
+              <Badge variant="secondary">
+                {designs.length} Pending
+              </Badge>
+            </div>
           </div>
         </div>
       </header>
@@ -179,14 +181,24 @@ const AdminDashboard = () => {
                 <CardContent className="space-y-4">
                   <div className="flex gap-2">
                     {design.stl_file_url && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPreviewDesign(design)}
-                      >
-                        <Eye className="mr-2 h-4 w-4" />
-                        Preview Model
-                      </Button>
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setPreviewDesign(design)}
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          Preview Model
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(design.stl_file_url!, '_blank')}
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download GLB
+                        </Button>
+                      </>
                     )}
                   </div>
 

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import GenerateForm from "@/components/GenerateForm";
 import DesignHistory from "@/components/DesignHistory";
-import { LogOut, Menu, HelpCircle, Mail, Info, ShieldCheck } from "lucide-react";
+import { LogOut, Menu, HelpCircle, Mail, Info, ShieldCheck, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -89,6 +89,10 @@ const Index = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    My Dashboard
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/faq")}>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     FAQ
@@ -102,10 +106,16 @@ const Index = () => {
                     About Us
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate("/admin")}>
-                      <ShieldCheck className="mr-2 h-4 w-4" />
-                      Admin Dashboard
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuItem onClick={() => navigate("/admin")}>
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Review Designs
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate("/admin/stats")}>
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Business Stats
+                      </DropdownMenuItem>
+                    </>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
