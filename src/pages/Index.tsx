@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Cpu, Cube, Sparkles, Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Cpu, Box, Sparkles, Users, Package } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
@@ -18,7 +19,7 @@ export default function Index() {
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="flex-1 space-y-6">
               <Badge className="w-fit">
-                <ShoppingBag className="mr-2 h-3 w-3" />
+                <Package className="mr-2 h-3 w-3" />
                 Premium 3D Printing Services
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold">
@@ -29,13 +30,13 @@ export default function Index() {
                 Precision 3D printed classic car parts and custom home decor. From vintage restoration components to modern interior accents, we bring your vision to life with cutting-edge technology.
               </p>
               <div className="flex gap-4">
-              <Button size="lg" onClick={() => navigate("/shop")}>
-                Browse Catalog
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Try AI Generator
-              </Button>
+                <Button size="lg" onClick={() => navigate("/shop")}>
+                  Browse Catalog
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Try AI Generator
+                </Button>
               </div>
               <div className="flex gap-8 pt-4">
                 <div>
@@ -54,9 +55,39 @@ export default function Index() {
             </div>
             <div className="flex-1">
               <div className="bg-muted/50 rounded-lg p-8 aspect-video flex items-center justify-center">
-                <ShoppingBag className="h-32 w-32 text-muted-foreground/30" />
+                <Package className="h-32 w-32 text-muted-foreground/30" />
               </div>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <Card className="text-center p-6">
+              <CardContent className="pt-6">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Box className="h-6 w-6 text-primary" />
+                </div>
+                <div className="text-3xl font-bold mb-1">5000+</div>
+                <p className="text-muted-foreground">Parts Available</p>
+              </CardContent>
+            </Card>
+            <Card className="text-center p-6">
+              <CardContent className="pt-6">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <div className="text-3xl font-bold mb-1">100%</div>
+                <p className="text-muted-foreground">Quality Guarantee</p>
+              </CardContent>
+            </Card>
+            <Card className="text-center p-6">
+              <CardContent className="pt-6">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                </div>
+                <div className="text-3xl font-bold mb-1">24/7</div>
+                <p className="text-muted-foreground">Customer Support</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -65,14 +96,14 @@ export default function Index() {
       <section className="py-20 bg-card/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why Choose ClassicPrint3D?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Choose Pompousweek?</h2>
             <p className="text-muted-foreground">Specialized expertise in classic automotive and home decor 3D printing</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
               <CardContent className="pt-6 space-y-2">
                 <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Shield className="h-6 w-6 text-primary" />
+                  <Package className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-semibold text-lg">Vintage Expertise</h3>
                 <p className="text-sm text-muted-foreground">Specialized in reproducing hard-to-find classic car parts with museum-quality accuracy</p>
@@ -81,28 +112,32 @@ export default function Index() {
             <Card>
               <CardContent className="pt-6 space-y-2">
                 <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <ShoppingBag className="h-6 w-6 text-primary" />
+                  <Box className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-lg">Custom Decor</h3>
-                <p className="text-sm text-muted-foreground">Unique home accessories designed to match your interior style and preferences</p>
+                <h3 className="font-semibold text-lg">Custom Home Decor</h3>
+                <p className="text-sm text-muted-foreground">Transform your living space with bespoke 3D printed decorative pieces and functional art</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="pt-6 space-y-2">
-                <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Sparkles className="h-6 w-6 text-primary" />
+            <Card className="md:col-span-2 flex flex-col">
+              <CardContent className="space-y-4 flex-1">
+                <div className="flex items-center gap-2">
+                  <Cpu className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold">AI-Powered Generation</h3>
                 </div>
-                <h3 className="font-semibold text-lg">AI-Powered Design</h3>
-                <p className="text-sm text-muted-foreground">Generate custom 3D models from photos or descriptions using advanced AI technology</p>
+                <p className="text-sm text-muted-foreground">
+                  Our cutting-edge AI technology transforms your descriptions into precise 3D models. Simply describe what you need, and watch as our AI brings your vision to life with remarkable accuracy.
+                </p>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="pt-6 space-y-2">
-                <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="h-6 w-6 text-primary" />
+            <Card className="md:col-span-2 flex flex-col">
+              <CardContent className="space-y-4 flex-1">
+                <div className="flex items-center gap-2">
+                  <Box className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold">Premium Quality</h3>
                 </div>
-                <h3 className="font-semibold text-lg">Digital Models</h3>
-                <p className="text-sm text-muted-foreground">Purchase and download ready-to-print 3D models for your own printer</p>
+                <p className="text-sm text-muted-foreground">
+                  Every piece is crafted with precision using industrial-grade materials. Our rigorous quality control ensures perfect fitment and durability for both automotive and decorative applications.
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -110,70 +145,23 @@ export default function Index() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <Sparkles className="h-16 w-16 mx-auto mb-6 opacity-90" />
-          <h2 className="text-4xl font-bold mb-4">Ready to Create Something Amazing?</h2>
-          <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
-            Whether you need a rare classic car part or a unique home decor piece, our AI-powered tools and expert printing services are here to help
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" variant="secondary" onClick={() => navigate("/shop")}>
-              Browse Catalog
-            </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" onClick={() => user ? navigate("/generator") : navigate("/auth")}>
-              Try AI Generator
-            </Button>
-          </div>
+      <section className="py-20 bg-gradient-to-br from-primary/5 to-background">
+        <div className="container mx-auto px-4">
+          <Card className="border-primary/20 bg-card/50 backdrop-blur">
+            <CardContent className="p-12 text-center space-y-6">
+              <h2 className="text-3xl font-bold">Ready to Create Something Amazing?</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Join thousands of satisfied customers who've brought their visions to life with our precision 3D printing services.
+              </p>
+              <Button size="lg" onClick={() => navigate("/shop")}>
+                Browse Catalog
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-card border-t py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <ShoppingBag className="h-6 w-6 text-primary" />
-                <span className="font-bold text-lg">ClassicPrint3D</span>
-              </div>
-              <p className="text-sm text-muted-foreground">Premium 3D printing services for classic car enthusiasts and home decor lovers</p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Products</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/shop")}>All Products</Button></li>
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/dashboard")}>3D Models</Button></li>
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/shop")}>Car Parts</Button></li>
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/shop")}>Home Decor</Button></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Services</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/generator")}>AI Model Generator</Button></li>
-                <li><span>Custom Printing</span></li>
-                <li><span>Restoration Services</span></li>
-                <li><span>Design Consultation</span></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/about")}>About Us</Button></li>
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/contact")}>Contact</Button></li>
-                <li><Button variant="link" className="h-auto p-0" onClick={() => navigate("/faq")}>FAQ</Button></li>
-                <li><span>Terms of Service</span></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-            © 2025 ClassicPrint3D. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
-};
-
-export default Index;
+}
