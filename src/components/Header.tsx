@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, User, LogOut, Package, BarChart3, Settings } from "lucide-react";
+import { ShoppingCart, Menu, User, LogOut, Package, BarChart3, Settings, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
@@ -29,6 +30,7 @@ export const Header = ({
 }: HeaderProps) => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
+  const { wishlistItems } = useWishlist();
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -87,19 +89,34 @@ export const Header = ({
           {/* Navigation Actions */}
           <div className="flex items-center gap-2">
             {showCart && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => navigate("/cart")}
-                className="relative"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Button>
+              <>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => navigate("/wishlist")}
+                  className="relative hover:scale-110 transition-transform"
+                >
+                  <Heart className="h-5 w-5" />
+                  {wishlistItems.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-secondary text-secondary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {wishlistItems.length}
+                    </span>
+                  )}
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => navigate("/cart")}
+                  className="relative hover:scale-110 transition-transform"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </>
             )}
 
             {showAuth && (
