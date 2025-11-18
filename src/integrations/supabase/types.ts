@@ -138,22 +138,46 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
           created_at: string
           email: string | null
+          full_name: string | null
           id: string
+          phone: string | null
+          postal_code: string | null
           updated_at: string
+          vat_number: string | null
         }
         Insert: {
+          address?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
+          full_name?: string | null
           id: string
+          phone?: string | null
+          postal_code?: string | null
           updated_at?: string
+          vat_number?: string | null
         }
         Update: {
+          address?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
+          full_name?: string | null
           id?: string
+          phone?: string | null
+          postal_code?: string | null
           updated_at?: string
+          vat_number?: string | null
         }
         Relationships: []
       }
