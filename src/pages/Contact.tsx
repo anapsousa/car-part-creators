@@ -9,7 +9,6 @@ import { Mail, MessageSquare, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-
 const Contact = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -19,21 +18,22 @@ const Contact = () => {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-
     toast.success("Message sent successfully! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setFormData({
+      name: "",
+      email: "",
+      subject: "",
+      message: ""
+    });
     setIsSubmitting(false);
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-mesh">
+  return <div className="min-h-screen bg-gradient-mesh">
       <Header pageTitle="Contact Us" pageSubtitle="Get in Touch" />
 
       {/* Main Content */}
@@ -89,7 +89,7 @@ const Contact = () => {
                 <CardTitle className="text-lg">Response Time</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-sm text-muted-foreground">Within 24 hours</p>
+                <p className="text-sm text-muted-foreground">Within 24/48 hours</p>
               </CardContent>
             </Card>
           </div>
@@ -107,46 +107,32 @@ const Contact = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      placeholder="Your name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                    />
+                    <Input id="name" placeholder="Your name" value={formData.name} onChange={e => setFormData({
+                    ...formData,
+                    name: e.target.value
+                  })} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                    />
+                    <Input id="email" type="email" placeholder="your@email.com" value={formData.email} onChange={e => setFormData({
+                    ...formData,
+                    email: e.target.value
+                  })} required />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
-                  <Input
-                    id="subject"
-                    placeholder="What is this about?"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    required
-                  />
+                  <Input id="subject" placeholder="What is this about?" value={formData.subject} onChange={e => setFormData({
+                  ...formData,
+                  subject: e.target.value
+                })} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="message">Message</Label>
-                  <Textarea
-                    id="message"
-                    placeholder="Tell us more about your inquiry..."
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    required
-                    rows={6}
-                  />
+                  <Textarea id="message" placeholder="Tell us more about your inquiry..." value={formData.message} onChange={e => setFormData({
+                  ...formData,
+                  message: e.target.value
+                })} required rows={6} />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   <Send className="mr-2 h-4 w-4" />
@@ -157,8 +143,6 @@ const Contact = () => {
           </Card>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Contact;
