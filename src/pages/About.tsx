@@ -101,7 +101,7 @@ const About = () => {
               <Button variant="secondary" size="lg" onClick={() => navigate("/")} className="bg-slate-800 hover:bg-slate-700">
                 Get Started
               </Button>
-              <Button variant="outline" size="lg" onClick={() => navigate("/contact")} className="border-primary-foreground/20 bg-slate-800 hover:bg-slate-700 text-slate-50 font-medium">
+              <Button variant="secondary" size="lg" onClick={() => navigate("/contact")} className="bg-slate-800 hover:bg-slate-700">
                 Contact Us
               </Button>
             </CardContent>
