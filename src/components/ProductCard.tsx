@@ -26,7 +26,7 @@ export const ProductCard = ({ id, name, description, price, images, stock_quanti
 
   return (
     <Card 
-      className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      className="overflow-hidden hover:shadow-glow transition-all duration-300 hover:scale-105 cursor-pointer"
       onClick={() => navigate(`/product/${id}`)}
     >
       <div className="aspect-square overflow-hidden bg-muted">

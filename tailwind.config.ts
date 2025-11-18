@@ -62,6 +62,9 @@ export default {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-mesh': 'var(--gradient-mesh)',
       },
+      boxShadow: {
+        'glow': 'var(--shadow-glow)',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
