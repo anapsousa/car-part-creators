@@ -21,152 +21,105 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    const replicateApiKey = Deno.env.get("REPLICATE_API_KEY");
 
     if (!lovableApiKey) {
       throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    if (!replicateApiKey) {
+      throw new Error("REPLICATE_API_KEY is not configured");
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     console.log("Starting 3D model generation for design:", designId);
 
-    // Call Lovable AI to analyze the prompt and extract specifications
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Update status to processing
+    await supabase
+      .from("designs")
+      .update({ status: "processing" })
+      .eq("id", designId);
+
+    // Step 1: Generate an image from the text prompt using Lovable AI
+    console.log("Generating image from prompt...");
+    const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${lovableApiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-2.5-flash-image-preview",
         messages: [
           {
-            role: "system",
-            content: "You are a 3D modeling assistant. Analyze user prompts for creating 3D printable models and extract key specifications.",
-          },
-          {
             role: "user",
-            content: `Analyze this 3D model request: "${prompt}". Provide detailed specifications for 3D modeling including dimensions, features, mounting points, and printability considerations.`,
-          },
-        ],
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "extract_model_specs",
-              description: "Extract 3D model specifications from user prompt",
-              parameters: {
-                type: "object",
-                properties: {
-                  dimensions: {
-                    type: "object",
-                    properties: {
-                      length: { type: "number" },
-                      width: { type: "number" },
-                      height: { type: "number" },
-                      unit: { type: "string", enum: ["mm", "cm", "in"] }
-                    }
-                  },
-                  features: {
-                    type: "array",
-                    items: { type: "string" },
-                    description: "Key features and design elements"
-                  },
-                  printability: {
-                    type: "object",
-                    properties: {
-                      supports_needed: { type: "boolean" },
-                      recommended_orientation: { type: "string" },
-                      estimated_print_time: { type: "string" }
-                    }
-                  },
-                  material_recommendations: {
-                    type: "array",
-                    items: { type: "string" }
-                  }
-                },
-                required: ["features"],
-                additionalProperties: false
-              }
-            }
+            content: `Generate a high-quality product visualization image for 3D modeling: ${prompt}. Make it suitable for 3D model generation with clear shapes and details.`
           }
         ],
-        tool_choice: { type: "function", function: { name: "extract_model_specs" } }
+        modalities: ["image", "text"]
       }),
     });
 
-    if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("AI gateway error:", aiResponse.status, errorText);
+    if (!imageResponse.ok) {
+      const errorText = await imageResponse.text();
+      console.error("Image generation error:", imageResponse.status, errorText);
       
-      // Handle rate limiting and payment errors
-      if (aiResponse.status === 429) {
-        await supabase
-          .from("designs")
-          .update({ status: "failed" })
-          .eq("id", designId);
+      if (imageResponse.status === 429) {
+        await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
         throw new Error("Rate limit exceeded. Please try again later.");
       }
       
-      if (aiResponse.status === 402) {
-        await supabase
-          .from("designs")
-          .update({ status: "failed" })
-          .eq("id", designId);
+      if (imageResponse.status === 402) {
+        await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
         throw new Error("AI credits exhausted. Please add credits to continue.");
       }
       
-      await supabase
-        .from("designs")
-        .update({ status: "failed" })
-        .eq("id", designId);
-
-      throw new Error("AI generation failed");
-    }
-
-    const aiData = await aiResponse.json();
-    const toolCall = aiData.choices[0].message.tool_calls?.[0];
-    const specifications = toolCall ? JSON.parse(toolCall.function.arguments) : {};
-    const analysis = JSON.stringify(specifications, null, 2);
-
-    console.log("AI Analysis:", analysis);
-
-    // Get Meshy API key
-    const meshyApiKey = Deno.env.get("MESHY_API_KEY");
-    if (!meshyApiKey) {
-      console.error("MESHY_API_KEY not configured");
       await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
-      throw new Error("MESHY_API_KEY is not configured");
+      throw new Error("Image generation failed");
     }
 
-    // Create Meshy text-to-3D task
-    console.log("Creating Meshy.ai generation task...");
-    const meshyCreateResponse = await fetch("https://api.meshy.ai/v2/text-to-3d", {
+    const imageData = await imageResponse.json();
+    const generatedImageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+    if (!generatedImageUrl) {
+      await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
+      throw new Error("No image generated from AI");
+    }
+
+    console.log("Image generated successfully");
+
+    // Step 2: Use Replicate's TripoSR to convert image to 3D model
+    console.log("Converting image to 3D model with TripoSR...");
+    const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${meshyApiKey}`,
+        Authorization: `Bearer ${replicateApiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        mode: "preview",
-        prompt: prompt,
-        art_style: "realistic",
-        negative_prompt: "low quality, low resolution, low poly, ugly"
+        version: "e9cfd5a1f9e4de9b66e21a6052f6cb1a9e9b7a6e6e8e0a6e8e0a6e8e0a6e8e0",
+        input: {
+          image: generatedImageUrl,
+          foreground_ratio: 0.85,
+          mc_resolution: 256,
+          chunk_size: 8192
+        }
       }),
     });
 
-    if (!meshyCreateResponse.ok) {
-      const errorText = await meshyCreateResponse.text();
-      console.error("Meshy.ai task creation failed:", meshyCreateResponse.status, errorText);
+    if (!replicateResponse.ok) {
+      const errorText = await replicateResponse.text();
+      console.error("Replicate API error:", replicateResponse.status, errorText);
       await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
-      throw new Error(`Meshy.ai error: ${errorText}`);
+      throw new Error(`Replicate API error: ${errorText}`);
     }
 
-    const meshyTask = await meshyCreateResponse.json();
-    const taskId = meshyTask.result;
-    console.log("Meshy task created:", taskId);
+    const prediction = await replicateResponse.json();
+    const predictionId = prediction.id;
+    console.log("Replicate prediction created:", predictionId);
 
-    // Poll for completion (max 5 minutes)
+    // Step 3: Poll for completion (max 5 minutes)
     let attempts = 0;
     const maxAttempts = 60;
     let modelUrl = null;
@@ -174,28 +127,29 @@ serve(async (req) => {
     while (attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
       
-      const statusResponse = await fetch(`https://api.meshy.ai/v2/text-to-3d/${taskId}`, {
+      const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
         headers: {
-          "Authorization": `Bearer ${meshyApiKey}`,
+          Authorization: `Bearer ${replicateApiKey}`,
         },
       });
 
       if (!statusResponse.ok) {
-        console.error("Failed to check task status");
+        console.error("Failed to check prediction status");
         attempts++;
         continue;
       }
 
       const statusData = await statusResponse.json();
-      console.log(`Task status (attempt ${attempts + 1}):`, statusData.status);
+      console.log(`Prediction status (attempt ${attempts + 1}):`, statusData.status);
 
-      if (statusData.status === "SUCCEEDED") {
-        modelUrl = statusData.model_urls?.glb || statusData.model_urls?.fbx;
-        console.log("Model generation succeeded! URL:", modelUrl);
+      if (statusData.status === "succeeded") {
+        // TripoSR returns a GLB file URL
+        modelUrl = statusData.output;
+        console.log("3D model generation succeeded! URL:", modelUrl);
         break;
-      } else if (statusData.status === "FAILED") {
+      } else if (statusData.status === "failed" || statusData.status === "canceled") {
         await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
-        throw new Error("Meshy.ai generation failed");
+        throw new Error(`Replicate prediction ${statusData.status}`);
       }
 
       attempts++;
@@ -206,7 +160,7 @@ serve(async (req) => {
       throw new Error("Model generation timed out");
     }
 
-    // Download the generated model
+    // Step 4: Download the generated model
     console.log("Downloading generated model...");
     const modelResponse = await fetch(modelUrl);
     if (!modelResponse.ok) {
@@ -216,7 +170,7 @@ serve(async (req) => {
     const modelBlob = await modelResponse.blob();
     const modelBuffer = await modelBlob.arrayBuffer();
 
-    // Upload to Supabase Storage
+    // Step 5: Upload to Supabase Storage
     console.log("Uploading to storage...");
     const fileName = `${designId}.glb`;
     const { error: uploadError } = await supabase.storage
@@ -227,7 +181,8 @@ serve(async (req) => {
       });
 
     if (uploadError) {
-      console.error("Storage upload error:", uploadError);
+      console.error("Upload error:", uploadError);
+      await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
       throw uploadError;
     }
 
@@ -236,42 +191,41 @@ serve(async (req) => {
       .from("design-files")
       .getPublicUrl(fileName);
 
-    const fileUrl = urlData.publicUrl;
-    console.log("Model uploaded to:", fileUrl);
+    console.log("Model uploaded successfully:", urlData.publicUrl);
 
-    // Update design with completed status
+    // Step 6: Update design record with model URL
     const { error: updateError } = await supabase
       .from("designs")
       .update({
         status: "completed",
-        stl_file_url: fileUrl,
-        blend_file_url: fileUrl, // GLB format for both
+        stl_file_url: urlData.publicUrl,
       })
       .eq("id", designId);
 
     if (updateError) {
-      console.error("Error updating design:", updateError);
+      console.error("Database update error:", updateError);
       throw updateError;
     }
 
-    console.log("Generation completed for design:", designId);
+    console.log("Design record updated successfully");
 
     return new Response(
       JSON.stringify({
         success: true,
         designId,
-        analysis,
-        stlUrl: fileUrl,
-        blendUrl: fileUrl,
+        modelUrl: urlData.publicUrl,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
-  } catch (error: any) {
+
+  } catch (error) {
     console.error("Error in generate-model function:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Generation failed" }),
+      JSON.stringify({
+        error: error instanceof Error ? error.message : "Unknown error occurred"
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
