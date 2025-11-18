@@ -1,0 +1,305 @@
+{
+  "nav": {
+    "home": "Início",
+    "shop": "Loja",
+    "generator": "Gerador",
+    "about": "Sobre",
+    "faq": "Perguntas Frequentes",
+    "contact": "Contacto",
+    "cart": "Carrinho",
+    "wishlist": "Favoritos",
+    "dashboard": "Painel",
+    "logout": "Sair",
+    "login": "Entrar"
+  },
+  "home": {
+    "hero": {
+      "title": "Transforme as Suas Ideias em Realidade 3D",
+      "subtitle": "Geração de modelos 3D com inteligência artificial para peças de automóvel personalizadas e decorações para casa. Desenhe, personalize e dê vida à sua visão.",
+      "cta": "Começar a Criar",
+      "learnMore": "Saber Mais"
+    },
+    "howItWorks": {
+      "title": "Como Funciona",
+      "subtitle": "Crie modelos 3D impressionantes em três passos simples",
+      "step1": {
+        "title": "Descreva a Sua Visão",
+        "description": "Diga-nos o que pretende criar usando linguagem natural"
+      },
+      "step2": {
+        "title": "Geração com IA",
+        "description": "A nossa IA avançada transforma a sua descrição num modelo 3D"
+      },
+      "step3": {
+        "title": "Descarregar e Usar",
+        "description": "Obtenha o seu modelo em formato STL ou BLEND, pronto para impressão 3D"
+      }
+    },
+    "features": {
+      "title": "Por Que Escolher-nos",
+      "feature1": {
+        "title": "Design com IA",
+        "description": "Inteligência artificial de ponta cria modelos 3D detalhados a partir das suas descrições"
+      },
+      "feature2": {
+        "title": "Peças de Automóvel Personalizadas",
+        "description": "Gere peças de automóvel precisas adaptadas às especificações do seu veículo"
+      },
+      "feature3": {
+        "title": "Decorações para Casa",
+        "description": "Crie peças decorativas únicas que combinam perfeitamente com o seu estilo"
+      },
+      "feature4": {
+        "title": "Impulsionado pela Comunidade",
+        "description": "Junte-se a uma comunidade crescente de criadores e entusiastas"
+      }
+    },
+    "cta": {
+      "title": "Pronto para Começar a Criar?",
+      "subtitle": "Junte-se a milhares de criadores satisfeitos a usar o nosso gerador de modelos 3D com IA",
+      "button": "Começar Agora"
+    }
+  },
+  "shop": {
+    "title": "Explorar os Nossos Produtos",
+    "subtitle": "Descubra a nossa coleção de peças impressas em 3D e decorações personalizadas",
+    "search": "Pesquisar produtos...",
+    "categories": {
+      "all": "Todos os Produtos",
+      "car_parts": "Peças de Automóvel",
+      "decorations": "Decorações"
+    },
+    "noProducts": "Não foram encontrados produtos que correspondam aos seus critérios.",
+    "loading": "A carregar produtos...",
+    "addToCart": "Adicionar ao Carrinho",
+    "inStock": "Em Stock",
+    "outOfStock": "Esgotado"
+  },
+  "product": {
+    "details": "Detalhes do Produto",
+    "price": "Preço",
+    "stock": "Stock",
+    "inStock": "Em Stock",
+    "outOfStock": "Esgotado",
+    "addToCart": "Adicionar ao Carrinho",
+    "quantity": "Quantidade",
+    "description": "Descrição",
+    "specifications": "Especificações",
+    "material": "Material",
+    "dimensions": "Dimensões",
+    "category": "Categoria",
+    "backToShop": "Voltar à Loja",
+    "view3D": "Vista 3D",
+    "images": "Imagens",
+    "viewer": {
+      "instructions": "Clique e arraste para rodar • Role para ampliar • Clique com botão direito e arraste para deslocar"
+    }
+  },
+  "cart": {
+    "title": "Carrinho de Compras",
+    "empty": "O seu carrinho está vazio",
+    "browse": "Explorar Produtos",
+    "item": "Artigo",
+    "price": "Preço",
+    "quantity": "Quantidade",
+    "total": "Total",
+    "remove": "Remover",
+    "summary": "Resumo do Pedido",
+    "subtotal": "Subtotal",
+    "checkout": "Proceder ao Pagamento"
+  },
+  "wishlist": {
+    "title": "Os Meus Favoritos",
+    "products": "Produtos",
+    "designs": "Designs",
+    "empty": "A sua lista de favoritos está vazia",
+    "browse": "Explorar Loja",
+    "viewDesigns": "Ver Designs",
+    "addToCart": "Adicionar ao Carrinho",
+    "remove": "Remover",
+    "inStock": "Em Stock",
+    "outOfStock": "Esgotado",
+    "download": "Descarregar",
+    "viewDetails": "Ver Detalhes"
+  },
+  "generator": {
+    "title": "Gerador de Modelos 3D",
+    "subtitle": "Criação de Designs com IA",
+    "create": {
+      "title": "Crie o Seu Modelo 3D",
+      "subtitle": "Descreva a sua visão e deixe a nossa IA dar-lhe vida",
+      "prompt": "Descreva o seu modelo",
+      "promptPlaceholder": "ex: Uma pega de porta personalizada para um BMW Série 3 de 2020",
+      "category": "Categoria",
+      "carParts": "Peças de Automóvel",
+      "decorations": "Decorações para Casa",
+      "carModel": "Modelo do Automóvel",
+      "carYear": "Ano do Automóvel",
+      "partName": "Nome da Peça",
+      "decorationType": "Tipo de Decoração",
+      "generate": "Gerar Modelo",
+      "generating": "A gerar..."
+    },
+    "history": {
+      "title": "Os Seus Designs",
+      "empty": "Ainda não tem designs. Crie o seu primeiro modelo 3D!",
+      "status": {
+        "pending": "A gerar...",
+        "completed": "Concluído",
+        "failed": "Falhou"
+      },
+      "download": "Descarregar",
+      "viewDetails": "Ver Detalhes"
+    }
+  },
+  "about": {
+    "title": "Sobre Nós",
+    "subtitle": "Saiba mais sobre a nossa missão e valores",
+    "mission": {
+      "title": "A Nossa Missão",
+      "description": "Na Pompousweek, estamos a revolucionar a forma como as pessoas criam modelos 3D personalizados. A nossa missão é tornar o design 3D de nível profissional acessível a todos através do poder da inteligência artificial."
+    },
+    "story": {
+      "title": "A Nossa História",
+      "description": "Fundada em 2024, a Pompousweek surgiu de uma simples observação: criar peças de automóvel personalizadas e decorações para casa não deveria exigir anos de experiência em modelação 3D. Combinámos tecnologia de IA de ponta com interfaces fáceis de usar para democratizar o design 3D. Hoje, orgulhamo-nos de servir milhares de criadores, fabricantes e entusiastas em todo o mundo."
+    },
+    "values": {
+      "title": "Os Nossos Valores",
+      "innovation": {
+        "title": "Inovação",
+        "description": "Ultrapassar limites com tecnologia de IA"
+      },
+      "quality": {
+        "title": "Qualidade",
+        "description": "Entregar modelos 3D precisos e imprimíveis"
+      },
+      "community": {
+        "title": "Comunidade",
+        "description": "Construir um ecossistema de criadores solidário"
+      },
+      "passion": {
+        "title": "Paixão",
+        "description": "Movidos pelo amor ao design e à tecnologia"
+      }
+    },
+    "cta": {
+      "title": "Junte-se à Nossa Comunidade",
+      "description": "Faça parte da revolução da impressão 3D",
+      "getStarted": "Começar",
+      "contact": "Contacte-nos"
+    }
+  },
+  "contact": {
+    "title": "Contacte-nos",
+    "subtitle": "Entre em contacto com a nossa equipa",
+    "info": {
+      "email": {
+        "title": "Envie-nos um Email",
+        "description": "Envie-nos uma mensagem a qualquer momento"
+      },
+      "chat": {
+        "title": "Chat ao Vivo",
+        "description": "Disponível segunda a sexta-feira, 9h-18h GMT"
+      },
+      "response": {
+        "title": "Tempo de Resposta",
+        "description": "Normalmente respondemos em 24 horas"
+      }
+    },
+    "form": {
+      "title": "Envie-nos uma Mensagem",
+      "name": "Nome",
+      "namePlaceholder": "O seu nome",
+      "email": "Email",
+      "emailPlaceholder": "o.seu.email@exemplo.com",
+      "subject": "Assunto",
+      "subjectPlaceholder": "Como podemos ajudar?",
+      "message": "Mensagem",
+      "messagePlaceholder": "Conte-nos mais sobre o seu pedido...",
+      "submit": "Enviar Mensagem",
+      "sending": "A enviar...",
+      "success": "Obrigado pela sua mensagem! Entraremos em contacto em breve."
+    }
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "subtitle": "Como Podemos Ajudá-lo?",
+    "description": "Encontre respostas para questões comuns sobre o nosso gerador de modelos 3D",
+    "questions": {
+      "q1": {
+        "question": "Como funciona o gerador de modelos 3D com IA?",
+        "answer": "A nossa IA analisa a sua descrição em texto e gera um modelo 3D detalhado com base nas suas especificações. Simplesmente descreva o que pretende criar, selecione a categoria e a nossa IA avançada trata do resto."
+      },
+      "q2": {
+        "question": "Que formatos de ficheiro suportam?",
+        "answer": "Fornecemos modelos nos formatos STL e BLEND. Os ficheiros STL são perfeitos para impressão 3D, enquanto os ficheiros BLEND podem ser editados posteriormente no Blender."
+      },
+      "q3": {
+        "question": "Posso editar os modelos gerados?",
+        "answer": "Sim! Os ficheiros BLEND podem ser abertos e modificados no Blender, um software de modelação 3D gratuito. Os ficheiros STL podem ser editados usando várias ferramentas de edição 3D."
+      },
+      "q4": {
+        "question": "Quanto tempo demora a geração?",
+        "answer": "A maioria dos modelos é gerada em 2-5 minutos, dependendo da complexidade. Receberá uma notificação assim que o seu modelo estiver pronto para descarregar."
+      },
+      "q5": {
+        "question": "E se não estiver satisfeito com o resultado?",
+        "answer": "Pode regenerar modelos com descrições diferentes sem custos adicionais. Estamos empenhados em ajudá-lo a alcançar o resultado perfeito."
+      },
+      "q6": {
+        "question": "Oferecem licenças comerciais?",
+        "answer": "Sim! Todos os modelos gerados vêm com uma licença comercial, permitindo-lhe usá-los para projetos pessoais ou comerciais."
+      }
+    },
+    "support": {
+      "title": "Ainda tem questões?",
+      "description": "A nossa equipa de apoio está aqui para ajudar",
+      "button": "Contactar Apoio"
+    }
+  },
+  "auth": {
+    "title": "Gerador de Modelos 3D",
+    "subtitle": "Entre na sua conta",
+    "email": "Email",
+    "password": "Palavra-passe",
+    "login": "Entrar",
+    "signup": "Criar Conta",
+    "loggingIn": "A entrar...",
+    "signingUp": "A criar conta...",
+    "switchToSignup": "Não tem conta? Registe-se",
+    "switchToLogin": "Já tem conta? Entre",
+    "success": {
+      "login": "Bem-vindo de volta!",
+      "signup": "Conta criada com sucesso! Bem-vindo!"
+    }
+  },
+  "checkout": {
+    "title": "Finalizar Compra",
+    "summary": "Resumo do Pedido",
+    "total": "Total",
+    "paymentMethod": "Método de Pagamento",
+    "paymentDescription": "Aceitamos todos os principais cartões de crédito e métodos de pagamento através do Stripe",
+    "payWithStripe": "Pagar com Stripe",
+    "processing": "A processar..."
+  },
+  "common": {
+    "loading": "A carregar...",
+    "error": "Ocorreu um erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Voltar",
+    "next": "Seguinte",
+    "previous": "Anterior",
+    "close": "Fechar"
+  },
+  "footer": {
+    "description": "Geração de modelos 3D com IA para peças de automóvel personalizadas e decorações para casa.",
+    "products": "Produtos",
+    "services": "Serviços",
+    "company": "Empresa"
+  }
+}
