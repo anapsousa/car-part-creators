@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "./LanguageSelector";
 
 interface HeaderProps {
   pageTitle?: string;
@@ -29,6 +31,7 @@ export const Header = ({
   showAuth = true 
 }: HeaderProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { cartCount } = useCart();
   const { wishlistItems } = useWishlist();
   const [user, setUser] = useState<any>(null);
@@ -60,7 +63,7 @@ export const Header = ({
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success("Logged out successfully");
+    toast.success(t("nav.logout"));
     navigate("/");
   };
 
@@ -88,6 +91,7 @@ export const Header = ({
 
           {/* Navigation Actions */}
           <div className="flex items-center gap-2">
+            <LanguageSelector />
             {showCart && (
               <>
                 <Button 
@@ -131,24 +135,24 @@ export const Header = ({
                     <>
                       <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                         <User className="mr-2 h-4 w-4" />
-                        My Dashboard
+                        {t("nav.dashboard")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/shop")}>
                         <ShoppingCart className="mr-2 h-4 w-4" />
-                        Shop
+                        {t("nav.shop")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/generator")}>
                         <Settings className="mr-2 h-4 w-4" />
-                        AI Generator
+                        {t("nav.generator")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/faq")}>
-                        FAQ
+                        {t("nav.faq")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/contact")}>
-                        Contact Us
+                        {t("nav.contact")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/about")}>
-                        About Us
+                        {t("nav.about")}
                       </DropdownMenuItem>
                       
                       {isAdmin && (
@@ -172,28 +176,28 @@ export const Header = ({
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleLogout}>
                         <LogOut className="mr-2 h-4 w-4" />
-                        Logout
+                        {t("nav.logout")}
                       </DropdownMenuItem>
                     </>
                   ) : (
                     <>
                       <DropdownMenuItem onClick={() => navigate("/shop")}>
                         <ShoppingCart className="mr-2 h-4 w-4" />
-                        Shop
+                        {t("nav.shop")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/faq")}>
-                        FAQ
+                        {t("nav.faq")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/contact")}>
-                        Contact Us
+                        {t("nav.contact")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/about")}>
-                        About Us
+                        {t("nav.about")}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/auth")}>
                         <User className="mr-2 h-4 w-4" />
-                        Login / Sign Up
+                        {t("nav.login")}
                       </DropdownMenuItem>
                     </>
                   )}

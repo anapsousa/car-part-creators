@@ -6,9 +6,11 @@ import { Cpu, Box, Sparkles, Users, Package } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import heroCarParts from "@/assets/hero-car-parts.jpg";
+import { useTranslation } from "react-i18next";
 
 export default function Index() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
@@ -24,19 +26,18 @@ export default function Index() {
                 Premium 3D Printing Services
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold">
-                Restore Your Classic.{" "}
-                <span className="bg-gradient-primary bg-clip-text text-transparent">Enhance Your Home.</span>
+                {t("home.hero.title")}
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl">
-                Precision 3D printed classic car parts and custom home decor. From vintage restoration components to modern interior accents, we bring your vision to life with cutting-edge technology.
+                {t("home.hero.subtitle")}
               </p>
               <div className="flex gap-4">
                 <Button size="lg" onClick={() => navigate("/shop")}>
-                  Browse Catalog
+                  {t("home.hero.cta")}
                 </Button>
                 <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  Try AI Generator
+                  {t("home.hero.learnMore")}
                 </Button>
               </div>
               <div className="flex gap-8 pt-4">
