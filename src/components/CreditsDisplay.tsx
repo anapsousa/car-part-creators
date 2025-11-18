@@ -64,11 +64,11 @@ export const CreditsDisplay = () => {
   }
 
   return (
-    <Card className="border-primary/20">
+    <Card className="border-secondary/30 shadow-glow-green bg-gradient-to-br from-card via-card to-card/80">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Coins className="h-5 w-5 text-primary" />
-          Your Credits
+          <Coins className="h-5 w-5 text-secondary" />
+          <span className="bg-gradient-secondary bg-clip-text text-transparent">Your Credits</span>
         </CardTitle>
         <CardDescription>
           Use credits to generate 3D models with AI
@@ -77,13 +77,14 @@ export const CreditsDisplay = () => {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-3xl font-bold text-primary">{credits}</div>
+            <div className="text-3xl font-bold text-success">{credits}</div>
             <p className="text-sm text-muted-foreground">Credits remaining</p>
           </div>
           <Button 
             onClick={handleBuyCredits}
             disabled={purchasing}
-            className="gap-2"
+            className="gap-2 shadow-glow-yellow"
+            variant="tertiary"
           >
             {purchasing ? (
               <Loader2 className="h-4 w-4 animate-spin" />

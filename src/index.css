@@ -20,14 +20,23 @@ All colors MUST be HSL.
     --primary: 195 100% 50%;
     --primary-foreground: 220 26% 6%;
 
-    --secondary: 220 18% 16%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 150 70% 55%;
+    --secondary-foreground: 220 26% 6%;
+
+    --tertiary: 50 100% 60%;
+    --tertiary-foreground: 220 26% 6%;
 
     --muted: 220 18% 16%;
     --muted-foreground: 215 20.2% 70%;
 
     --accent: 195 100% 50%;
     --accent-foreground: 220 26% 6%;
+
+    --success: 150 70% 55%;
+    --success-foreground: 220 26% 6%;
+
+    --warning: 50 100% 60%;
+    --warning-foreground: 220 26% 6%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -38,11 +47,16 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(195 100% 50%), hsl(210 100% 60%));
-    --gradient-mesh: radial-gradient(at 0% 0%, hsl(195 100% 50% / 0.15) 0px, transparent 50%),
-                      radial-gradient(at 100% 100%, hsl(210 100% 60% / 0.15) 0px, transparent 50%);
+    --gradient-primary: linear-gradient(135deg, hsl(195 100% 50%), hsl(150 70% 55%), hsl(50 100% 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(195 100% 50%), hsl(150 70% 55%));
+    --gradient-tertiary: linear-gradient(135deg, hsl(150 70% 55%), hsl(50 100% 60%));
+    --gradient-mesh: radial-gradient(at 0% 0%, hsl(195 100% 50% / 0.12) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, hsl(150 70% 55% / 0.12) 0px, transparent 50%),
+                      radial-gradient(at 50% 50%, hsl(50 100% 60% / 0.08) 0px, transparent 50%);
     
     --shadow-glow: 0 0 40px hsl(195 100% 50% / 0.3);
+    --shadow-glow-green: 0 0 40px hsl(150 70% 55% / 0.3);
+    --shadow-glow-yellow: 0 0 40px hsl(50 100% 60% / 0.3);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 220 22% 10%;
@@ -68,14 +82,23 @@ All colors MUST be HSL.
     --primary: 195 100% 50%;
     --primary-foreground: 220 26% 6%;
 
-    --secondary: 220 18% 16%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 150 70% 55%;
+    --secondary-foreground: 220 26% 6%;
+
+    --tertiary: 50 100% 60%;
+    --tertiary-foreground: 220 26% 6%;
 
     --muted: 220 18% 16%;
     --muted-foreground: 215 20.2% 70%;
 
     --accent: 195 100% 50%;
     --accent-foreground: 220 26% 6%;
+
+    --success: 150 70% 55%;
+    --success-foreground: 220 26% 6%;
+
+    --warning: 50 100% 60%;
+    --warning-foreground: 220 26% 6%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;

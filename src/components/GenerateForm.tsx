@@ -273,8 +273,9 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
         <Button 
           onClick={handleGenerate}
           disabled={isGenerating || !prompt.trim()}
-          className="w-full"
+          className="w-full shadow-glow-yellow"
           size="lg"
+          variant="tertiary"
         >
           {isGenerating ? (
             <>

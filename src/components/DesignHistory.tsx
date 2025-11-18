@@ -249,9 +249,9 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "completed":
-        return <Badge className="bg-primary/20 text-primary border-primary/50">Completed</Badge>;
+        return <Badge variant="success">Completed</Badge>;
       case "generating":
-        return <Badge className="bg-accent/20 text-accent border-accent/50">Generating</Badge>;
+        return <Badge variant="warning">Generating</Badge>;
       case "failed":
         return <Badge variant="destructive">Failed</Badge>;
       default:
