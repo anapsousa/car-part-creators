@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CheckCircle, Loader2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import { Footer } from "@/components/Footer";
 
 const CheckoutSuccess = () => {
   const navigate = useNavigate();
@@ -134,6 +135,7 @@ const CheckoutSuccess = () => {
           </Card>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

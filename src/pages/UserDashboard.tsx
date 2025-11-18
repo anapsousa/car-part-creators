@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Download, Calendar, CreditCard, User, MapPin } from "lucide-react";
 import DesignHistory from "@/components/DesignHistory";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import { Footer } from "@/components/Footer";
 
 interface Payment {
   id: string;
@@ -303,6 +304,8 @@ const UserDashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
+      
+      <Footer />
     </div>
   );
 };
