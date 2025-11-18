@@ -95,49 +95,7 @@ const UserDashboard = () => {
     return nameRegex.test(name.trim());
   };
 
-  const validateBillingInfo = (): boolean => {
-    if (!profile) return false;
-
-    const errors: string[] = [];
-
-    // Validate phone if provided
-    if (profile.phone && profile.phone.trim()) {
-      const phoneValidation = validatePhone(profile.phone, profile.country || undefined);
-      if (!phoneValidation.isValid) {
-        errors.push(phoneValidation.error!);
-      }
-    }
-
-    // If any address field is filled, validate all address fields
-    const hasAnyAddressField = profile.address || profile.city || profile.postal_code || profile.country;
-    
-    if (hasAnyAddressField) {
-      const addressValidation = validateShippingAddress(
-        profile.address || '',
-        profile.city || '',
-        profile.postal_code || '',
-        profile.country || '',
-        profile.phone || ''
-      );
-
-      if (!addressValidation.isValid) {
-        Object.values(addressValidation.errors).forEach(error => errors.push(error));
-      }
-    }
-
-    if (errors.length > 0) {
-      toast({
-        title: "Validation Error",
-        description: errors[0], // Show first error
-        variant: "destructive",
-      });
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePersonalInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Validate first and last name
@@ -168,14 +126,22 @@ const UserDashboard = () => {
       return;
     }
 
-    if (!validateBillingInfo()) {
-      return;
+    // Validate phone if provided
+    if (profile.phone && profile.phone.trim()) {
+      const phoneValidation = validatePhone(profile.phone, profile.country || undefined);
+      if (!phoneValidation.isValid) {
+        toast({
+          title: "Invalid Phone Number",
+          description: phoneValidation.error,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setSaving(true);
 
     try {
-      // Format phone number before saving
       const formattedPhone = profile.phone ? formatPhoneNumber(profile.phone, profile.country || undefined) : null;
 
       const { error } = await supabase
@@ -184,6 +150,60 @@ const UserDashboard = () => {
           first_name: profile.first_name.trim(),
           last_name: profile.last_name.trim(),
           phone: formattedPhone,
+        })
+        .eq("id", profile.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Personal info updated",
+        description: "Your personal information has been updated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update personal info. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleBillingAddressUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!profile) return;
+
+    // Validate address fields if any are provided
+    const hasAnyAddressField = profile.address || profile.city || profile.postal_code || profile.country;
+    
+    if (hasAnyAddressField) {
+      const addressValidation = validateShippingAddress(
+        profile.address || '',
+        profile.city || '',
+        profile.postal_code || '',
+        profile.country || '',
+        profile.phone || ''
+      );
+
+      if (!addressValidation.isValid) {
+        const firstError = Object.values(addressValidation.errors)[0];
+        toast({
+          title: "Validation Error",
+          description: firstError,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    setSaving(true);
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
           address: profile.address?.trim() || null,
           city: profile.city?.trim() || null,
           postal_code: profile.postal_code?.trim() || null,
@@ -196,13 +216,13 @@ const UserDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully.",
+        title: "Billing info updated",
+        description: "Your billing and address information has been updated successfully.",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to update profile. Please try again.",
+        description: "Failed to update billing info. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -296,7 +316,7 @@ const UserDashboard = () => {
                 <CardDescription>Update your personal details</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <form onSubmit={handlePersonalInfoUpdate} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -371,7 +391,7 @@ const UserDashboard = () => {
                 <CardDescription>Manage your invoicing details</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <form onSubmit={handleBillingAddressUpdate} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="company_name">Company Name (Optional)</Label>
                     <Input
