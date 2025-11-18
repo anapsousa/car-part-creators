@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Checkout from "./pages/Checkout";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import UserDashboard from "./pages/UserDashboard";
+import Generator from "./pages/Generator";
 import AdminStats from "./pages/AdminStats";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/generator" element={<Generator />} />
             <Route path="/admin/stats" element={<AdminStats />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
