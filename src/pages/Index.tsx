@@ -119,7 +119,7 @@ export default function Index() {
               </CardContent>
             </Card>
             <Card className="md:col-span-2 flex flex-col">
-              <CardContent className="space-y-4 flex-1">
+              <CardContent className="space-y-4 flex-1 flex flex-col justify-center">
                 <div className="flex items-center gap-2">
                   <Cpu className="h-5 w-5 text-primary" />
                   <h3 className="font-semibold">AI-Powered Generation</h3>
@@ -130,7 +130,7 @@ export default function Index() {
               </CardContent>
             </Card>
             <Card className="md:col-span-2 flex flex-col">
-              <CardContent className="space-y-4 flex-1">
+              <CardContent className="space-y-4 flex-1 flex flex-col justify-center">
                 <div className="flex items-center gap-2">
                   <Box className="h-5 w-5 text-primary" />
                   <h3 className="font-semibold">Premium Quality</h3>
