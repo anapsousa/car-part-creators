@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      cart_items: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          quantity: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          quantity?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       designs: {
         Row: {
           blend_file_url: string | null
@@ -86,6 +118,81 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          price_at_purchase: number
+          product_id: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          price_at_purchase: number
+          product_id: string
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          price_at_purchase?: number
+          product_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          shipping_address: Json
+          status: string
+          stripe_session_id: string | null
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          shipping_address: Json
+          status?: string
+          stripe_session_id?: string | null
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          shipping_address?: Json
+          status?: string
+          stripe_session_id?: string | null
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
           amount: number
@@ -135,6 +242,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          depth: number | null
+          description: string | null
+          height: number | null
+          id: string
+          images: string[] | null
+          is_active: boolean
+          material: string | null
+          name: string
+          price: number
+          stock_quantity: number
+          updated_at: string
+          width: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          depth?: number | null
+          description?: string | null
+          height?: number | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean
+          material?: string | null
+          name: string
+          price: number
+          stock_quantity?: number
+          updated_at?: string
+          width?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          depth?: number | null
+          description?: string | null
+          height?: number | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean
+          material?: string | null
+          name?: string
+          price?: number
+          stock_quantity?: number
+          updated_at?: string
+          width?: number | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
