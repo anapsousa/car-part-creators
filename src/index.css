@@ -58,6 +58,15 @@ All colors MUST be HSL.
     --shadow-glow-green: 0 0 40px hsl(150 70% 55% / 0.3);
     --shadow-glow-yellow: 0 0 40px hsl(50 100% 60% / 0.3);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Animated Gradients */
+    --gradient-animated: linear-gradient(
+      45deg,
+      hsl(var(--primary)),
+      hsl(var(--secondary)),
+      hsl(var(--tertiary)),
+      hsl(var(--primary))
+    );
 
     --sidebar-background: 220 22% 10%;
     --sidebar-foreground: 210 40% 98%;
@@ -125,5 +134,30 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Animated gradient backgrounds */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  .hover-gradient {
+    background-size: 200% 200%;
+    transition: all 0.3s ease;
+  }
+
+  .hover-gradient:hover {
+    background-position: 100% 50%;
+    animation: gradient-shift 3s ease infinite;
   }
 }

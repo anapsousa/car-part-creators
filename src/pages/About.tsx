@@ -43,9 +43,9 @@ const About = () => {
           </div>
 
           {/* Story Section */}
-          <Card>
+          <Card className="border-2 bg-gradient-to-br from-primary/5 via-secondary/5 to-tertiary/5">
             <CardHeader>
-              <CardTitle>Our Story</CardTitle>
+              <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">Our Story</CardTitle>
               <CardDescription>How it all began</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
@@ -68,19 +68,21 @@ const About = () => {
           {/* Values Section */}
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold mb-2">Our Values</h3>
+              <h3 className="text-2xl font-bold mb-2">Our <span className="bg-gradient-primary bg-clip-text text-transparent">Values</span></h3>
               <p className="text-muted-foreground">What drives us every day</p>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               {values.map((value, index) => {
               const Icon = value.icon;
+              const bgColors = ['bg-primary/10', 'bg-secondary/10', 'bg-tertiary/10', 'bg-primary/10'];
+              const textColors = ['text-primary', 'text-secondary', 'text-tertiary', 'text-primary'];
               return <Card 
                 key={index}
-                className="transition-all duration-300 hover:scale-105 hover:shadow-glow hover:border-primary/50"
+                className="transition-all duration-300 hover:scale-105 hover:shadow-glow hover:border-primary/50 bg-gradient-to-br from-card via-card to-primary/5"
               >
                     <CardHeader>
-                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2 transition-all duration-300 group-hover:bg-primary/30">
-                        <Icon className="h-6 w-6 text-primary" />
+                      <div className={`inline-flex h-12 w-12 items-center justify-center rounded-full ${bgColors[index]} mb-2 transition-all duration-300 hover:scale-110`}>
+                        <Icon className={`h-6 w-6 ${textColors[index]}`} />
                       </div>
                       <CardTitle>{value.title}</CardTitle>
                     </CardHeader>
@@ -93,10 +95,10 @@ const About = () => {
           </div>
 
           {/* CTA Section */}
-          <Card className="bg-gradient-primary text-primary-foreground">
+          <Card className="bg-gradient-to-br from-primary/10 via-secondary/10 to-tertiary/10 border-2 border-transparent shadow-glow">
             <CardHeader className="text-center">
-              <CardTitle>Join Our Community</CardTitle>
-              <CardDescription className="text-primary-foreground/80">
+              <CardTitle>Join Our <span className="bg-gradient-primary bg-clip-text text-transparent">Community</span></CardTitle>
+              <CardDescription>
                 Start creating amazing 3D models today
               </CardDescription>
             </CardHeader>

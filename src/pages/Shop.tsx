@@ -67,12 +67,14 @@ export default function Shop() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-mesh">
       <Header pageTitle="Shop" pageSubtitle="Browse Our Products" />
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Browse Our Products</h2>
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold mb-2">
+            Browse Our <span className="bg-gradient-primary bg-clip-text text-transparent">Products</span>
+          </h2>
           <p className="text-muted-foreground">
             Discover custom 3D printed car parts, home decor, and unique designs
           </p>

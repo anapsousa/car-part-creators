@@ -57,9 +57,9 @@ const Contact = () => {
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Contact Info Cards */}
-            <Card>
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 hover:shadow-glow transition-all duration-300 hover:scale-105">
               <CardHeader className="text-center">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2 mx-auto">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2 mx-auto hover:bg-primary/30 transition-all duration-300">
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="text-lg">Email</CardTitle>
@@ -69,10 +69,10 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-gradient-to-br from-secondary/5 to-secondary/10 hover:shadow-glow-green transition-all duration-300 hover:scale-105">
               <CardHeader className="text-center">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2 mx-auto">
-                  <MessageSquare className="h-6 w-6 text-primary" />
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-secondary/20 mb-2 mx-auto hover:bg-secondary/30 transition-all duration-300">
+                  <MessageSquare className="h-6 w-6 text-secondary" />
                 </div>
                 <CardTitle className="text-lg">Live Chat</CardTitle>
               </CardHeader>
@@ -81,10 +81,10 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-gradient-to-br from-tertiary/5 to-tertiary/10 hover:shadow-glow-yellow transition-all duration-300 hover:scale-105">
               <CardHeader className="text-center">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2 mx-auto">
-                  <Send className="h-6 w-6 text-primary" />
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-tertiary/20 mb-2 mx-auto hover:bg-tertiary/30 transition-all duration-300">
+                  <Send className="h-6 w-6 text-tertiary" />
                 </div>
                 <CardTitle className="text-lg">Response Time</CardTitle>
               </CardHeader>
@@ -95,9 +95,9 @@ const Contact = () => {
           </div>
 
           {/* Contact Form */}
-          <Card>
+          <Card className="bg-gradient-to-br from-primary/5 via-secondary/5 to-tertiary/5 border-2">
             <CardHeader>
-              <CardTitle>Send us a Message</CardTitle>
+              <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">Send Us a Message</CardTitle>
               <CardDescription>
                 Fill out the form below and we'll get back to you as soon as possible
               </CardDescription>
