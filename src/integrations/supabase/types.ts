@@ -46,6 +46,45 @@ export type Database = {
           },
         ]
       }
+      content_translations: {
+        Row: {
+          content_key: string
+          content_type: string
+          created_at: string | null
+          description: string | null
+          english_text: string
+          id: string
+          page: string
+          portuguese_text: string | null
+          section: string
+          updated_at: string | null
+        }
+        Insert: {
+          content_key: string
+          content_type?: string
+          created_at?: string | null
+          description?: string | null
+          english_text: string
+          id?: string
+          page: string
+          portuguese_text?: string | null
+          section: string
+          updated_at?: string | null
+        }
+        Update: {
+          content_key?: string
+          content_type?: string
+          created_at?: string | null
+          description?: string | null
+          english_text?: string
+          id?: string
+          page?: string
+          portuguese_text?: string | null
+          section?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       designs: {
         Row: {
           blend_file_url: string | null
