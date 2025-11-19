@@ -1,169 +1,180 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Cpu, Box, Sparkles, Users, Package } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Wrench, Shield, Headphones, Sparkles, Home as HomeIcon, Cpu, Award } from "lucide-react";
 import heroCarParts from "@/assets/hero-car-parts.jpg";
-import { useTranslation } from "react-i18next";
+import { useContent } from "@/hooks/useContent";
 
 export default function Index() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { content, isLoading } = useContent("home");
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-mesh flex items-center justify-center">
+        <p className="text-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20">
+      <section className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-20">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="flex-1 space-y-6">
-              <Badge className="w-fit">
-                <Package className="mr-2 h-3 w-3" />
-                Premium 3D Printing Services
-              </Badge>
-              <h1 className="text-5xl lg:text-6xl font-bold">
-                {t("home.hero.title")}
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-xl">
-                {t("home.hero.subtitle")}
-              </p>
-              <div className="flex gap-4">
-                <Button size="lg" onClick={() => navigate("/shop")}>
-                  {t("home.hero.cta")}
-                </Button>
-                <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  {t("home.hero.learnMore")}
-                </Button>
-              </div>
-              <div className="flex gap-8 pt-4">
-                <div>
-                  <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">500+</div>
-                  <div className="text-sm text-muted-foreground">Parts Printed</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">98%</div>
-                  <div className="text-sm text-muted-foreground">Satisfaction Rate</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">24h</div>
-                  <div className="text-sm text-muted-foreground">Fast Turnaround</div>
-                </div>
-              </div>
-            </div>
-            <div className="flex-1">
-              <div className="bg-muted/50 rounded-lg overflow-hidden aspect-video">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-12 max-w-6xl mx-auto">
+            <div className="flex-1 text-center lg:text-left space-y-6">
+              <div className="w-20 h-20 mx-auto lg:mx-0 mb-6 rounded-full bg-primary/10 backdrop-blur-sm flex items-center justify-center">
                 <img 
                   src={heroCarParts} 
-                  alt="Car Parts Collection" 
-                  className="w-full h-full object-cover"
+                  alt="Car Parts" 
+                  className="w-16 h-16 rounded-full object-cover"
                 />
               </div>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight">
+            {content["home.hero.title"] || "Authentic Classic Car Parts"}
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl">
+            {content["home.hero.subtitle"] || "Preserve automotive heritage with precision 3D-printed restoration parts"}
+          </p>
+          <Button
+            size="lg"
+            onClick={() => navigate("/shop")}
+            className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-glow"
+          >
+            {content["home.hero.cta"] || "Browse Catalog"}
+          </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <Card className="text-center p-6">
-              <CardContent className="pt-6">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <Box className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-3xl font-bold mb-1">5000+</div>
-                <p className="text-muted-foreground">Parts Available</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mt-16">
+            <div className="space-y-2">
+              <p className="text-4xl font-bold text-primary">{content["home.stats.parts_printed.number"] || "5000+"}</p>
+              <p className="text-muted-foreground">{content["home.stats.parts_printed.label"] || "Parts Printed"}</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-4xl font-bold text-primary">{content["home.stats.satisfaction.number"] || "98%"}</p>
+              <p className="text-muted-foreground">{content["home.stats.satisfaction.label"] || "Satisfaction Rate"}</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-4xl font-bold text-primary">{content["home.stats.turnaround.number"] || "48h"}</p>
+              <p className="text-muted-foreground">{content["home.stats.turnaround.label"] || "Fast Turnaround"}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+            <Card className="bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all">
+              <CardHeader>
+                <Wrench className="w-12 h-12 text-primary mb-4" />
+                <CardTitle>{content["home.features.available_parts.title"] || "Available Parts"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  {content["home.features.available_parts.description"] || "From dashboard components to door handles, we specialize in hard-to-find parts"}
+                </p>
               </CardContent>
             </Card>
-            <Card className="text-center p-6">
-              <CardContent className="pt-6">
-                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
-                  <Users className="h-6 w-6 text-secondary" />
-                </div>
-                <div className="text-3xl font-bold mb-1">100%</div>
-                <p className="text-muted-foreground">Quality Guarantee</p>
+
+            <Card className="bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all">
+              <CardHeader>
+                <Shield className="w-12 h-12 text-primary mb-4" />
+                <CardTitle>{content["home.features.quality.title"] || "Quality Guarantee"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  {content["home.features.quality.description"] || "Premium materials and precise manufacturing ensure perfect fit and durability"}
+                </p>
               </CardContent>
             </Card>
-            <Card className="text-center p-6">
-              <CardContent className="pt-6">
-                <div className="mx-auto w-12 h-12 bg-tertiary/10 rounded-full flex items-center justify-center mb-4">
-                  <Sparkles className="h-6 w-6 text-tertiary" />
-                </div>
-                <div className="text-3xl font-bold mb-1">24/7</div>
-                <p className="text-muted-foreground">Customer Support</p>
+
+            <Card className="bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all">
+              <CardHeader>
+                <Headphones className="w-12 h-12 text-primary mb-4" />
+                <CardTitle>{content["home.features.support.title"] || "Expert Support"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  {content["home.features.support.description"] || "Our team helps you find the exact part for your classic vehicle restoration"}
+                </p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-primary bg-clip-text text-transparent">
+            {content["home.how_it_works.title"] || "How It Works"}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((step) => (
+              <Card key={step} className="relative overflow-hidden bg-gradient-to-br from-card/80 to-card/60 backdrop-blur-md border-primary/20">
+                <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">{step}</span>
+                </div>
+                <CardHeader className="pt-8">
+                  <CardTitle className="text-xl">{content[`home.how_it_works.step${step}.title`] || `Step ${step}`}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    {content[`home.how_it_works.step${step}.description`] || "Description"}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-card/50">
+      <section className="py-20 bg-gradient-to-br from-secondary/5 via-background to-primary/5">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why Choose <span className="bg-gradient-primary bg-clip-text text-transparent">Pompousweek?</span></h2>
-            <p className="text-muted-foreground">Specialized expertise in classic automotive and home decor 3D printing</p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
-              <CardContent className="pt-6 space-y-2">
-                <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Package className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold text-lg">Vintage Expertise</h3>
-                <p className="text-sm text-muted-foreground">Specialized in reproducing hard-to-find classic car parts with museum-quality accuracy</p>
-              </CardContent>
-            </Card>
-            <Card className="border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
-              <CardContent className="pt-6 space-y-2">
-                <div className="h-12 w-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Box className="h-6 w-6 text-secondary" />
-                </div>
-                <h3 className="font-semibold text-lg">Custom Home Decor</h3>
-                <p className="text-sm text-muted-foreground">Transform your living space with bespoke 3D printed decorative pieces and functional art</p>
-              </CardContent>
-            </Card>
-            <Card className="md:col-span-2 flex flex-col border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
-              <CardContent className="space-y-4 flex-1 flex flex-col justify-center">
-                <div className="flex items-center gap-2">
-                  <Cpu className="h-5 w-5 text-tertiary" />
-                  <h3 className="font-semibold">AI-Powered Generation</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Our cutting-edge AI technology transforms your descriptions into precise 3D models. Simply describe what you need, and watch as our AI brings your vision to life with remarkable accuracy.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="md:col-span-2 flex flex-col border-2 border-transparent bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 hover:shadow-glow transition-all">
-              <CardContent className="space-y-4 flex-1 flex flex-col justify-center">
-                <div className="flex items-center gap-2">
-                  <Box className="h-5 w-5 text-secondary" />
-                  <h3 className="font-semibold">Premium Quality</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Every piece is crafted with precision using industrial-grade materials. Our rigorous quality control ensures perfect fitment and durability for both automotive and decorative applications.
-                </p>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Award, key: "vintage" },
+              { icon: HomeIcon, key: "decor" },
+              { icon: Cpu, key: "ai" },
+              { icon: Sparkles, key: "quality" }
+            ].map(({ icon: Icon, key }) => (
+              <Card key={key} className="bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm border-primary/20">
+                <CardHeader>
+                  <Icon className="w-10 h-10 text-primary mb-3" />
+                  <CardTitle className="text-lg">{content[`home.usp.${key}.title`] || "Feature"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    {content[`home.usp.${key}.description`] || "Description"}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/5 to-background">
-        <div className="container mx-auto px-4">
-          <Card className="border-2 border-transparent bg-gradient-to-br from-primary/10 via-secondary/10 to-tertiary/10 backdrop-blur shadow-glow">
-            <CardContent className="p-12 text-center space-y-6">
-              <h2 className="text-3xl font-bold">Ready to Create <span className="bg-gradient-primary bg-clip-text text-transparent">Something Amazing?</span></h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Join thousands of satisfied customers who've brought their visions to life with our precision 3D printing services.
-              </p>
-              <Button size="lg" onClick={() => navigate("/shop")}>
-                Browse Catalog
-              </Button>
-            </CardContent>
-          </Card>
+      <section className="py-20 bg-gradient-to-br from-primary/10 via-background to-primary/5">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
+            {content["home.cta.title"] || "Start Your Restoration Journey"}
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            {content["home.cta.description"] || "Browse our catalog of authentic parts or generate custom designs"}
+          </p>
+          <Button
+            size="lg"
+            onClick={() => navigate("/shop")}
+            className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-glow"
+          >
+            {content["home.cta.button"] || "Browse Catalog"}
+          </Button>
         </div>
       </section>
 
