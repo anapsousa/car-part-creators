@@ -8,9 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { content } = useContent("auth");
   const [isLoading, setIsLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -88,20 +90,20 @@ const Auth = () => {
       <Card className="w-full max-w-md border-border/50 backdrop-blur-sm bg-card/95">
         <CardHeader className="space-y-2">
           <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            3D Model Generator
+            {content["auth.title"] || "3D Model Generator"}
           </CardTitle>
           <CardDescription>
-            {isLogin ? "Welcome back! Please login to continue." : "Create an account to start generating 3D models."}
+            {isLogin ? content["auth.login.subtitle"] || "Welcome back! Please login to continue." : content["auth.signup.subtitle"] || "Create an account to start generating 3D models."}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{content["auth.email"] || "Email"}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={content["auth.email.placeholder"] || "you@example.com"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -109,11 +111,11 @@ const Auth = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{content["auth.password"] || "Password"}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder={content["auth.password.placeholder"] || "••••••••"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -121,18 +123,18 @@ const Auth = () => {
                 minLength={6}
               />
             </div>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {isLogin ? "Logging in..." : "Creating account..."}
+                  {isLogin ? content["auth.login.loading"] || "Logging in..." : content["auth.signup.loading"] || "Creating account..."}
                 </>
               ) : (
-                isLogin ? "Login" : "Sign Up"
+                isLogin ? content["auth.login.button"] || "Login" : content["auth.signup.button"] || "Sign Up"
               )}
             </Button>
           </form>
@@ -143,7 +145,7 @@ const Auth = () => {
               className="text-primary hover:underline"
               disabled={isLoading}
             >
-              {isLogin ? "Need an account? Sign up" : "Already have an account? Login"}
+              {isLogin ? content["auth.switch.to_signup"] || "Need an account? Sign up" : content["auth.switch.to_login"] || "Already have an account? Login"}
             </button>
           </div>
         </CardContent>

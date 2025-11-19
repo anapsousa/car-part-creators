@@ -10,6 +10,7 @@ import { ShoppingCart, Trash2, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { useContent } from "@/hooks/useContent";
 
 interface WishlistProduct {
   id: string;
@@ -28,6 +29,7 @@ interface WishlistDesign {
 }
 
 export default function Wishlist() {
+  const { content } = useContent("wishlist");
   const { wishlistItems, removeFromWishlist, isLoading } = useWishlist();
   const { addToCart } = useCart();
   const navigate = useNavigate();
@@ -85,7 +87,7 @@ export default function Wishlist() {
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
-      <Header pageTitle="Wishlist" pageSubtitle="Your Saved Items" />
+      <Header pageTitle={content["wishlist.title"] || "Wishlist"} pageSubtitle={content["wishlist.subtitle"] || "Your Saved Items"} />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
@@ -99,10 +101,10 @@ export default function Wishlist() {
           <Tabs defaultValue="products" className="space-y-6">
             <TabsList className="grid w-full max-w-md grid-cols-2">
               <TabsTrigger value="products">
-                Products ({products.length})
+                {content["wishlist.tabs.products"] || "Products"} ({products.length})
               </TabsTrigger>
               <TabsTrigger value="designs">
-                Designs ({designs.length})
+                {content["wishlist.tabs.designs"] || "Designs"} ({designs.length})
               </TabsTrigger>
             </TabsList>
 
@@ -117,10 +119,10 @@ export default function Wishlist() {
                 <Card className="p-12 text-center bg-gradient-to-br from-card via-card to-primary/5">
                   <Heart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                   <p className="text-lg text-muted-foreground mb-4">
-                    No products in your wishlist yet
+                    {content["wishlist.products.empty"] || "No products in your wishlist yet"}
                   </p>
                   <Button variant="gradient" onClick={() => navigate("/shop")}>
-                    Browse Products
+                    {content["wishlist.products.browse"] || "Browse Products"}
                   </Button>
                 </Card>
               ) : (
@@ -144,7 +146,7 @@ export default function Wishlist() {
                           €{product.price.toFixed(2)}
                         </p>
                         {product.stock_quantity === 0 && (
-                          <Badge variant="destructive" className="mt-2">Out of stock</Badge>
+                          <Badge variant="destructive" className="mt-2">{content["wishlist.out_of_stock"] || "Out of stock"}</Badge>
                         )}
                       </CardContent>
                       <CardFooter className="p-4 pt-0 flex gap-2">
@@ -158,7 +160,7 @@ export default function Wishlist() {
                           disabled={product.stock_quantity === 0}
                         >
                           <ShoppingCart className="mr-2 h-4 w-4" />
-                          Add to Cart
+                          {content["wishlist.add_to_cart"] || "Add to Cart"}
                         </Button>
                         <Button
                           variant="outline"
@@ -189,10 +191,10 @@ export default function Wishlist() {
                 <Card className="p-12 text-center bg-gradient-to-br from-card via-card to-primary/5">
                   <Heart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                   <p className="text-lg text-muted-foreground mb-4">
-                    No designs in your wishlist yet
+                    {content["wishlist.designs.empty"] || "No designs in your wishlist yet"}
                   </p>
                   <Button variant="gradient" onClick={() => navigate("/generator")}>
-                    Generate Designs
+                    {content["wishlist.designs.generate"] || "Generate Designs"}
                   </Button>
                 </Card>
               ) : (
@@ -218,7 +220,7 @@ export default function Wishlist() {
                         </div>
                         <p className="text-sm line-clamp-3 mb-2">{design.prompt_text}</p>
                         <p className="text-xs text-muted-foreground">
-                          Created: {new Date(design.created_at).toLocaleDateString()}
+                          {content["wishlist.created"] || "Created"}: {new Date(design.created_at).toLocaleDateString()}
                         </p>
                       </CardContent>
                       {design.stl_file_url && (
@@ -228,7 +230,7 @@ export default function Wishlist() {
                             className="w-full"
                             onClick={() => window.open(design.stl_file_url!, '_blank')}
                           >
-                            Download STL
+                            {content["wishlist.download_stl"] || "Download STL"}
                           </Button>
                         </CardFooter>
                       )}

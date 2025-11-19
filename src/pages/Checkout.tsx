@@ -7,12 +7,14 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const designId = searchParams.get("design");
   const [isProcessing, setIsProcessing] = useState(false);
+  const { content } = useContent("checkout");
 
   const handlePayment = async () => {
     if (!designId) {
@@ -61,8 +63,8 @@ const Checkout = () => {
             </Button>
             <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
             <div>
-              <h1 className="text-xl font-bold">Checkout</h1>
-              <p className="text-xs text-muted-foreground">Complete Your Purchase</p>
+              <h1 className="text-xl font-bold">{content["checkout.title"] || "Checkout"}</h1>
+              <p className="text-xs text-muted-foreground">{content["checkout.subtitle"] || "Complete Your Purchase"}</p>
             </div>
           </div>
         </div>
@@ -74,12 +76,12 @@ const Checkout = () => {
           {/* Order Summary */}
           <Card>
             <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
-              <CardDescription>3D Model Generation</CardDescription>
+              <CardTitle>{content["checkout.summary.title"] || "Order Summary"}</CardTitle>
+              <CardDescription>{content["checkout.summary.description"] || "3D Model Generation"}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex justify-between items-center text-lg font-semibold">
-                <span>Total</span>
+                <span>{content["checkout.summary.total"] || "Total"}</span>
                 <span className="text-primary">€9.99</span>
               </div>
             </CardContent>
@@ -88,9 +90,9 @@ const Checkout = () => {
           {/* Payment Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Payment Method</CardTitle>
+              <CardTitle>{content["checkout.payment.title"] || "Payment Method"}</CardTitle>
               <CardDescription>
-                Secure payment powered by Stripe
+                {content["checkout.payment.subtitle"] || "Secure payment powered by Stripe"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -98,41 +100,41 @@ const Checkout = () => {
                 <div className="flex items-start gap-3">
                   <CreditCard className="h-5 w-5 mt-0.5 text-primary" />
                   <div className="flex-1 space-y-1">
-                    <p className="font-medium">Accepted Payment Methods</p>
+                    <p className="font-medium">{content["checkout.payment.methods.title"] || "Accepted Payment Methods"}</p>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Credit & Debit Cards (Visa, Mastercard, Amex)</li>
-                      <li>• PayPal</li>
-                      <li>• Multibanco (Portugal)</li>
-                      <li>• MB WAY available through Multibanco</li>
+                      <li>{content["checkout.payment.methods.cards"] || "• Credit & Debit Cards (Visa, Mastercard, Amex)"}</li>
+                      <li>{content["checkout.payment.methods.paypal"] || "• PayPal"}</li>
+                      <li>{content["checkout.payment.methods.multibanco"] || "• Multibanco (Portugal)"}</li>
+                      <li>{content["checkout.payment.methods.mbway"] || "• MB WAY available through Multibanco"}</li>
                     </ul>
                   </div>
                 </div>
               </div>
 
-              <Button 
-                onClick={handlePayment} 
-                className="w-full" 
+              <Button
+                onClick={handlePayment}
+                className="w-full"
                 size="lg"
                 disabled={isProcessing}
               >
                 {isProcessing ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Redirecting to Stripe...
+                    {content["checkout.payment.processing"] || "Redirecting to Stripe..."}
                   </>
                 ) : (
-                  `Pay €9.99 with Stripe`
+                  content["checkout.payment.button"] || "Pay €9.99 with Stripe"
                 )}
               </Button>
 
               <div className="text-xs text-muted-foreground space-y-1 text-center">
-                <p>🔒 Your payment is secured by Stripe</p>
-                <p>💳 All major payment methods accepted</p>
-                <p>🇵🇹 Portuguese payment methods supported</p>
+                <p>{content["checkout.security.stripe"] || "🔒 Your payment is secured by Stripe"}</p>
+                <p>{content["checkout.security.methods"] || "💳 All major payment methods accepted"}</p>
+                <p>{content["checkout.security.portuguese"] || "🇵🇹 Portuguese payment methods supported"}</p>
               </div>
 
               <p className="text-xs text-center text-muted-foreground">
-                By completing this purchase, you agree to our Terms of Service
+                {content["checkout.terms"] || "By completing this purchase, you agree to our Terms of Service"}
               </p>
             </CardContent>
           </Card>

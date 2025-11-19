@@ -13,6 +13,7 @@ import DesignHistory from "@/components/DesignHistory";
 import { CreditsDisplay } from "@/components/CreditsDisplay";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 import { 
   validatePhone, 
   validateShippingAddress, 
@@ -49,6 +50,7 @@ interface Profile {
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { content } = useContent("dashboard");
   const [loading, setLoading] = useState(true);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -247,12 +249,12 @@ const UserDashboard = () => {
             <div className="flex items-center gap-4">
               <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto cursor-pointer" onClick={() => navigate("/")} />
               <div>
-                <h1 className="text-xl font-bold">My Dashboard</h1>
-                <p className="text-xs text-muted-foreground">Manage your account</p>
+                <h1 className="text-xl font-bold">{content["dashboard.title"] || "My Dashboard"}</h1>
+                <p className="text-xs text-muted-foreground">{content["dashboard.subtitle"] || "Manage your account"}</p>
               </div>
             </div>
             <Button variant="outline" onClick={() => navigate("/")}>
-              Back to Home
+              {content["dashboard.back_home"] || "Back to Home"}
             </Button>
           </div>
         </div>
@@ -261,10 +263,10 @@ const UserDashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="designs" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="designs">My Designs</TabsTrigger>
-            <TabsTrigger value="orders">Order History</TabsTrigger>
-            <TabsTrigger value="profile">Personal Info</TabsTrigger>
-            <TabsTrigger value="billing">Billing & Address</TabsTrigger>
+            <TabsTrigger value="designs">{content["dashboard.tabs.designs"] || "My Designs"}</TabsTrigger>
+            <TabsTrigger value="orders">{content["dashboard.tabs.orders"] || "Order History"}</TabsTrigger>
+            <TabsTrigger value="profile">{content["dashboard.tabs.profile"] || "Personal Info"}</TabsTrigger>
+            <TabsTrigger value="billing">{content["dashboard.tabs.billing"] || "Billing & Address"}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="designs">
@@ -276,14 +278,14 @@ const UserDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
-                  Payment History
+                  {content["dashboard.orders.title"] || "Payment History"}
                 </CardTitle>
-                <CardDescription>View all your past transactions</CardDescription>
+                <CardDescription>{content["dashboard.orders.description"] || "View all your past transactions"}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {payments.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">No payments yet</p>
+                    <p className="text-muted-foreground text-center py-8">{content["dashboard.orders.empty"] || "No payments yet"}</p>
                   ) : (
                     payments.map((payment) => (
                       <div key={payment.id} className="flex items-center justify-between p-4 border border-border/50 rounded-lg">
@@ -312,14 +314,14 @@ const UserDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5" />
-                  Personal Information
+                  {content["dashboard.profile.title"] || "Personal Information"}
                 </CardTitle>
-                <CardDescription>Update your personal details</CardDescription>
+                <CardDescription>{content["dashboard.profile.description"] || "Update your personal details"}</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handlePersonalInfoUpdate} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{content["dashboard.profile.email"] || "Email"}</Label>
                     <Input
                       id="email"
                       type="email"
@@ -327,11 +329,11 @@ const UserDashboard = () => {
                       disabled
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="first_name">
-                        First Name <span className="text-destructive">*</span>
+                        {content["dashboard.profile.first_name"] || "First Name"} <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="first_name"
@@ -340,11 +342,11 @@ const UserDashboard = () => {
                         placeholder="John"
                         required
                       />
-                      <p className="text-xs text-muted-foreground">Required for shipping</p>
+                      <p className="text-xs text-muted-foreground">{content["dashboard.profile.first_name.required"] || "Required for shipping"}</p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="last_name">
-                        Last Name <span className="text-destructive">*</span>
+                        {content["dashboard.profile.last_name"] || "Last Name"} <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="last_name"
@@ -353,12 +355,12 @@ const UserDashboard = () => {
                         placeholder="Doe"
                         required
                       />
-                      <p className="text-xs text-muted-foreground">Required for shipping</p>
+                      <p className="text-xs text-muted-foreground">{content["dashboard.profile.first_name.required"] || "Required for shipping"}</p>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">
-                      Phone Number <span className="text-destructive">*</span>
+                      {content["dashboard.profile.phone"] || "Phone Number"} <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="phone"
@@ -370,12 +372,12 @@ const UserDashboard = () => {
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      Required for order updates. Use international format (e.g., +1234567890)
+                      {content["dashboard.profile.phone.help"] || "Required for order updates. Use international format (e.g., +1234567890)"}
                     </p>
                   </div>
                   <Button type="submit" disabled={saving}>
                     {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Save Changes
+                    {content["dashboard.profile.save"] || "Save Changes"}
                   </Button>
                 </form>
               </CardContent>
@@ -387,14 +389,14 @@ const UserDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  Billing & Address Information
+                  {content["dashboard.billing.title"] || "Billing & Address Information"}
                 </CardTitle>
-                <CardDescription>Manage your invoicing details</CardDescription>
+                <CardDescription>{content["dashboard.billing.description"] || "Manage your invoicing details"}</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleBillingAddressUpdate} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="company_name">Company Name (Optional)</Label>
+                    <Label htmlFor="company_name">{content["dashboard.billing.company"] || "Company Name (Optional)"}</Label>
                     <Input
                       id="company_name"
                       value={profile?.company_name || ""}
@@ -402,7 +404,7 @@ const UserDashboard = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="vat_number">VAT Number (Optional)</Label>
+                    <Label htmlFor="vat_number">{content["dashboard.billing.vat"] || "VAT Number (Optional)"}</Label>
                     <Input
                       id="vat_number"
                       value={profile?.vat_number || ""}
@@ -411,7 +413,7 @@ const UserDashboard = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="address">
-                      Street Address <span className="text-destructive">*</span>
+                      {content["dashboard.billing.address"] || "Street Address"} <span className="text-destructive">*</span>
                     </Label>
                     <Textarea
                       id="address"
@@ -422,12 +424,12 @@ const UserDashboard = () => {
                       required
                       rows={2}
                     />
-                    <p className="text-xs text-muted-foreground">Required for product shipping</p>
+                    <p className="text-xs text-muted-foreground">{content["dashboard.billing.address.required"] || "Required for product shipping"}</p>
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="city">
-                        City <span className="text-destructive">*</span>
+                        {content["dashboard.billing.city"] || "City"} <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="city"
@@ -440,7 +442,7 @@ const UserDashboard = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="postal_code">
-                        Postal Code <span className="text-destructive">*</span>
+                        {content["dashboard.billing.postal_code"] || "Postal Code"} <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="postal_code"
@@ -453,7 +455,7 @@ const UserDashboard = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="country">
-                        Country <span className="text-destructive">*</span>
+                        {content["dashboard.billing.country"] || "Country"} <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="country"
@@ -463,12 +465,12 @@ const UserDashboard = () => {
                         autoComplete="country-name"
                         required
                       />
-                      <p className="text-xs text-muted-foreground">Use 2-letter code (e.g., GB, US, DE)</p>
+                      <p className="text-xs text-muted-foreground">{content["dashboard.billing.country.help"] || "Use 2-letter code (e.g., GB, US, DE)"}</p>
                     </div>
                   </div>
                   <Button type="submit" disabled={saving}>
                     {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Save Billing Info
+                    {content["dashboard.billing.save"] || "Save Billing Info"}
                   </Button>
                 </form>
               </CardContent>

@@ -5,10 +5,12 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, cartCount } = useCart();
   const navigate = useNavigate();
+  const { content } = useContent("cart");
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
@@ -22,11 +24,11 @@ export default function Cart() {
   if (cartCount === 0) {
     return (
       <div className="min-h-screen bg-background">
-        <Header pageTitle="Shopping Cart" pageSubtitle="Your Items" />
+        <Header pageTitle={content["cart.title"] || "Shopping Cart"} pageSubtitle={content["cart.subtitle"] || "Your Items"} />
         <main className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
-          <p className="text-muted-foreground mb-8">Add some products to get started</p>
-          <Button onClick={() => navigate("/shop")}>Browse Products</Button>
+          <h1 className="text-3xl font-bold mb-4">{content["cart.empty.title"] || "Your Cart is Empty"}</h1>
+          <p className="text-muted-foreground mb-8">{content["cart.empty.description"] || "Add some products to get started"}</p>
+          <Button onClick={() => navigate("/shop")}>{content["cart.empty.button"] || "Browse Products"}</Button>
         </main>
         <Footer />
       </div>
@@ -35,10 +37,10 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header pageTitle="Shopping Cart" pageSubtitle={`${cartCount} items`} />
+      <Header pageTitle={content["cart.title"] || "Shopping Cart"} pageSubtitle={`${cartCount} ${content["cart.items_count"] || "items"}`} />
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Shopping Cart ({cartCount} items)</h1>
+        <h1 className="text-3xl font-bold mb-8">{content["cart.title"] || "Shopping Cart"} ({cartCount} {content["cart.items_count"] || "items"})</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
@@ -103,25 +105,25 @@ export default function Cart() {
           <div>
             <Card>
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                <h2 className="text-xl font-semibold mb-4">{content["cart.summary.title"] || "Order Summary"}</h2>
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-muted-foreground">{content["cart.summary.subtotal"] || "Subtotal"}</span>
                     <span>€{subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span>Calculated at checkout</span>
+                    <span className="text-muted-foreground">{content["cart.summary.shipping"] || "Shipping"}</span>
+                    <span>{content["cart.summary.shipping_calculated"] || "Calculated at checkout"}</span>
                   </div>
                 </div>
                 <div className="border-t pt-4 mb-6">
                   <div className="flex justify-between font-semibold text-lg">
-                    <span>Total</span>
+                    <span>{content["cart.summary.total"] || "Total"}</span>
                     <span>€{subtotal.toFixed(2)}</span>
                   </div>
                 </div>
                 <Button className="w-full" size="lg" onClick={handleCheckout}>
-                  Proceed to Checkout
+                  {content["cart.checkout_button"] || "Proceed to Checkout"}
                 </Button>
               </CardContent>
             </Card>
