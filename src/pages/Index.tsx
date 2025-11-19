@@ -34,7 +34,10 @@ export default function Index() {
                 Premium 3D Printing Services
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold">
-                {content["home.hero.title"] || "Authentic Classic Car Parts"}
+                Restore Your Classic.{" "}
+                <span className="bg-gradient-primary bg-clip-text text-transparent">
+                  Enhance Your Home.
+                </span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl">
                 {content["home.hero.subtitle"] || "Preserve automotive heritage with precision 3D-printed restoration parts"}
