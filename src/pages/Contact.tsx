@@ -9,8 +9,10 @@ import { Mail, MessageSquare, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 const Contact = () => {
   const navigate = useNavigate();
+  const { content } = useContent("contact");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,7 +26,7 @@ const Contact = () => {
 
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success("Message sent successfully! We'll get back to you soon.");
+    toast.success(content["contact.form.success"] || "Message sent successfully! We'll get back to you soon.");
     setFormData({
       name: "",
       email: "",
@@ -45,13 +47,24 @@ const Contact = () => {
               <MessageSquare className="h-8 w-8 text-primary" />
             </div>
             <h2 className="text-4xl font-bold">
-              Let's{" "}
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Connect
-              </span>
+              {(() => {
+                const title = content["contact.hero.title"] || "Let's Connect";
+                const parts = title.split(/\s+/);
+                if (parts.length >= 2) {
+                  return (
+                    <>
+                      {parts[0]}{" "}
+                      <span className="bg-gradient-primary bg-clip-text text-transparent">
+                        {parts.slice(1).join(" ")}
+                      </span>
+                    </>
+                  );
+                }
+                return title;
+              })()}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Have a question or need support? We're here to help you create amazing 3D models
+              {content["contact.hero.subtitle"] || "Have a question or need support? We're here to help you create amazing 3D models"}
             </p>
           </div>
 
@@ -62,10 +75,10 @@ const Contact = () => {
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 mb-2 mx-auto hover:bg-primary/30 transition-all duration-300">
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle className="text-lg">Email</CardTitle>
+                <CardTitle className="text-lg">{content["contact.info.email.title"] || "Email"}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-sm text-muted-foreground">support@pompousweek.com</p>
+                <p className="text-sm text-muted-foreground">{content["contact.info.email.value"] || "support@pompousweek.com"}</p>
               </CardContent>
             </Card>
 
@@ -74,10 +87,10 @@ const Contact = () => {
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-secondary/20 mb-2 mx-auto hover:bg-secondary/30 transition-all duration-300">
                   <MessageSquare className="h-6 w-6 text-secondary" />
                 </div>
-                <CardTitle className="text-lg">Live Chat</CardTitle>
+                <CardTitle className="text-lg">{content["contact.info.chat.title"] || "Live Chat"}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-sm text-muted-foreground">Available 9AM - 6PM GMT</p>
+                <p className="text-sm text-muted-foreground">{content["contact.info.chat.value"] || "Available 9AM - 6PM GMT"}</p>
               </CardContent>
             </Card>
 
@@ -86,10 +99,10 @@ const Contact = () => {
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-tertiary/20 mb-2 mx-auto hover:bg-tertiary/30 transition-all duration-300">
                   <Send className="h-6 w-6 text-tertiary" />
                 </div>
-                <CardTitle className="text-lg">Response Time</CardTitle>
+                <CardTitle className="text-lg">{content["contact.info.response.title"] || "Response Time"}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-sm text-muted-foreground">Within 24/48 hours</p>
+                <p className="text-sm text-muted-foreground">{content["contact.info.response.value"] || "Within 24/48 hours"}</p>
               </CardContent>
             </Card>
           </div>
@@ -97,46 +110,48 @@ const Contact = () => {
           {/* Contact Form */}
           <Card className="bg-gradient-to-br from-primary/5 via-secondary/5 to-tertiary/5 border-2">
             <CardHeader>
-              <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">Send Us a Message</CardTitle>
+              <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">
+                {content["contact.form.title"] || "Send Us a Message"}
+              </CardTitle>
               <CardDescription>
-                Fill out the form below and we'll get back to you as soon as possible
+                {content["contact.form.description"] || "Fill out the form below and we'll get back to you as soon as possible"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your name" value={formData.name} onChange={e => setFormData({
+                    <Label htmlFor="name">{content["contact.form.name"] || "Name"}</Label>
+                    <Input id="name" placeholder={content["contact.form.name.placeholder"] || "Your name"} value={formData.name} onChange={e => setFormData({
                     ...formData,
                     name: e.target.value
                   })} required />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" value={formData.email} onChange={e => setFormData({
+                    <Label htmlFor="email">{content["contact.form.email"] || "Email"}</Label>
+                    <Input id="email" type="email" placeholder={content["contact.form.email.placeholder"] || "your@email.com"} value={formData.email} onChange={e => setFormData({
                     ...formData,
                     email: e.target.value
                   })} required />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="subject">Subject</Label>
-                  <Input id="subject" placeholder="What is this about?" value={formData.subject} onChange={e => setFormData({
+                  <Label htmlFor="subject">{content["contact.form.subject"] || "Subject"}</Label>
+                  <Input id="subject" placeholder={content["contact.form.subject.placeholder"] || "What is this about?"} value={formData.subject} onChange={e => setFormData({
                   ...formData,
                   subject: e.target.value
                 })} required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
-                  <Textarea id="message" placeholder="Tell us more about your inquiry..." value={formData.message} onChange={e => setFormData({
+                  <Label htmlFor="message">{content["contact.form.message"] || "Message"}</Label>
+                  <Textarea id="message" placeholder={content["contact.form.message.placeholder"] || "Tell us more about your inquiry..."} value={formData.message} onChange={e => setFormData({
                   ...formData,
                   message: e.target.value
                 })} required rows={6} />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   <Send className="mr-2 h-4 w-4" />
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? content["contact.form.sending"] || "Sending..." : content["contact.form.send"] || "Send Message"}
                 </Button>
               </form>
             </CardContent>
