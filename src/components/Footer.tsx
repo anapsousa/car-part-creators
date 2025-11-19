@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import { useContent } from "@/hooks/useContent";
 
 export const Footer = () => {
   const navigate = useNavigate();
+  const { content } = useContent("footer");
 
   return (
     <footer className="bg-card border-t border-border mt-20">
@@ -17,32 +19,32 @@ export const Footer = () => {
               onClick={() => navigate("/")}
             />
             <p className="text-sm text-muted-foreground">
-              Custom 3D printed solutions for car enthusiasts and home decorators. Quality, precision, and innovation in every design.
+              {content["footer.brand.description"] || "Custom 3D printed solutions for car enthusiasts and home decorators. Quality, precision, and innovation in every design."}
             </p>
           </div>
 
           {/* Products */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Products</h3>
+            <h3 className="font-semibold text-foreground mb-4">{content["footer.products.title"] || "Products"}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <button onClick={() => navigate("/shop")} className="hover:text-primary transition-colors">
-                  All Products
+                  {content["footer.products.all"] || "All Products"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/generator")} className="hover:text-primary transition-colors">
-                  3D Models
+                  {content["footer.products.models"] || "3D Models"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/shop?category=car_parts")} className="hover:text-primary transition-colors">
-                  Car Parts
+                  {content["footer.products.car_parts"] || "Car Parts"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/shop?category=home_decor")} className="hover:text-primary transition-colors">
-                  Home Decor
+                  {content["footer.products.home_decor"] || "Home Decor"}
                 </button>
               </li>
             </ul>
@@ -50,26 +52,26 @@ export const Footer = () => {
 
           {/* Services */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Services</h3>
+            <h3 className="font-semibold text-foreground mb-4">{content["footer.services.title"] || "Services"}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <button onClick={() => navigate("/generator")} className="hover:text-primary transition-colors">
-                  AI Model Generator
+                  {content["footer.services.ai_generator"] || "AI Model Generator"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/shop")} className="hover:text-primary transition-colors">
-                  Custom Printing
+                  {content["footer.services.custom_printing"] || "Custom Printing"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">
-                  Restoration Services
+                  {content["footer.services.restoration"] || "Restoration Services"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">
-                  Design Consultation
+                  {content["footer.services.consultation"] || "Design Consultation"}
                 </button>
               </li>
             </ul>
@@ -77,26 +79,26 @@ export const Footer = () => {
 
           {/* Company */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Company</h3>
+            <h3 className="font-semibold text-foreground mb-4">{content["footer.company.title"] || "Company"}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <button onClick={() => navigate("/about")} className="hover:text-primary transition-colors">
-                  About Us
+                  {content["footer.company.about"] || "About Us"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">
-                  Contact
+                  {content["footer.company.contact"] || "Contact"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/faq")} className="hover:text-primary transition-colors">
-                  FAQ
+                  {content["footer.company.faq"] || "FAQ"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/about")} className="hover:text-primary transition-colors">
-                  Terms of Service
+                  {content["footer.company.terms"] || "Terms of Service"}
                 </button>
               </li>
             </ul>
@@ -104,7 +106,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 Pompousweek. All rights reserved.</p>
+          <p>{content["footer.copyright"] || "© 2025 Pompousweek. All rights reserved."}</p>
         </div>
       </div>
     </footer>
