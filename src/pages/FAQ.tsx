@@ -5,42 +5,44 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { HelpCircle } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 const FAQ = () => {
   const navigate = useNavigate();
+  const { content } = useContent("faq");
 
   const faqs = [
     {
-      question: "What file formats do you provide?",
-      answer: "We generate both STL and BLEND files for all 3D models. STL files are ready for 3D printing, while BLEND files can be edited in Blender."
+      question: content["faq.q1.question"] || "What file formats do you provide?",
+      answer: content["faq.q1.answer"] || "We generate both STL and BLEND files for all 3D models. STL files are ready for 3D printing, while BLEND files can be edited in Blender."
     },
     {
-      question: "How long does it take to generate a model?",
-      answer: "Most models are generated within 2-5 minutes. Complex designs may take up to 10 minutes. You'll receive a notification when your model is ready."
+      question: content["faq.q2.question"] || "How long does it take to generate a model?",
+      answer: content["faq.q2.answer"] || "Most models are generated within 2-5 minutes. Complex designs may take up to 10 minutes. You'll receive a notification when your model is ready."
     },
     {
-      question: "Can I customize the dimensions?",
-      answer: "Yes! You can specify custom width, height, and depth dimensions when creating your model. We also offer predefined sizes for common use cases."
+      question: content["faq.q3.question"] || "Can I customize the dimensions?",
+      answer: content["faq.q3.answer"] || "Yes! You can specify custom width, height, and depth dimensions when creating your model. We also offer predefined sizes for common use cases."
     },
     {
-      question: "What payment methods do you accept?",
-      answer: "We accept MB Way, PayPal, and major credit cards. All payments are processed securely."
+      question: content["faq.q4.question"] || "What payment methods do you accept?",
+      answer: content["faq.q4.answer"] || "We accept MB Way, PayPal, and major credit cards. All payments are processed securely."
     },
     {
-      question: "Can I request revisions to my model?",
-      answer: "Yes! After receiving your initial model, you can request modifications. Additional charges may apply for major redesigns."
+      question: content["faq.q5.question"] || "Can I request revisions to my model?",
+      answer: content["faq.q5.answer"] || "Yes! After receiving your initial model, you can request modifications. Additional charges may apply for major redesigns."
     },
     {
-      question: "What materials can I choose from?",
-      answer: "We optimize models for PLA, ABS, PETG, Resin, and TPU materials. Each material has different properties suitable for various applications."
+      question: content["faq.q6.question"] || "What materials can I choose from?",
+      answer: content["faq.q6.answer"] || "We optimize models for PLA, ABS, PETG, Resin, and TPU materials. Each material has different properties suitable for various applications."
     },
     {
-      question: "Do you offer refunds?",
-      answer: "We offer refunds within 7 days if you're not satisfied with your model and haven't downloaded the files yet. Please contact support for assistance."
+      question: content["faq.q7.question"] || "Do you offer refunds?",
+      answer: content["faq.q7.answer"] || "We offer refunds within 7 days if you're not satisfied with your model and haven't downloaded the files yet. Please contact support for assistance."
     },
     {
-      question: "How do I use the generated files?",
-      answer: "Download the STL file and import it into your preferred slicing software (like Cura or PrusaSlicer) to prepare it for printing. BLEND files can be edited in Blender."
+      question: content["faq.q8.question"] || "How do I use the generated files?",
+      answer: content["faq.q8.answer"] || "Download the STL file and import it into your preferred slicing software (like Cura or PrusaSlicer) to prepare it for printing. BLEND files can be edited in Blender."
     }
   ];
 
@@ -57,22 +59,35 @@ const FAQ = () => {
               <HelpCircle className="h-8 w-8 text-primary" />
             </div>
             <h2 className="text-4xl font-bold">
-              How Can We{" "}
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Help You?
-              </span>
+              {(() => {
+                const title = content["faq.hero.title"] || "How Can We Help You?";
+                const words = title.split(/\s+/);
+                if (words.length >= 3) {
+                  const lastWords = words.slice(-2).join(" ");
+                  const firstWords = words.slice(0, -2).join(" ");
+                  return (
+                    <>
+                      {firstWords}{" "}
+                      <span className="bg-gradient-primary bg-clip-text text-transparent">
+                        {lastWords}
+                      </span>
+                    </>
+                  );
+                }
+                return title;
+              })()}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Find answers to common questions about our 3D model generation service
+              {content["faq.hero.subtitle"] || "Find answers to common questions about our 3D model generation service"}
             </p>
           </div>
 
           {/* FAQ Accordion */}
           <Card>
             <CardHeader>
-              <CardTitle>Frequently Asked Questions</CardTitle>
+              <CardTitle>{content["faq.section.title"] || "Frequently Asked Questions"}</CardTitle>
               <CardDescription>
-                Everything you need to know about our service
+                {content["faq.section.description"] || "Everything you need to know about our service"}
               </CardDescription>
             </CardHeader>
             <CardContent>

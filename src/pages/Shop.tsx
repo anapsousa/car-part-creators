@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 interface Product {
   id: string;
@@ -18,6 +19,7 @@ interface Product {
 }
 
 export default function Shop() {
+  const { content } = useContent("shop");
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,10 +75,24 @@ export default function Shop() {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold mb-2">
-            Browse Our <span className="bg-gradient-primary bg-clip-text text-transparent">Products</span>
+            {(() => {
+              const title = content["shop.hero.title"] || "Browse Our Products";
+              const words = title.split(/\s+/);
+              if (words.length >= 2) {
+                return (
+                  <>
+                    {words.slice(0, -1).join(" ")}{" "}
+                    <span className="bg-gradient-primary bg-clip-text text-transparent">
+                      {words[words.length - 1]}
+                    </span>
+                  </>
+                );
+              }
+              return title;
+            })()}
           </h2>
           <p className="text-muted-foreground">
-            Discover custom 3D printed car parts, home decor, and unique designs
+            {content["shop.hero.subtitle"] || "Discover custom 3D printed car parts, home decor, and unique designs"}
           </p>
         </div>
 
@@ -84,7 +100,7 @@ export default function Shop() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search products..."
+              placeholder={content["shop.search.placeholder"] || "Search products..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -92,10 +108,10 @@ export default function Shop() {
           </div>
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
             <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="car_parts">Car Parts</TabsTrigger>
-              <TabsTrigger value="home_decor">Home Decor</TabsTrigger>
-              <TabsTrigger value="custom_designs">Custom Designs</TabsTrigger>
+              <TabsTrigger value="all">{content["shop.category.all"] || "All"}</TabsTrigger>
+              <TabsTrigger value="car_parts">{content["shop.category.car_parts"] || "Car Parts"}</TabsTrigger>
+              <TabsTrigger value="home_decor">{content["shop.category.home_decor"] || "Home Decor"}</TabsTrigger>
+              <TabsTrigger value="custom_designs">{content["shop.category.custom"] || "Custom Designs"}</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -108,7 +124,7 @@ export default function Shop() {
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-lg text-muted-foreground">No products found</p>
+            <p className="text-lg text-muted-foreground">{content["shop.no_products"] || "No products found"}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
