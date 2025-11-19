@@ -67,7 +67,7 @@ npm run dev
 ### Environment Configuration
 The project supports dual-environment setup for Supabase:
 
-- **Remote Supabase (Default)**: The `.env` file contains production Supabase credentials (URL, publishable key, project ID). This connects to the hosted Supabase instance and is suitable for most development work.
+- **Remote Supabase (Default)**: The `.env` file is used for local development and should contain your production Supabase credentials (URL, publishable key, project ID). This allows you to connect to the hosted Supabase instance during local development and testing. **Note:** The `.env` file is strictly for local development use only and is not used in production deployments.
 
 - **Local Supabase (Optional)**: For offline development or testing migrations locally, create a `.env.local` file with local Supabase credentials:
 
@@ -82,6 +82,39 @@ The project supports dual-environment setup for Supabase:
   To start local Supabase:
   - Run `supabase start` (requires Supabase CLI and Docker)
   - Get local credentials with `supabase status` (shows local API URL and anon key)
+
+### Securing Environment Variables
+
+The `.env` file is strictly for local development only. It is included in `.gitignore` and should never be committed to version control. This prevents accidental exposure of sensitive information on GitHub.
+
+**Important:** Production deployments via Lovable do not use the `.env` file. Instead, Supabase credentials for production are configured through Lovable's environment variable management system (accessible via the Lovable project settings). This ensures that production credentials are managed separately from your local development setup.
+
+#### Obtaining Supabase Credentials
+
+For local development, you need to create a `.env` file with your Supabase credentials. These credentials can be obtained from the Supabase Dashboard:
+
+1. Navigate to your project dashboard at https://supabase.com/dashboard/project/[project-id]/settings/api (replace [project-id] with your actual project ID).
+2. Under "Project API keys", copy the "anon public" key for `VITE_SUPABASE_PUBLISHABLE_KEY`.
+3. Copy the "Project URL" for `VITE_SUPABASE_URL`.
+4. Copy the "Project Reference ID" for `VITE_SUPABASE_PROJECT_ID`.
+
+Create a `.env` file in the project root with the following format:
+
+```
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-key-here
+VITE_SUPABASE_PROJECT_ID=your-project-id-here
+```
+
+Note: The **database password** is NOT needed for frontend applications and should never be added to the `.env` file, as it grants full database access and is intended for server-side use only.
+
+#### Using GitHub Secrets for CI/CD
+
+If your project uses GitHub Actions or other CI/CD pipelines, store sensitive environment variables as GitHub repository secrets:
+
+- Go to your repository Settings → Secrets and variables → Actions.
+- Add secrets for `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and `VITE_SUPABASE_PROJECT_ID`.
+- In your workflow files, access them using `${{ secrets.VITE_SUPABASE_URL }}`, etc.
 
 ### Running the Development Server
 Run `npm run dev` to start the Vite development server on `http://localhost:8080`. This enables hot module replacement (HMR) for instant updates. The server is accessible on all network interfaces (`::`), allowing testing on mobile devices via local IP.
@@ -164,7 +197,16 @@ The project is hosted on Lovable and automatically deploys when changes are push
 Lovable handles building the application, applying Supabase migrations automatically, deploying Edge Functions, and serving the static site with CDN. Deployment typically takes 2-3 minutes.
 
 ### Environment Variables in Production
-Lovable uses the `.env` file for production environment variables. Supabase credentials in `.env` point to the production Supabase instance. Sensitive variables (like Stripe keys in Edge Functions) should be configured in Supabase's Edge Function secrets. Refer to Lovable documentation for managing environment variables.
+Production deployments via Lovable do not use the `.env` file from the repository. Instead, Supabase credentials for production must be configured through Lovable's environment variable management system:
+
+1. Open your Lovable project at the URL in the "Project info" section
+2. Navigate to Project Settings → Environment Variables
+3. Configure the following variables:
+   - `VITE_SUPABASE_URL` - Your production Supabase project URL
+   - `VITE_SUPABASE_PUBLISHABLE_KEY` - Your production Supabase anon/public key
+   - `VITE_SUPABASE_PROJECT_ID` - Your production Supabase project ID
+
+Sensitive variables for Edge Functions (like Stripe keys) should be configured in Supabase's Edge Function secrets through the Supabase Dashboard, not through Lovable's environment variables. Refer to Lovable documentation for managing environment variables and Supabase documentation for Edge Function secrets.
 
 ## What technologies are used for this project?
 
