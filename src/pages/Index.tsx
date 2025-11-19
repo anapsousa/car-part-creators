@@ -34,10 +34,21 @@ export default function Index() {
                 Premium 3D Printing Services
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold">
-                Restore Your Classic.{" "}
-                <span className="bg-gradient-primary bg-clip-text text-transparent">
-                  Enhance Your Home.
-                </span>
+                {(() => {
+                  const title = content["home.hero.title"] || "Restore Your Classic. Enhance Your Home.";
+                  const parts = title.split(/\.\s+/);
+                  if (parts.length >= 2) {
+                    return (
+                      <>
+                        {parts[0]}.{" "}
+                        <span className="bg-gradient-primary bg-clip-text text-transparent">
+                          {parts.slice(1).join(". ")}.
+                        </span>
+                      </>
+                    );
+                  }
+                  return title;
+                })()}
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl">
                 {content["home.hero.subtitle"] || "Preserve automotive heritage with precision 3D-printed restoration parts"}
