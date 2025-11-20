@@ -179,6 +179,33 @@ Alternatively, create a new migration file with INSERT statements following the 
 - `src/i18n/locales/pt.json` - Reference for Portuguese translation style.
 - `supabase/migrations/20251119_populate_portuguese_translations.sql` - Bulk translation migration.
 
+## Admin Access
+
+### How to Access Admin Pages
+Admin pages are accessible via the user dropdown menu in the header, which is only visible to users with admin role. The available admin routes are:
+- `/admin/dashboard` - Design review and approval system
+- `/admin/stats` - Business analytics (revenue, costs, users, designs)
+- `/admin/products` - Product management for the shop
+- `/admin/content` - CMS content manager for translations
+
+### Current Admin User
+The primary admin account is `anapsousa@gmail.com`. Note that the user must sign up and log in first before admin access becomes available, as the admin role is assigned in the database after account creation.
+
+### How to Add More Admins
+To grant admin access to additional users in the future, use the `ensure_admin_role()` helper function. This can be done via the Supabase SQL editor or by creating a new migration file. Example SQL command:
+
+```sql
+SELECT public.ensure_admin_role('newemail@example.com');
+```
+
+This function is idempotent and safe to run multiple times.
+
+### Admin Features Overview
+- **Design Review**: Approve or reject user-generated 3D models submitted through the generator
+- **Statistics**: View comprehensive business analytics including revenue, costs, user metrics, and AI generation costs
+- **Product Management**: Add, edit, or delete products available in the shop
+- **Content Manager**: Edit CMS content and manage translations between English and Portuguese
+
 ## Build and Deployment
 
 ### Building for Production

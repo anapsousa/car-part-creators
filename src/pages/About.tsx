@@ -126,27 +126,43 @@ const About = () => {
           {/* CTA Section */}
           <Card className="bg-gradient-to-br from-primary/10 via-secondary/10 to-tertiary/10 border-2 border-transparent shadow-glow">
             <CardHeader className="text-center">
-              <CardTitle>Join Our <span className="bg-gradient-primary bg-clip-text text-transparent">Community</span></CardTitle>
+              <CardTitle>
+                {(() => {
+                  const title = content["about.cta.title"] || "Join Our Community";
+                  const parts = title.split(/\s+/);
+                  if (parts.length >= 2) {
+                    return (
+                      <>
+                        {parts[0]}{" "}
+                        <span className="bg-gradient-primary bg-clip-text text-transparent">
+                          {parts.slice(1).join(" ")}
+                        </span>
+                      </>
+                    );
+                  }
+                  return title;
+                })()}
+              </CardTitle>
               <CardDescription>
-                Start creating amazing 3D models today
+                {content["about.cta.description"] || "Start creating amazing 3D models today"}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center gap-4">
-              <Button 
-                variant="secondary" 
-                size="lg" 
-                onClick={() => navigate("/")} 
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => navigate("/")}
                 className="transition-all duration-300 hover:scale-105 hover:shadow-glow"
               >
-                Get Started
+                {content["about.cta.button_get_started"] || "Get Started"}
               </Button>
-              <Button 
-                variant="secondary" 
-                size="lg" 
-                onClick={() => navigate("/contact")} 
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => navigate("/contact")}
                 className="transition-all duration-300 hover:scale-105 hover:shadow-glow"
               >
-                Contact Us
+                {content["about.cta.button_contact"] || "Contact Us"}
               </Button>
             </CardContent>
           </Card>

@@ -8,12 +8,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 import { Loader2, Sparkles, Upload, X, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useContent } from "@/hooks/useContent";
 
 interface GenerateFormProps {
   onGenerate: () => void;
 }
 
 const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
+  const { content } = useContent("generator");
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [category, setCategory] = useState("custom");
@@ -29,7 +31,7 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
     if (!files || files.length === 0) return;
 
     if (referenceImages.length + files.length > 3) {
-      toast.error("You can only upload up to 3 reference images");
+      toast.error(content["generator.form.error_max_images"] || "You can only upload up to 3 reference images");
       return;
     }
 
@@ -55,10 +57,10 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
 
       const uploadedUrls = await Promise.all(uploadPromises);
       setReferenceImages([...referenceImages, ...uploadedUrls]);
-      toast.success("Reference images uploaded");
+      toast.success(content["generator.form.success_images_uploaded"] || "Reference images uploaded");
     } catch (error) {
       console.error("Error uploading images:", error);
-      toast.error("Failed to upload images");
+      toast.error(content["generator.form.error_upload_failed"] || "Failed to upload images");
     } finally {
       setUploadingImages(false);
     }
@@ -70,7 +72,7 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
-      toast.error("Please enter a prompt");
+      toast.error(content["generator.form.error_empty_prompt"] || "Please enter a prompt");
       return;
     }
 
@@ -80,7 +82,7 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast.error("You must be logged in");
+        toast.error(content["generator.form.error_not_logged_in"] || "You must be logged in");
         return;
       }
 
@@ -114,29 +116,29 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
       if (error) {
         // Check error codes
         if (data?.code === "INSUFFICIENT_CREDITS") {
-          toast.error("You don't have enough credits. Please purchase more to continue.", {
+          toast.error(content["generator.form.error_insufficient_credits"] || "You don't have enough credits. Please purchase more to continue.", {
             duration: 5000,
             action: {
-              label: "Buy Credits",
+              label: content["generator.form.action_buy_credits"] || "Buy Credits",
               onClick: () => window.location.href = "/dashboard?tab=credits"
             }
           });
           return;
         }
         if (data?.code === "SERVICE_UNAVAILABLE") {
-          toast.error("Service temporarily unavailable. Your credit has been refunded.");
+          toast.error(content["generator.form.error_service_unavailable"] || "Service temporarily unavailable. Your credit has been refunded.");
           return;
         }
         throw error;
       }
 
-      toast.success("3D model generation started!");
+      toast.success(content["generator.form.success_generation_started"] || "3D model generation started!");
       setPrompt("");
       setReferenceImages([]);
       onGenerate();
     } catch (error: any) {
       console.error("Generation error:", error);
-      toast.error(error.message || "Failed to start generation");
+      toast.error(error.message || (content["generator.form.error_generation_failed"] || "Failed to start generation"));
     } finally {
       setIsGenerating(false);
     }
@@ -147,32 +149,32 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
-          Generate 3D Model
+          {content["generator.form.card_title"] || "Generate 3D Model"}
         </CardTitle>
         <CardDescription>
-          Describe the 3D model you want to create. Be specific about details, dimensions, and purpose.
+          {content["generator.form.card_description"] || "Describe the 3D model you want to create. Be specific about details, dimensions, and purpose."}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="category">Category</Label>
+          <Label htmlFor="category">{content["generator.form.category_label"] || "Category"}</Label>
           <Select value={category} onValueChange={setCategory} disabled={isGenerating}>
             <SelectTrigger>
-              <SelectValue placeholder="Select category" />
+              <SelectValue placeholder={content["generator.form.category_placeholder"] || "Select category"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="car_parts">Car Parts</SelectItem>
-              <SelectItem value="home_decorations">Home Decorations</SelectItem>
-              <SelectItem value="custom">Custom Design</SelectItem>
+              <SelectItem value="car_parts">{content["generator.form.category_car_parts"] || "Car Parts"}</SelectItem>
+              <SelectItem value="home_decorations">{content["generator.form.category_home_decorations"] || "Home Decorations"}</SelectItem>
+              <SelectItem value="custom">{content["generator.form.category_custom"] || "Custom Design"}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="prompt">Design Description</Label>
+          <Label htmlFor="prompt">{content["generator.form.description_label"] || "Design Description"}</Label>
           <Textarea
             id="prompt"
-            placeholder="Example: A front bumper for a 2020 Honda Civic, with mounting holes for standard headlights..."
+            placeholder={content["generator.form.description_placeholder"] || "Example: A front bumper for a 2020 Honda Civic, with mounting holes for standard headlights..."}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             disabled={isGenerating}
@@ -182,8 +184,8 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label>Reference Images (Optional)</Label>
-          <p className="text-xs text-muted-foreground mb-2">Upload up to 3 reference images to guide the AI generation</p>
+          <Label>{content["generator.form.reference_images_label"] || "Reference Images (Optional)"}</Label>
+          <p className="text-xs text-muted-foreground mb-2">{content["generator.form.reference_images_help"] || "Upload up to 3 reference images to guide the AI generation"}</p>
           <div className="grid grid-cols-3 gap-3">
             {referenceImages.map((url, index) => (
               <div key={index} className="relative aspect-square bg-muted rounded-lg overflow-hidden group">
@@ -207,7 +209,7 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
                   ) : (
                     <>
                       <ImageIcon className="h-6 w-6 mx-auto mb-1 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">Upload</p>
+                      <p className="text-xs text-muted-foreground">{content["generator.form.upload_button"] || "Upload"}</p>
                     </>
                   )}
                 </div>
@@ -226,42 +228,42 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="material">Material Type</Label>
+            <Label htmlFor="material">{content["generator.form.material_label"] || "Material Type"}</Label>
             <Select value={material} onValueChange={setMaterial} disabled={isGenerating}>
               <SelectTrigger>
-                <SelectValue placeholder="Select material" />
+                <SelectValue placeholder={content["generator.form.material_placeholder"] || "Select material"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="PLA">PLA (Standard)</SelectItem>
-                <SelectItem value="ABS">ABS (Durable)</SelectItem>
-                <SelectItem value="PETG">PETG (Strong)</SelectItem>
-                <SelectItem value="TPU">TPU (Flexible)</SelectItem>
-                <SelectItem value="Nylon">Nylon (Industrial)</SelectItem>
-                <SelectItem value="Resin">Resin (High Detail)</SelectItem>
+                <SelectItem value="PLA">{content["generator.form.material_pla"] || "PLA (Standard)"}</SelectItem>
+                <SelectItem value="ABS">{content["generator.form.material_abs"] || "ABS (Durable)"}</SelectItem>
+                <SelectItem value="PETG">{content["generator.form.material_petg"] || "PETG (Strong)"}</SelectItem>
+                <SelectItem value="TPU">{content["generator.form.material_tpu"] || "TPU (Flexible)"}</SelectItem>
+                <SelectItem value="Nylon">{content["generator.form.material_nylon"] || "Nylon (Industrial)"}</SelectItem>
+                <SelectItem value="Resin">{content["generator.form.material_resin"] || "Resin (High Detail)"}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label>Dimensions (mm) - Optional</Label>
+            <Label>{content["generator.form.dimensions_label"] || "Dimensions (mm) - Optional"}</Label>
             <div className="grid grid-cols-3 gap-2">
               <Input
                 type="number"
-                placeholder="Width"
+                placeholder={content["generator.form.dimension_width"] || "Width"}
                 value={width}
                 onChange={(e) => setWidth(e.target.value)}
                 disabled={isGenerating}
               />
               <Input
                 type="number"
-                placeholder="Height"
+                placeholder={content["generator.form.dimension_height"] || "Height"}
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
                 disabled={isGenerating}
               />
               <Input
                 type="number"
-                placeholder="Depth"
+                placeholder={content["generator.form.dimension_depth"] || "Depth"}
                 value={depth}
                 onChange={(e) => setDepth(e.target.value)}
                 disabled={isGenerating}
@@ -280,12 +282,12 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
           {isGenerating ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Generating Model...
+              {content["generator.form.button_generating"] || "Generating Model..."}
             </>
           ) : (
             <>
               <Sparkles className="mr-2 h-5 w-5" />
-              Generate Model
+              {content["generator.form.button_generate"] || "Generate Model"}
             </>
           )}
         </Button>
