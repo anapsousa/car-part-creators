@@ -33,7 +33,19 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    checkAuth();
+    let subscription: { unsubscribe: () => void } | null = null;
+
+    const initAuth = async () => {
+      subscription = await checkAuth();
+    };
+
+    initAuth();
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const checkAuth = async () => {
@@ -54,7 +66,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
       setIsAdmin(false);
     }
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
       } else {
@@ -62,6 +74,8 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
         setIsAdmin(false);
       }
     });
+
+    return subscription;
   };
 
   const handleLogout = async () => {

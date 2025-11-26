@@ -14,7 +14,19 @@ export default function Generator() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    checkAuth();
+    let subscription: { unsubscribe: () => void } | null = null;
+
+    const initAuth = async () => {
+      subscription = await checkAuth();
+    };
+
+    initAuth();
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const checkAuth = async () => {
@@ -27,13 +39,15 @@ export default function Generator() {
 
     setUser(session.user);
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         navigate("/auth");
       } else {
         setUser(session.user);
       }
     });
+
+    return subscription;
   };
 
   return (

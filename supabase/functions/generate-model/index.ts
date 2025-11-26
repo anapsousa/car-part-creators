@@ -1,9 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+const ALLOWED_ORIGINS = [
+  "https://pompousweek.com",
+  "http://localhost:5173",
+];
+
+const getCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
 };
 
 // Estimated costs per service
@@ -13,8 +22,10 @@ const COSTS = {
 };
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: getCorsHeaders(origin) });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -46,31 +57,50 @@ serve(async (req) => {
       .eq("user_id", userId)
       .single();
 
+    const STARTING_FREE_CREDITS = 5;
+    let currentCredits = userCredits?.credits_remaining ?? null;
+
     if (creditsError || !userCredits) {
-      // Initialize credits if not exists
-      await supabase.from("user_credits").insert({
-        user_id: userId,
-        credits_remaining: 5,
-        credits_purchased: 0
-      });
-    } else if (userCredits.credits_remaining < 1) {
+      // Initialize credits if not exists and capture actual stored value
+      const { data: insertedCredits, error: insertError } = await supabase
+        .from("user_credits")
+        .insert({
+          user_id: userId,
+          credits_remaining: STARTING_FREE_CREDITS,
+          credits_purchased: 0,
+        })
+        .select("credits_remaining")
+        .single();
+
+      if (insertError || !insertedCredits) {
+        throw new Error("Failed to initialize user credits");
+      }
+
+      currentCredits = insertedCredits.credits_remaining;
+    } else {
+      currentCredits = userCredits.credits_remaining;
+    }
+
+    if (currentCredits < 1) {
       await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
       return new Response(
         JSON.stringify({
           error: "Insufficient credits. Please purchase more credits to continue.",
-          code: "INSUFFICIENT_CREDITS"
+          code: "INSUFFICIENT_CREDITS",
         }),
         {
           status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
+          headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" },
+        },
       );
     }
 
-    // Deduct credit
+    // Deduct one credit based on the actual current value
+    const updatedCreditsRemaining = currentCredits - 1;
+
     await supabase
       .from("user_credits")
-      .update({ credits_remaining: (userCredits?.credits_remaining || 5) - 1 })
+      .update({ credits_remaining: updatedCreditsRemaining })
       .eq("user_id", userId);
 
     const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
@@ -134,7 +164,7 @@ serve(async (req) => {
             error: "Service temporarily unavailable. Your credit has been refunded.",
             code: "SERVICE_UNAVAILABLE"
           }),
-          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 503, headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" } }
         );
       }
       
@@ -212,7 +242,7 @@ serve(async (req) => {
             error: "Service temporarily unavailable. Your credit has been refunded.",
             code: "SERVICE_UNAVAILABLE"
           }),
-          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 503, headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" } }
         );
       }
       
@@ -223,14 +253,17 @@ serve(async (req) => {
     const predictionId = prediction.id;
     console.log("Replicate prediction created:", predictionId);
 
-    // Step 3: Poll for completion (max 5 minutes)
+    // Step 3: Poll for completion with a stricter global timeout
     let attempts = 0;
-    const maxAttempts = 60;
+    const maxAttempts = 11; // ~55 seconds at 5s per attempt
+    const pollIntervalMs = 5000;
+    const maxDurationMs = 55_000;
+    const startTime = Date.now();
     let modelUrl = null;
 
-    while (attempts < maxAttempts) {
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
-      
+    while (attempts < maxAttempts && Date.now() - startTime < maxDurationMs) {
+      await new Promise((resolve) => setTimeout(resolve, pollIntervalMs)); // Wait 5 seconds
+
       const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
         headers: {
           Authorization: `Bearer ${replicateApiKey}`,
@@ -250,16 +283,16 @@ serve(async (req) => {
         // TRELLIS returns GLB and other formats
         modelUrl = statusData.output?.glb || statusData.output;
         console.log("3D model generation succeeded! URL:", modelUrl);
-        
+
         // Track Replicate cost
         await supabase.from("generation_costs").insert({
           design_id: designId,
           user_id: userId,
           cost_usd: COSTS.REPLICATE_3D,
           service: "replicate",
-          status: "completed"
+          status: "completed",
         });
-        
+
         break;
       } else if (statusData.status === "failed" || statusData.status === "canceled") {
         await supabase.from("designs").update({ status: "failed" }).eq("id", designId);
@@ -330,20 +363,20 @@ serve(async (req) => {
         modelUrl: urlData.publicUrl,
       }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+        headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" },
+      },
     );
 
   } catch (error) {
     console.error("Error in generate-model function:", error);
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : "Unknown error occurred"
+        error: error instanceof Error ? error.message : "Unknown error occurred",
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+        headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" },
+      },
     );
   }
 });
