@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
+import { useEffect, useMemo } from "react";
 
 export interface ContentTranslation {
   content_key: string;
@@ -35,17 +36,27 @@ export function useContent(page?: string) {
     },
   });
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['content-translations'] });
+  }, [currentLanguage, queryClient]);
+
   // Create a content object with keys mapped to translated text
-  const content: Record<string, string> = {};
-  
-  translations.forEach((translation) => {
-    const text =
-      currentLanguage === "pt" && translation.portuguese_text
-        ? translation.portuguese_text
-        : translation.english_text;
-    
-    content[translation.content_key] = text;
-  });
+  const content = useMemo(() => {
+    const contentObj: Record<string, string> = {};
+
+    translations.forEach((translation) => {
+      const text =
+        currentLanguage === "pt" && translation.portuguese_text
+          ? translation.portuguese_text
+          : translation.english_text;
+
+      contentObj[translation.content_key] = text;
+    });
+
+    return contentObj;
+  }, [translations, currentLanguage]);
 
   return { content, isLoading, translations };
 }
