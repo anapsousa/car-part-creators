@@ -271,6 +271,15 @@
     "success": {
       "login": "Welcome back!",
       "signup": "Account created successfully! Welcome!"
+    },
+    "social": {
+      "title": "Or continue with",
+      "google": "Google",
+      "facebook": "Facebook",
+      "twitter": "Twitter/X",
+      "github": "GitHub",
+      "discord": "Discord",
+      "error": "Failed to sign in with {provider}. Please try again."
     }
   },
   "checkout": {

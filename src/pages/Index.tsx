@@ -35,7 +35,7 @@ export default function Index() {
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold">
                 {(() => {
-                  const title = content["home.hero.title"] || "Restore Your Classic. Enhance Your Home.";
+                  const title = content["home.hero.title"] || "Restore Your Classic. Enhance Your Home";
                   const parts = title.split(/\.\s+/);
                   if (parts.length >= 2) {
                     return (

@@ -271,6 +271,15 @@
     "success": {
       "login": "Bem-vindo de volta!",
       "signup": "Conta criada com sucesso! Bem-vindo!"
+    },
+    "social": {
+      "title": "Ou continue com",
+      "google": "Google",
+      "facebook": "Facebook",
+      "twitter": "Twitter/X",
+      "github": "GitHub",
+      "discord": "Discord",
+      "error": "Falha ao entrar com {provider}. Por favor, tente novamente."
     }
   },
   "checkout": {

@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Facebook, Twitter, Github, Globe, MessageCircle } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
 
@@ -85,71 +86,147 @@ const Auth = () => {
     }
   };
 
+  const handleSocialLogin = async (provider: string) => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      console.error(error);
+      toast.error((content["auth.social.error"] || "Failed to sign in with {provider}. Please try again.").replace("{provider}", provider.charAt(0).toUpperCase() + provider.slice(1)));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-mesh">
-      <Card className="w-full max-w-md border-border/50 backdrop-blur-sm bg-card/95">
-        <CardHeader className="space-y-2">
-          <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            {content["auth.title"] || "3D Model Generator"}
-          </CardTitle>
-          <CardDescription>
-            {isLogin ? content["auth.login.subtitle"] || "Welcome back! Please login to continue." : content["auth.signup.subtitle"] || "Create an account to start generating 3D models."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">{content["auth.email"] || "Email"}</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder={content["auth.email.placeholder"] || "you@example.com"}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+    <div className="min-h-screen bg-gradient-mesh flex flex-col">
+      <div className="flex-1 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md border-border/50 backdrop-blur-sm bg-card/95">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              {content["auth.title"] || "Welcome to our page"}
+            </CardTitle>
+            <CardDescription>
+              {isLogin ? content["auth.login.subtitle"] || "Please login to continue." : content["auth.signup.subtitle"] || "Create an account to start generating 3D models."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">{content["auth.email"] || "Email"}</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder={content["auth.email.placeholder"] || "you@example.com"}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">{content["auth.password"] || "Password"}</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder={content["auth.password.placeholder"] || "••••••••"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  minLength={6}
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
                 disabled={isLoading}
-              />
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {isLogin ? content["auth.login.loading"] || "Logging in..." : content["auth.signup.loading"] || "Creating account..."}
+                  </>
+                ) : (
+                  isLogin ? content["auth.login.button"] || "Login" : content["auth.signup.button"] || "Sign Up"
+                )}
+              </Button>
+            </form>
+            <Separator decorative />
+            <div className="text-sm text-muted-foreground my-4 text-center">
+              {content["auth.social.title"] || "Or continue with"}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">{content["auth.password"] || "Password"}</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder={content["auth.password.placeholder"] || "••••••••"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+            <div className="flex flex-col gap-3 mb-4">
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full flex items-center justify-center gap-2"
                 disabled={isLoading}
-                minLength={6}
-              />
+                onClick={() => handleSocialLogin('google')}
+              >
+                <Globe className="h-4 w-4" />
+                {content["auth.social.google"] || "Google"}
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full flex items-center justify-center gap-2"
+                disabled={isLoading}
+                onClick={() => handleSocialLogin('facebook')}
+              >
+                <Facebook className="h-4 w-4" />
+                {content["auth.social.facebook"] || "Facebook"}
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full flex items-center justify-center gap-2"
+                disabled={isLoading}
+                onClick={() => handleSocialLogin('twitter')}
+              >
+                <Twitter className="h-4 w-4" />
+                {content["auth.social.twitter"] || "Twitter/X"}
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full flex items-center justify-center gap-2"
+                disabled={isLoading}
+                onClick={() => handleSocialLogin('github')}
+              >
+                <Github className="h-4 w-4" />
+                {content["auth.social.github"] || "GitHub"}
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full flex items-center justify-center gap-2"
+                disabled={isLoading}
+                onClick={() => handleSocialLogin('discord')}
+              >
+                <MessageCircle className="h-4 w-4" />
+                {content["auth.social.discord"] || "Discord"}
+              </Button>
             </div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {isLogin ? content["auth.login.loading"] || "Logging in..." : content["auth.signup.loading"] || "Creating account..."}
-                </>
-              ) : (
-                isLogin ? content["auth.login.button"] || "Login" : content["auth.signup.button"] || "Sign Up"
-              )}
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:underline"
-              disabled={isLoading}
-            >
-              {isLogin ? content["auth.switch.to_signup"] || "Need an account? Sign up" : content["auth.switch.to_login"] || "Already have an account? Login"}
-            </button>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="mt-4 text-center text-sm">
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-primary hover:underline"
+                disabled={isLoading}
+              >
+                {isLogin ? content["auth.switch.to_signup"] || "Need an account? Sign up" : content["auth.switch.to_login"] || "Already have an account? Login"}
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       <Footer />
     </div>
   );
