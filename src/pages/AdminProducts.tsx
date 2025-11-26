@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 interface Product {
   id: string;
@@ -43,6 +44,7 @@ export default function AdminProducts() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { content } = useContent("admin");
 
   useEffect(() => {
     checkAdminAndFetch();
@@ -147,18 +149,18 @@ export default function AdminProducts() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Product Management</h2>
+          <h2 className="text-2xl font-bold">{content["admin.products.title"] || "Product Management"}</h2>
           <Button onClick={() => navigate("/admin/products/new")}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Product
+            {content["admin.products.add_button"] || "Add Product"}
           </Button>
         </div>
 
         {isLoading ? (
-          <div className="text-center py-8">Loading products...</div>
+          <div className="text-center py-8">{content["admin.products.loading"] || "Loading products..."}</div>
         ) : products.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-lg text-muted-foreground mb-4">No products yet</p>
+            <p className="text-lg text-muted-foreground mb-4">{content["admin.products.empty"] || "No products found"}</p>
             <Button onClick={() => navigate("/admin/products/new")}>
               <Plus className="mr-2 h-4 w-4" />
               Create First Product

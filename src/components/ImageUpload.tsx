@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useContent } from "@/hooks/useContent";
 
 interface ImageUploadProps {
   images: string[];
@@ -13,6 +14,7 @@ interface ImageUploadProps {
 export const ImageUpload = ({ images, onImagesChange, maxImages = 5 }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
+  const { content } = useContent("admin");
 
   const uploadImage = async (file: File) => {
     const fileExt = file.name.split('.').pop();
@@ -91,7 +93,7 @@ export const ImageUpload = ({ images, onImagesChange, maxImages = 5 }: ImageUplo
           <label className="aspect-square bg-muted rounded-lg border-2 border-dashed border-border hover:border-primary cursor-pointer flex items-center justify-center transition-colors">
             <div className="text-center">
               <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Upload Image</p>
+              <p className="text-sm text-muted-foreground">{content["admin.upload_image"] || "Upload Image"}</p>
             </div>
             <input
               type="file"

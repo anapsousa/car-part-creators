@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useContent } from "@/hooks/useContent";
 
 interface ContentItem {
   id: string;
@@ -52,6 +53,8 @@ export default function AdminContentManager() {
     portuguese_text: "",
     description: "",
   });
+
+  const { content } = useContent("admin");
 
   useEffect(() => {
     checkAdminAccess();
@@ -215,10 +218,10 @@ export default function AdminContentManager() {
       <main className="container mx-auto px-4 py-8">
         <Card className="p-6 bg-card/90 backdrop-blur-md">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Content Translations</h2>
+            <h2 className="text-2xl font-bold">{content["admin.content.title"] || "Content Translations"}</h2>
             <Button onClick={() => setShowAddDialog(true)}>
               <Plus className="w-4 h-4 mr-2" />
-              Add Content
+              {content["admin.content.add_button"] || "Add Content"}
             </Button>
           </div>
 

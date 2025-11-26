@@ -339,7 +339,7 @@ const UserDashboard = () => {
                         id="first_name"
                         value={profile?.first_name || ""}
                         onChange={(e) => setProfile({ ...profile!, first_name: e.target.value })}
-                        placeholder="John"
+                        placeholder={content["dashboard.profile.first_name.placeholder"] || "John"}
                         required
                       />
                       <p className="text-xs text-muted-foreground">{content["dashboard.profile.first_name.required"] || "Required for shipping"}</p>
@@ -352,7 +352,7 @@ const UserDashboard = () => {
                         id="last_name"
                         value={profile?.last_name || ""}
                         onChange={(e) => setProfile({ ...profile!, last_name: e.target.value })}
-                        placeholder="Doe"
+                        placeholder={content["dashboard.profile.last_name.placeholder"] || "Doe"}
                         required
                       />
                       <p className="text-xs text-muted-foreground">{content["dashboard.profile.first_name.required"] || "Required for shipping"}</p>

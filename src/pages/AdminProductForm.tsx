@@ -15,12 +15,14 @@ import {
 import { ImageUpload } from "@/components/ImageUpload";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useContent } from "@/hooks/useContent";
 import { Footer } from "@/components/Footer";
 
 export default function AdminProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { content } = useContent("admin");
   const isEditMode = !!id;
 
   const [formData, setFormData] = useState({
@@ -178,7 +180,7 @@ export default function AdminProductForm() {
                 id="material"
                 value={formData.material}
                 onChange={(e) => setFormData({ ...formData, material: e.target.value })}
-                placeholder="e.g., PLA, ABS, PETG"
+                placeholder={content["admin.product_form.material.placeholder"] || "e.g., PLA, ABS, PETG"}
               />
             </div>
           </div>
@@ -215,7 +217,7 @@ export default function AdminProductForm() {
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Input
-                  placeholder="Width"
+                  placeholder={content["admin.product_form.width.placeholder"] || "Width"}
                   type="number"
                   step="0.1"
                   min="0"
@@ -225,7 +227,7 @@ export default function AdminProductForm() {
               </div>
               <div>
                 <Input
-                  placeholder="Height"
+                  placeholder={content["admin.product_form.height.placeholder"] || "Height"}
                   type="number"
                   step="0.1"
                   min="0"
@@ -235,7 +237,7 @@ export default function AdminProductForm() {
               </div>
               <div>
                 <Input
-                  placeholder="Depth"
+                  placeholder={content["admin.product_form.depth.placeholder"] || "Depth"}
                   type="number"
                   step="0.1"
                   min="0"

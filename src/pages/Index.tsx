@@ -31,7 +31,7 @@ export default function Index() {
             <div className="flex-1 space-y-6">
               <Badge className="w-fit">
                 <Package className="mr-2 h-3 w-3" />
-                Premium 3D Printing Services
+                {content["home.hero.badge"] || "Premium 3D Printing Services"}
               </Badge>
               <h1 className="text-5xl lg:text-6xl font-bold">
                 {(() => {
@@ -59,7 +59,7 @@ export default function Index() {
                 </Button>
                 <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  Generate Custom Part
+                  {content["home.hero.cta_generator"] || "Generate Custom Part"}
                 </Button>
               </div>
               <div className="flex gap-8 pt-4">
@@ -146,7 +146,7 @@ export default function Index() {
               {content["home.how_it_works.title"] || "Why Choose Us"}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Premium quality 3D-printed parts for classic car restoration and custom home decor
+              {content["home.features.subtitle"] || "Premium quality 3D-printed parts for classic car restoration and custom home decor"}
             </p>
           </div>
 
@@ -218,7 +218,7 @@ export default function Index() {
               {content["home.how_it_works.title"] || "How It Works"}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Simple steps to get your custom parts
+              {content["home.how_it_works.subtitle"] || "Simple steps to get your custom parts"}
             </p>
           </div>
 
@@ -279,7 +279,7 @@ export default function Index() {
                 </Button>
                 <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
                   <Cpu className="mr-2 h-4 w-4" />
-                  Try AI Generator
+                  {content["home.cta.button_generator"] || "Try AI Generator"}
                 </Button>
               </div>
             </CardContent>

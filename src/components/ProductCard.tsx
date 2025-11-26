@@ -4,6 +4,7 @@ import { ShoppingCart, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useNavigate } from "react-router-dom";
+import { useContent } from "@/hooks/useContent";
 
 interface ProductCardProps {
   id: string;
@@ -19,6 +20,7 @@ export const ProductCard = ({ id, name, description, price, images, stock_quanti
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const navigate = useNavigate();
   const inWishlist = isInWishlist(id);
+  const { content } = useContent("shop");
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -66,7 +68,7 @@ export const ProductCard = ({ id, name, description, price, images, stock_quanti
         )}
         <p className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent mt-2">€{price.toFixed(2)}</p>
         {stock_quantity === 0 && (
-          <p className="text-sm text-destructive mt-1">Out of stock</p>
+          <p className="text-sm text-destructive mt-1">{content["shop.product.out_of_stock"] || "Out of stock"}</p>
         )}
       </CardContent>
       <CardFooter className="p-4 pt-0">
@@ -77,7 +79,7 @@ export const ProductCard = ({ id, name, description, price, images, stock_quanti
           disabled={stock_quantity === 0 || isLoading}
         >
           <ShoppingCart className="mr-2 h-4 w-4" />
-          Add to Cart
+          {content["shop.product.add_to_cart"] || "Add to Cart"}
         </Button>
       </CardFooter>
     </Card>

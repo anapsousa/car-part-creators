@@ -6,6 +6,7 @@ import { CheckCircle, Loader2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 const CheckoutSuccess = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const CheckoutSuccess = () => {
   const paymentId = searchParams.get("payment_id");
   const [isLoading, setIsLoading] = useState(true);
   const [design, setDesign] = useState<any>(null);
+  const { content } = useContent("checkout");
 
   useEffect(() => {
     const checkPayment = async () => {
@@ -60,8 +62,8 @@ const CheckoutSuccess = () => {
           <div className="flex items-center gap-4">
             <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
             <div>
-              <h1 className="text-xl font-bold">Payment Successful</h1>
-              <p className="text-xs text-muted-foreground">Your Model is Ready</p>
+              <h1 className="text-xl font-bold">{content["checkout.success.title"] || "Payment Successful"}</h1>
+              <p className="text-xs text-muted-foreground">{content["checkout.success.subtitle"] || "Your Model is Ready"}</p>
             </div>
           </div>
         </div>

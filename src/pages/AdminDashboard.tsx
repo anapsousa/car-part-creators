@@ -11,6 +11,7 @@ import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import ModelViewer from "@/components/ModelViewer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 interface Design {
   id: string;
@@ -33,6 +34,7 @@ const AdminDashboard = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [reviewNotes, setReviewNotes] = useState<{ [key: string]: string }>({});
   const [previewDesign, setPreviewDesign] = useState<Design | null>(null);
+  const { content } = useContent("admin");
 
   useEffect(() => {
     checkAdminAccess();
@@ -133,8 +135,8 @@ const AdminDashboard = () => {
             <div className="flex items-center gap-4">
               <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
               <div>
-                <h1 className="text-xl font-bold">Admin Dashboard</h1>
-                <p className="text-xs text-muted-foreground">Model Review & Management</p>
+                <h1 className="text-xl font-bold">{content["admin.dashboard.title"] || "Admin Dashboard"}</h1>
+                <p className="text-xs text-muted-foreground">{content["admin.dashboard.subtitle"] || "Model Review & Management"}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -156,8 +158,8 @@ const AdminDashboard = () => {
             <Card>
               <CardContent className="py-12 text-center">
                 <CheckCircle className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">All Caught Up!</h3>
-                <p className="text-muted-foreground">No pending designs to review</p>
+                <h3 className="text-lg font-semibold mb-2">{content["admin.dashboard.empty.title"] || "All Caught Up!"}</h3>
+                <p className="text-muted-foreground">{content["admin.dashboard.empty.description"] || "No pending designs to review"}</p>
               </CardContent>
             </Card>
           ) : (
@@ -204,7 +206,7 @@ const AdminDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Review Notes (Optional)</label>
+                    <label className="text-sm font-medium">{content["admin.dashboard.review_notes"] || "Review Notes (Optional)"}</label>
                     <Textarea
                       placeholder="Add notes about this review..."
                       value={reviewNotes[design.id] || ""}

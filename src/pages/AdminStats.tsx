@@ -6,6 +6,7 @@ import { Loader2, TrendingUp, Users, Package, DollarSign, Download } from "lucid
 import { Button } from "@/components/ui/button";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
+import { useContent } from "@/hooks/useContent";
 
 interface Stats {
   totalRevenue: number;
@@ -23,6 +24,8 @@ const AdminStats = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats | null>(null);
+
+  const { content } = useContent("admin");
 
   useEffect(() => {
     checkAdminAndFetch();
@@ -124,8 +127,8 @@ const AdminStats = () => {
             <div className="flex items-center gap-4">
               <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
               <div>
-                <h1 className="text-xl font-bold">Business Statistics</h1>
-                <p className="text-xs text-muted-foreground">Overview & Analytics</p>
+                <h1 className="text-xl font-bold">{content["admin.stats.title"] || "Business Statistics"}</h1>
+                <p className="text-xs text-muted-foreground">{content["admin.stats.subtitle"] || "Overview & Analytics"}</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -144,7 +147,7 @@ const AdminStats = () => {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
           <Card className="border-success/30 shadow-glow-green">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium">{content["admin.stats.revenue"] || "Total Revenue"}</CardTitle>
               <DollarSign className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>

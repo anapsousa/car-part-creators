@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Coins, Loader2, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
+import { useContent } from "@/hooks/useContent";
 
 export const CreditsDisplay = () => {
   const [credits, setCredits] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
+  const { content } = useContent("dashboard");
 
   useEffect(() => {
     fetchCredits();
@@ -68,17 +70,17 @@ export const CreditsDisplay = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Coins className="h-5 w-5 text-secondary" />
-          <span className="bg-gradient-secondary bg-clip-text text-transparent">Your Credits</span>
+          <span className="bg-gradient-secondary bg-clip-text text-transparent">{content["dashboard.credits.title"] || "Your Credits"}</span>
         </CardTitle>
         <CardDescription>
-          Use credits to generate 3D models with AI
+          {content["dashboard.credits.description"] || "Use credits to generate 3D models with AI"}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-3xl font-bold text-success">{credits}</div>
-            <p className="text-sm text-muted-foreground">Credits remaining</p>
+            <p className="text-sm text-muted-foreground">{content["dashboard.credits.remaining"] || "Credits remaining"}</p>
           </div>
           <Button 
             onClick={handleBuyCredits}

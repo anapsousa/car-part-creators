@@ -94,7 +94,21 @@ export default function Wishlist() {
           <div className="flex items-center gap-3 mb-8">
             <Heart className="h-8 w-8 text-primary fill-primary" />
             <h1 className="text-3xl font-bold">
-              My <span className="bg-gradient-primary bg-clip-text text-transparent">Wishlist</span>
+              {(() => {
+                const title = content["wishlist.heading"] || "My Wishlist";
+                const parts = title.split(/\s+/);
+                if (parts.length >= 2) {
+                  return (
+                    <>
+                      {parts[0]}{" "}
+                      <span className="bg-gradient-primary bg-clip-text text-transparent">
+                        {parts.slice(1).join(" ")}
+                      </span>
+                    </>
+                  );
+                }
+                return title;
+              })()}
             </h1>
           </div>
 

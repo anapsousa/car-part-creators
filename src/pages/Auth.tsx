@@ -8,8 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 import { Loader2, Facebook, Twitter, Github, Globe, MessageCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -23,17 +23,21 @@ const Auth = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/");
+        navigate("/dashboard");
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate("/");
+      if (session && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
+        navigate("/dashboard");
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,25 +57,42 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         
         if (error) throw error;
-        toast.success("Welcome back!");
+        
+        if (data.session) {
+          toast.success(content["auth.login.success"] || "Welcome back!");
+          // Navigation will be handled by the auth state change listener
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 500);
+        }
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}/dashboard`,
           },
         });
         
         if (error) throw error;
-        toast.success("Account created! You can now log in.");
-        setIsLogin(true);
+        
+        if (data.user && !data.session) {
+          // Email confirmation required
+          toast.success(content["auth.signup.success"] || "Account created! Please check your email to confirm your account.");
+          setIsLogin(true);
+        } else if (data.session) {
+          // Auto-logged in
+          toast.success(content["auth.signup.success"] || "Account created! Welcome!");
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 500);
+        }
       }
     } catch (error: any) {
       if (error.message.includes("already registered")) {
@@ -86,13 +107,13 @@ const Auth = () => {
     }
   };
 
-  const handleSocialLogin = async (provider: string) => {
+  const handleSocialLogin = async (provider: "google" | "facebook" | "twitter" | "github" | "discord") => {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider,
+        provider: provider as any,
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `${window.location.origin}/dashboard`,
         },
       });
       if (error) throw error;
@@ -105,9 +126,12 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-mesh flex flex-col">
-      <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md border-border/50 backdrop-blur-sm bg-card/95">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex flex-col">
+      <div className="absolute top-4 right-4">
+        <LanguageSelector />
+      </div>
+      <div className="flex-1 flex items-center justify-center p-4 py-12">
+        <Card className="w-full max-w-md border-2 border-primary/20 shadow-2xl backdrop-blur-sm bg-card/98">
           <CardHeader className="space-y-2">
             <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               {content["auth.title"] || "Welcome to our page"}
@@ -227,7 +251,6 @@ const Auth = () => {
           </CardContent>
         </Card>
       </div>
-      <Footer />
     </div>
   );
 };

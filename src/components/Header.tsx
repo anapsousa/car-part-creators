@@ -123,7 +123,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
               <button
                 onClick={() => navigate("/wishlist")}
                 className="relative p-2 text-foreground hover:text-primary transition-colors"
-                aria-label="Wishlist"
+                aria-label={content["nav.wishlist_label"] || "Wishlist"}
               >
                 <Heart className="h-5 w-5" />
                 {wishlistItems.length > 0 && (
@@ -135,7 +135,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
               <button
                 onClick={() => navigate("/cart")}
                 className="relative p-2 text-foreground hover:text-primary transition-colors"
-                aria-label="Cart"
+                aria-label={content["nav.cart_label"] || "Cart"}
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItems.length > 0 && (
@@ -169,15 +169,15 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate("/admin/products")}>
                           <Package className="mr-2 h-4 w-4" />
-                          Products
+                          {content["nav.admin_products"] || "Products"}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate("/admin/stats")}>
                           <Settings className="mr-2 h-4 w-4" />
-                          Statistics
+                          {content["nav.admin_statistics"] || "Statistics"}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate("/admin/content")}>
                           <FileText className="mr-2 h-4 w-4" />
-                          Content Manager
+                          {content["nav.admin_content"] || "Content Manager"}
                         </DropdownMenuItem>
                       </>
                     )}

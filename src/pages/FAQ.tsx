@@ -109,18 +109,18 @@ const FAQ = () => {
           {/* Contact CTA */}
           <Card className="bg-gradient-primary text-primary-foreground">
             <CardHeader className="text-center">
-              <CardTitle>Still Have Questions?</CardTitle>
+              <CardTitle>{content["faq.cta.title"] || "Still Have Questions?"}</CardTitle>
               <CardDescription className="text-primary-foreground/80">
-                Our support team is here to help
+                {content["faq.cta.description"] || "Our support team is here to help"}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center">
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 size="lg"
                 onClick={() => navigate("/contact")}
               >
-                Contact Support
+                {content["faq.cta.button"] || "Contact Support"}
               </Button>
             </CardContent>
           </Card>

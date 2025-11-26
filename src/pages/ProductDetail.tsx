@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useContent } from "@/hooks/useContent";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -33,7 +34,9 @@ export default function ProductDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  
+
+  const { content } = useContent("product");
+
   const inWishlist = product ? isInWishlist(product.id) : false;
 
   useEffect(() => {
@@ -94,9 +97,9 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-muted-foreground">Product not found</p>
+          <p className="text-xl text-muted-foreground">{content["product.not_found"] || "Product not found"}</p>
           <Button onClick={() => navigate("/shop")} className="mt-4">
-            Back to Shop
+            {content["product.back_to_shop"] || "Back to Shop"}
           </Button>
         </div>
       </div>
@@ -178,7 +181,7 @@ export default function ProductDetail() {
 
             {product.description && (
               <div className="mb-6">
-                <h2 className="text-lg font-semibold mb-2">Description</h2>
+                <h2 className="text-lg font-semibold mb-2">{content["product.description_title"] || "Description"}</h2>
                 <p className="text-muted-foreground">{product.description}</p>
               </div>
             )}
