@@ -65,7 +65,7 @@ export default function Index() {
               <div className="flex gap-8 pt-4">
                 <div>
                   <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                    {content["home.stats.parts_printed.number"] || "5000+"}
+                    {content["home.stats.parts_printed.number"] || "50+"}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {content["home.stats.parts_printed.label"] || "Parts Printed"}
@@ -106,7 +106,7 @@ export default function Index() {
                 <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <Box className="h-6 w-6 text-primary" />
                 </div>
-                <div className="text-3xl font-bold mb-1">5000+</div>
+                <div className="text-3xl font-bold mb-1">{content["home.stats.parts_available.number"] || "50+"}</div>
                 <p className="text-muted-foreground">
                   {content["home.features.available_parts.title"] || "Parts Available"}
                 </p>
@@ -267,9 +267,6 @@ export default function Index() {
         <div className="container mx-auto px-4">
           <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
             <CardContent className="p-12 text-center">
-{/*               <h2 className="text-3xl font-bold mb-4">
-                {content["home.cta.title"] || "Start Your Restoration Journey"}
-              </h2> */}
               <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 {(() => {
                   const title = content["home.cta.title"] || "Start Your Restoration Journey"
