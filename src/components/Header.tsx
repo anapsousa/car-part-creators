@@ -108,7 +108,6 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink to="/">{content["nav.home"] || "Home"}</NavLink>
             <NavLink to="/shop">{content["nav.shop"] || "Shop"}</NavLink>
-            <NavLink to="/generator">{content["nav.generator"] || "Generator"}</NavLink>
             <NavLink to="/about">{content["nav.about"] || "About"}</NavLink>
             <NavLink to="/contact">{content["nav.contact"] || "Contact"}</NavLink>
             <NavLink to="/faq">{content["nav.faq"] || "FAQ"}</NavLink>
@@ -178,6 +177,10 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
                         <DropdownMenuItem onClick={() => navigate("/admin/content")}>
                           <FileText className="mr-2 h-4 w-4" />
                           {content["nav.admin_content"] || "Content Manager"}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/generator")}>
+                          <FileText className="mr-2 h-4 w-4" />
+                          {content["nav.generator"] || "Generator"}
                         </DropdownMenuItem>
                       </>
                     )}

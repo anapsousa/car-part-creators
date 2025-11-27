@@ -54,17 +54,17 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold text-foreground mb-4">{content["footer.services.title"] || "Services"}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
+{/*               <li>
                 <button onClick={() => navigate("/generator")} className="hover:text-primary transition-colors">
                   {content["footer.services.ai_generator"] || "AI Model Generator"}
                 </button>
-              </li>
+              </li> */}
               <li>
                 <button onClick={() => navigate("/shop")} className="hover:text-primary transition-colors">
                   {content["footer.services.custom_printing"] || "Custom Printing"}
                 </button>
               </li>
-              <li>
+{/*               <li>
                 <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">
                   {content["footer.services.restoration"] || "Restoration Services"}
                 </button>
@@ -73,7 +73,7 @@ export const Footer = () => {
                 <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">
                   {content["footer.services.consultation"] || "Design Consultation"}
                 </button>
-              </li>
+              </li> */}
             </ul>
           </div>
 

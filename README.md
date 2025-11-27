@@ -125,7 +125,31 @@ Expect the app to load with the home page, language selector, and navigation wor
 - **Remote Supabase**: Migrations are automatically applied on deployment via Lovable.
 - **Local Supabase**: Run `supabase db reset` to reset the local database and apply all migrations, or `supabase migration up` to apply pending migrations only.
 - Migration files are in `supabase/migrations/` and follow a timestamp naming convention.
+- When inserting data, consider Row Level Security (RLS) implications; use SECURITY DEFINER functions for RLS-protected tables, as demonstrated in `20251126_add_cms_content_for_all_components.sql`.
 - See the "Content Management & Translations" section for translation-specific migrations.
+
+#### Apply Migrations to Remote Supabase (Fix Empty content_translations Table)
+
+1. **Get Service Role Key**:
+   - Go to [Supabase Dashboard → Settings → API](https://supabase.com/dashboard/project/YOUR_PROJECT_ID/settings/api)
+   - Copy `service_role` secret key
+
+2. **Validate Migrations** (optional):
+   ```sh
+   npm run validate:migrations
+   ```
+
+3. **Apply All Migrations**:
+   ```sh
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key npm run migrate:db
+   ```
+
+This will create/populate `content_translations` table with all translations. Safe to rerun (idempotent).
+
+After running, refresh the app - console warning disappears, translations load from DB.
+
+#### Migration Guidelines
+Comprehensive migration guidelines are available in `supabase/migrations/README.md`. Before creating new migrations, run `npm run validate:migrations` to check for common issues. Always test migrations locally with `supabase db reset` before pushing to ensure they work correctly.
 
 ## Content Management & Translations
 

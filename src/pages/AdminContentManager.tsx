@@ -38,8 +38,8 @@ export default function AdminContentManager() {
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [content, setContent] = useState<ContentItem[]>([]);
-  const [filteredContent, setFilteredContent] = useState<ContentItem[]>([]);
+  const [contentItems, setContentItems] = useState<ContentItem[]>([]);
+  const [filteredContentItems, setFilteredContentItems] = useState<ContentItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -100,8 +100,8 @@ export default function AdminContentManager() {
         variant: "destructive",
       });
     } else {
-      setContent(data || []);
-      setFilteredContent(data || []);
+      setContentItems(data || []);
+      setFilteredContentItems(data || []);
     }
     setLoading(false);
   };
@@ -109,18 +109,18 @@ export default function AdminContentManager() {
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     if (!term) {
-      setFilteredContent(content);
+      setFilteredContentItems(contentItems);
       return;
     }
 
-    const filtered = content.filter(
+    const filtered = contentItems.filter(
       (item) =>
         item.content_key.toLowerCase().includes(term.toLowerCase()) ||
         item.english_text.toLowerCase().includes(term.toLowerCase()) ||
         item.page.toLowerCase().includes(term.toLowerCase()) ||
         item.section.toLowerCase().includes(term.toLowerCase())
     );
-    setFilteredContent(filtered);
+    setFilteredContentItems(filtered);
   };
 
   const handleUpdate = async (item: ContentItem) => {
@@ -200,7 +200,7 @@ export default function AdminContentManager() {
     }
   };
 
-  const pages = Array.from(new Set(content.map((item) => item.page))).sort();
+  const pages = Array.from(new Set(contentItems.map((item) => item.page))).sort();
   const allPages = ["all", ...pages];
 
   if (loading) {
@@ -236,7 +236,7 @@ export default function AdminContentManager() {
           </div>
 
           <Tabs defaultValue="all">
-            <TabsList className="mb-4">
+            <TabsList className="mb-4 flex flex-wrap w-full h-auto">
               {allPages.map((page) => (
                 <TabsTrigger key={page} value={page} className="capitalize">
                   {page}
@@ -246,7 +246,7 @@ export default function AdminContentManager() {
 
             {allPages.map((page) => (
               <TabsContent key={page} value={page} className="space-y-4">
-                {(page === "all" ? filteredContent : filteredContent.filter((item) => item.page === page)).map((item) => (
+                {(page === "all" ? filteredContentItems : filteredContentItems.filter((item) => item.page === page)).map((item) => (
                   <Card key={item.id} className="p-4">
                     <div className="space-y-4">
                       <div className="flex justify-between items-start">
@@ -288,22 +288,22 @@ export default function AdminContentManager() {
                               <Input
                                 value={item.english_text}
                                 onChange={(e) => {
-                                  const updated = content.map((c) =>
+                                  const updated = contentItems.map((c) =>
                                     c.id === item.id ? { ...c, english_text: e.target.value } : c
                                   );
-                                  setContent(updated);
-                                  setFilteredContent(updated);
+                                  setContentItems(updated);
+                                  setFilteredContentItems(updated);
                                 }}
                               />
                             ) : (
                               <Textarea
                                 value={item.english_text}
                                 onChange={(e) => {
-                                  const updated = content.map((c) =>
+                                  const updated = contentItems.map((c) =>
                                     c.id === item.id ? { ...c, english_text: e.target.value } : c
                                   );
-                                  setContent(updated);
-                                  setFilteredContent(updated);
+                                  setContentItems(updated);
+                                  setFilteredContentItems(updated);
                                 }}
                                 rows={3}
                               />
@@ -320,11 +320,11 @@ export default function AdminContentManager() {
                               <Input
                                 value={item.portuguese_text || ""}
                                 onChange={(e) => {
-                                  const updated = content.map((c) =>
+                                  const updated = contentItems.map((c) =>
                                     c.id === item.id ? { ...c, portuguese_text: e.target.value } : c
                                   );
-                                  setContent(updated);
-                                  setFilteredContent(updated);
+                                  setContentItems(updated);
+                                  setFilteredContentItems(updated);
                                 }}
                                 placeholder="Add Portuguese translation..."
                               />
@@ -332,11 +332,11 @@ export default function AdminContentManager() {
                               <Textarea
                                 value={item.portuguese_text || ""}
                                 onChange={(e) => {
-                                  const updated = content.map((c) =>
+                                  const updated = contentItems.map((c) =>
                                     c.id === item.id ? { ...c, portuguese_text: e.target.value } : c
                                   );
-                                  setContent(updated);
-                                  setFilteredContent(updated);
+                                  setContentItems(updated);
+                                  setFilteredContentItems(updated);
                                 }}
                                 placeholder="Add Portuguese translation..."
                                 rows={3}

@@ -1,15 +1,23 @@
 -- Add missing content keys for CMS internationalization
-INSERT INTO public.content_translations (content_key, content_type, page, section, english_text, description) VALUES
+-- Use ON CONFLICT to prevent duplicate key errors if migration is run multiple times
+CREATE OR REPLACE FUNCTION public.insert_cms_content_batch()
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.content_translations (content_key, content_type, page, section, english_text, description) VALUES
 -- Shop Namespace
 ('shop.product.out_of_stock', 'text', 'shop', 'product', 'Out of Stock', 'Text displayed when a product is out of stock'),
 ('shop.product.add_to_cart', 'button', 'shop', 'product', 'Add to Cart', 'Button text for adding products to cart'),
 
 -- Navigation Namespace
-('nav.wishlist_label', 'label', 'nav', 'menu', 'Wishlist', 'Aria-label for wishlist button'),
-('nav.cart_label', 'label', 'nav', 'menu', 'Cart', 'Aria-label for cart button'),
-('nav.admin_products', 'text', 'nav', 'menu', 'Products', 'Admin products menu item'),
-('nav.admin_statistics', 'text', 'nav', 'menu', 'Statistics', 'Admin statistics menu item'),
-('nav.admin_content', 'text', 'nav', 'menu', 'Content Manager', 'Admin content manager menu item'),
+('nav.wishlist_label', 'label', 'navigation', 'menu', 'Wishlist', 'Aria-label for wishlist button'),
+('nav.cart_label', 'label', 'navigation', 'menu', 'Cart', 'Aria-label for cart button'),
+('nav.admin_products', 'text', 'navigation', 'menu', 'Products', 'Admin products menu item'),
+('nav.admin_statistics', 'text', 'navigation', 'menu', 'Statistics', 'Admin statistics menu item'),
+('nav.admin_content', 'text', 'navigation', 'menu', 'Content Manager', 'Admin content manager menu item'),
 
 -- Home Namespace
 ('home.hero.badge', 'text', 'home', 'hero', 'AI-Powered', 'Badge text in hero section'),
@@ -56,4 +64,17 @@ INSERT INTO public.content_translations (content_key, content_type, page, sectio
 
 -- Checkout Namespace
 ('checkout.success.title', 'heading', 'checkout', 'success', 'Order Successful', 'Success page title'),
-('checkout.success.subtitle', 'text', 'checkout', 'success', 'Your order has been placed successfully', 'Success page subtitle');
+('checkout.success.subtitle', 'text', 'checkout', 'success', 'Your order has been placed successfully', 'Success page subtitle')
+ON CONFLICT (content_key) DO UPDATE SET
+  content_type = EXCLUDED.content_type,
+  page = EXCLUDED.page,
+  section = EXCLUDED.section,
+  english_text = EXCLUDED.english_text,
+  description = EXCLUDED.description,
+  updated_at = now();
+END;
+$$;
+
+SELECT public.insert_cms_content_batch();
+
+DROP FUNCTION IF EXISTS public.insert_cms_content_batch();

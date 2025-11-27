@@ -42,7 +42,7 @@ export default function Index() {
                       <>
                         {parts[0]}.{" "}
                         <span className="bg-gradient-primary bg-clip-text text-transparent">
-                          {parts.slice(1).join(". ")}.
+                          {parts.slice(1).join(" ")}.
                         </span>
                       </>
                     );
@@ -267,8 +267,25 @@ export default function Index() {
         <div className="container mx-auto px-4">
           <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
             <CardContent className="p-12 text-center">
-              <h2 className="text-3xl font-bold mb-4">
+{/*               <h2 className="text-3xl font-bold mb-4">
                 {content["home.cta.title"] || "Start Your Restoration Journey"}
+              </h2> */}
+              <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                {(() => {
+                  const title = content["home.cta.title"] || "Start Your Restoration Journey"
+                  const parts = title.split(/\.\s+/);
+                  if (parts.length >= 2) {
+                    return (
+                      <>
+                        {parts[0]}.{" "}
+                        <span className="bg-gradient-primary bg-clip-text text-transparent">
+                          {parts.slice(1).join(" ")}.
+                        </span>
+                      </>
+                    );
+                  }
+                  return title;
+                })()}
               </h2>
               <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
                 {content["home.cta.description"] || "Browse our catalog of authentic parts or generate custom designs"}

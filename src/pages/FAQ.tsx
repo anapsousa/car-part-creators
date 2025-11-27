@@ -46,9 +46,11 @@ const FAQ = () => {
     }
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-mesh">
-      <Header pageTitle="FAQ" pageSubtitle="Frequently Asked Questions" />
+  return <div className="min-h-screen bg-gradient-mesh">
+      <Header
+        pageTitle={content["faq.header.pageTitle"] || "FAQ"}
+        pageSubtitle={content["faq.header.subtitle"] || "Frequently Asked Questions"}
+      />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
@@ -126,8 +128,7 @@ const FAQ = () => {
           </Card>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
 
 export default FAQ;

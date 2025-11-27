@@ -13,7 +13,7 @@ const getCorsHeaders = (origin: string | null) => {
 
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   };
 };
 
@@ -74,7 +74,7 @@ serve(async (req) => {
       JSON.stringify({ error: errorMessage }),
       {
         headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" },
-        status: 500,
+      status: 500,
       },
     );
   }

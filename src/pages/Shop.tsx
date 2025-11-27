@@ -70,8 +70,10 @@ export default function Shop() {
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
-      <Header pageTitle="Shop" pageSubtitle="Browse Our Products" />
-
+      <Header
+        pageTitle={content["shop.header.pageTitle"] || "Shop"}
+        pageSubtitle={content["shop.header.subtitle"] || "Browse Our Products"}
+      />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold mb-2">

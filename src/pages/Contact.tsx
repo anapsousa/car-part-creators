@@ -36,8 +36,10 @@ const Contact = () => {
     setIsSubmitting(false);
   };
   return <div className="min-h-screen bg-gradient-mesh">
-      <Header pageTitle="Contact Us" pageSubtitle="Get in Touch" />
-
+      <Header
+        pageTitle={content["contact.header.pageTitle"] || "Contact Us"}
+        pageSubtitle={content["contact.header.subtitle"] || "Get in Touch"}
+      />
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">

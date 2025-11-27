@@ -11,7 +11,7 @@ const getCorsHeaders = (origin: string | null) => {
 
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   };
 };
 
@@ -65,7 +65,7 @@ serve(async (req) => {
       const { data: insertedCredits, error: insertError } = await supabase
         .from("user_credits")
         .insert({
-          user_id: userId,
+        user_id: userId,
           credits_remaining: STARTING_FREE_CREDITS,
           credits_purchased: 0,
         })
@@ -263,7 +263,7 @@ serve(async (req) => {
 
     while (attempts < maxAttempts && Date.now() - startTime < maxDurationMs) {
       await new Promise((resolve) => setTimeout(resolve, pollIntervalMs)); // Wait 5 seconds
-
+      
       const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
         headers: {
           Authorization: `Bearer ${replicateApiKey}`,
@@ -283,7 +283,7 @@ serve(async (req) => {
         // TRELLIS returns GLB and other formats
         modelUrl = statusData.output?.glb || statusData.output;
         console.log("3D model generation succeeded! URL:", modelUrl);
-
+        
         // Track Replicate cost
         await supabase.from("generation_costs").insert({
           design_id: designId,
@@ -292,7 +292,7 @@ serve(async (req) => {
           service: "replicate",
           status: "completed",
         });
-
+        
         break;
       } else if (statusData.status === "failed" || statusData.status === "canceled") {
         await supabase.from("designs").update({ status: "failed" }).eq("id", designId);

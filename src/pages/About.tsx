@@ -28,7 +28,10 @@ const About = () => {
     description: content["about.values.passion.description"] || "Driven by our love for innovation, design, and helping others create"
   }];
   return <div className="min-h-screen bg-gradient-mesh">
-      <Header pageTitle="About Us" pageSubtitle="Our Story" />
+      <Header
+        pageTitle={content["about.header.pageTitle"] || "About Us"}
+        pageSubtitle={content["about.header.subtitle"] || "Our Story"}
+      />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
