@@ -4,6 +4,23 @@
 
 **URL**: https://lovable.dev/projects/1f05c717-5032-4e33-8db0-cd1f4a64f257
 
+## Features
+
+- Newsletter subscription system with GDPR-compliant consent tracking
+- Integration with Resend for email marketing (free tier: 3000 emails/month, 100/day)
+- Bilingual support (English/Portuguese)
+- Duplicate subscription prevention
+- Admin-only access to subscriber data via RLS policies
+
+## Newsletter Setup
+
+To enable the newsletter subscription feature:
+
+1. Create a free account at resend.com
+2. Generate an API key
+3. Create an audience/list for newsletter subscribers
+4. Copy the audience ID and API key to Supabase secrets as described in the Environment Configuration section below
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
@@ -107,6 +124,19 @@ VITE_SUPABASE_PROJECT_ID=your-project-id-here
 ```
 
 Note: The **database password** is NOT needed for frontend applications and should never be added to the `.env` file, as it grants full database access and is intended for server-side use only.
+
+#### Edge Function Secrets
+
+For Supabase Edge Functions to work properly, certain secrets need to be configured in the Supabase Dashboard:
+
+- `RESEND_API_KEY` - Your Resend API key (get from resend.com dashboard, format: `re_xxxxxxxxx`)
+- `RESEND_AUDIENCE_ID` - The ID of your Resend audience/list where newsletter subscribers will be added (format: UUID)
+
+To set these variables:
+
+1. Navigate to Supabase Dashboard → Project Settings → Edge Functions → Secrets
+2. Add both secrets with their respective values
+3. These are required for the newsletter subscription feature to work
 
 #### Using GitHub Secrets for CI/CD
 

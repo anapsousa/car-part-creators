@@ -15,6 +15,10 @@ import AdminStats from "./pages/AdminStats";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import DeliveryShipping from "./pages/DeliveryShipping";
+import ReturnsRefunds from "./pages/ReturnsRefunds";
+import ComplaintsBook from "./pages/ComplaintsBook";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminProductForm from "./pages/AdminProductForm";
@@ -50,6 +54,10 @@ const App = () => (
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="/delivery-shipping" element={<DeliveryShipping />} />
+            <Route path="/returns-refunds" element={<ReturnsRefunds />} />
+            <Route path="/livro-reclamacoes" element={<ComplaintsBook />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/products/new" element={<AdminProductForm />} />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Download, Calendar, CreditCard, User, MapPin } from "lucide-react";
+import { Loader2, Download, Calendar, CreditCard, User, MapPin, ChevronDown } from "lucide-react";
 import DesignHistory from "@/components/DesignHistory";
 import { CreditsDisplay } from "@/components/CreditsDisplay";
+import OrderStatusTimeline from '@/components/OrderStatusTimeline';
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
@@ -47,14 +49,42 @@ interface Profile {
   company_name?: string;
 }
 
+interface Order {
+  id: string;
+  user_id: string;
+  total_amount: number;
+  status: 'pending' | 'paid' | 'shipped' | 'completed' | 'cancelled';
+  shipping_address: string;
+  tracking_number?: string;
+  estimated_delivery?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  price_at_purchase: number;
+  product: {
+    name: string;
+    images: string[];
+  };
+}
+
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { content } = useContent("dashboard");
   const [loading, setLoading] = useState(true);
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const activeTab = searchParams.get('tab') || 'designs';
 
   useEffect(() => {
     checkAuth();
@@ -71,7 +101,7 @@ const UserDashboard = () => {
 
   const fetchData = async (userId: string) => {
     try {
-      const [paymentsRes, profileRes] = await Promise.all([
+      const [paymentsRes, profileRes, ordersRes] = await Promise.all([
         supabase
           .from("payments")
           .select("*, designs(prompt_text, category)")
@@ -81,15 +111,32 @@ const UserDashboard = () => {
           .from("profiles")
           .select("*")
           .eq("id", userId)
-          .single()
+          .single(),
+        supabase
+          .from('orders')
+          .select('*, order_items(*, products(name, images))')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
       ]);
 
       if (paymentsRes.data) setPayments(paymentsRes.data);
       if (profileRes.data) setProfile(profileRes.data);
+      if (ordersRes.data) setOrders(ordersRes.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'secondary';
+      case 'paid': return 'default';
+      case 'shipped': return 'default';
+      case 'completed': return 'default';
+      case 'cancelled': return 'destructive';
+      default: return 'secondary';
     }
   };
 
@@ -261,7 +308,7 @@ const UserDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="designs" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={(newTab) => navigate(`/dashboard?tab=${newTab}`, { replace: true })} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="designs">{content["dashboard.tabs.designs"] || "My Designs"}</TabsTrigger>
             <TabsTrigger value="orders">{content["dashboard.tabs.orders"] || "Order History"}</TabsTrigger>
@@ -278,31 +325,74 @@ const UserDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
-                  {content["dashboard.orders.title"] || "Payment History"}
+                  {content["dashboard.orders.title"] || "Order History"}
                 </CardTitle>
-                <CardDescription>{content["dashboard.orders.description"] || "View all your past transactions"}</CardDescription>
+                <CardDescription>{content["dashboard.orders.description"] || "Track your physical product orders"}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {payments.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">{content["dashboard.orders.empty"] || "No payments yet"}</p>
+                  {orders.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-muted-foreground mb-4">{content["dashboard.orders.empty"] || "No orders yet"}</p>
+                      <Button onClick={() => navigate("/products")}>{content["dashboard.orders.empty.cta"] || "Browse Products"}</Button>
+                    </div>
                   ) : (
-                    payments.map((payment) => (
-                      <div key={payment.id} className="flex items-center justify-between p-4 border border-border/50 rounded-lg">
-                        <div className="space-y-1">
-                          <p className="font-medium">{payment.designs?.prompt_text || "3D Model"}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(payment.created_at).toLocaleDateString()} • {payment.designs?.category}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold">
-                            {payment.currency} {payment.amount.toFixed(2)}
-                          </p>
-                          <p className="text-sm text-muted-foreground capitalize">{payment.payment_status}</p>
-                        </div>
-                      </div>
-                    ))
+                    orders.map((order) => {
+                      const address = JSON.parse(order.shipping_address);
+                      return (
+                        <Card key={order.id} className="mb-4">
+                          <CardHeader>
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <CardTitle>{content["dashboard.orders.order_id"] || "Order ID"}: {order.id.slice(-8)}</CardTitle>
+                                <CardDescription>{content["dashboard.orders.placed_on"] || "Placed on"} {new Date(order.created_at).toLocaleDateString()}</CardDescription>
+                              </div>
+                              <Badge variant={getStatusColor(order.status)}>{content[`dashboard.orders.status.${order.status}`]}</Badge>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="flex justify-between">
+                              <span className="font-semibold">{content["dashboard.orders.total"] || "Total"}: €{order.total_amount.toFixed(2)}</span>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold mb-2">{content["dashboard.orders.items.title"] || "Order Items"}</h4>
+                              <div className="space-y-2">
+                                {order.order_items?.map((item) => (
+                                  <div key={item.id} className="flex items-center gap-4 p-2 border rounded">
+                                    <img src={item.product.images[0]} alt={item.product.name} className="w-12 h-12 object-cover rounded" />
+                                    <div>
+                                      <p className="font-medium">{item.product.name}</p>
+                                      <p className="text-sm text-muted-foreground">Qty: {item.quantity} x €{item.price_at_purchase.toFixed(2)}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <OrderStatusTimeline
+                              status={order.status}
+                              createdAt={order.created_at}
+                              estimatedDelivery={order.estimated_delivery}
+                              trackingNumber={order.tracking_number}
+                              content={content}
+                            />
+                            <Button
+                              variant="outline"
+                              onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
+                              className="w-full"
+                            >
+                              {expandedOrder === order.id ? 'Hide Details' : 'Show Details'}
+                              <ChevronDown className={`ml-2 h-4 w-4 transition-transform ${expandedOrder === order.id ? 'rotate-180' : ''}`} />
+                            </Button>
+                            {expandedOrder === order.id && (
+                              <div className="mt-4 p-4 bg-muted/30 rounded">
+                                <h4 className="font-semibold mb-2">{content["dashboard.orders.shipping.title"] || "Shipping Address"}</h4>
+                                <p>{address.street}, {address.city}, {address.postal_code}, {address.country}</p>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })
                   )}
                 </div>
               </CardContent>

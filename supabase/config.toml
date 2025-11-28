@@ -15,3 +15,6 @@ verify_jwt = true
 [functions.buy-credits]
 verify_jwt = true
 
+[functions.subscribe-newsletter]
+verify_jwt = false
+
