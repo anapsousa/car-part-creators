@@ -306,9 +306,24 @@
     "close": "Close"
   },
   "footer": {
-    "description": "AI-powered 3D model generation for custom car parts and home decorations.",
+    "brand": {
+      "description": "3D model generation for custom car parts and home decorations.",
+      "address": "Travessa Cabo Luis N9, 3800-294 Aveiro, Portugal",
+      "email": "info@pompousweek.com",
+      "phone": "+351 934 234 235"
+    },
     "products": "Products",
     "services": "Services",
-    "company": "Company"
+    "company": "Company",
+    "payment": {
+      "title": "Payment Methods",
+      "visa_label": "Visa",
+      "mastercard_label": "Mastercard",
+      "paypal_label": "PayPal",
+      "mbway_label": "MBWay",
+      "googlepay_label": "Google Pay",
+      "applepay_label": "Apple Pay",
+      "mb_label": "Multibanco"
+    }
   }
 }

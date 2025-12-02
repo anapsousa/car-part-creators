@@ -171,6 +171,8 @@ const About = () => {
           </Card>
         </div>
       </main>
+      <Footer />
+
     </div>;
 };
 export default About;

@@ -128,6 +128,7 @@ const FAQ = () => {
           </Card>
         </div>
       </main>
+      <Footer />
     </div>;
 };
 

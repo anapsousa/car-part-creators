@@ -291,10 +291,10 @@ export default function Index() {
                 <Button size="lg" onClick={() => navigate("/shop")}>
                   {content["home.cta.button"] || "Browse Catalog"}
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
+{/*                 <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
                   <Cpu className="mr-2 h-4 w-4" />
                   {content["home.cta.button_generator"] || "Try AI Generator"}
-                </Button>
+                </Button> */}
               </div>
             </CardContent>
           </Card>

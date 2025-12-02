@@ -160,6 +160,7 @@ const Contact = () => {
           </Card>
         </div>
       </main>
+      <Footer />
     </div>;
 };
 export default Contact;

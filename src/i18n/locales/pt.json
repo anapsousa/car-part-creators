@@ -306,9 +306,24 @@
     "close": "Fechar"
   },
   "footer": {
-    "description": "Geração de modelos 3D com IA para peças de automóvel personalizadas e decorações para casa.",
+    "brand": {
+      "description": "Geração de modelos 3D para peças de automóvel personalizadas e decorações para casa.",
+      "address": "Travessa Cabo Luis N9, 3800-294 Aveiro, Portugal",
+      "email": "info@pompousweek.com",
+      "phone": "+351 934 924 235"
+    },
     "products": "Produtos",
     "services": "Serviços",
-    "company": "Empresa"
+    "company": "Empresa",
+    "payment": {
+      "title": "Métodos de Pagamento",
+      "visa_label": "Visa",
+      "mastercard_label": "Mastercard",
+      "paypal_label": "PayPal",
+      "mbway_label": "MBWay",
+      "googlepay_label": "Google Pay",
+      "applepay_label": "Apple Pay",
+      "mb_label": "Multibanco"
+    }
   }
 }
