@@ -118,7 +118,7 @@ export const Footer = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-muted-foreground">
-                  {content["footer.brand.address"] || "Rua Example, 123, 1000-000 Lisbon, Portugal"}
+                  {content["footer.brand.address"] || "Travessa Cabo Luis N9, 3800-294 Aveiro, Portugal"}
                 </span>
               </div>
               <div className="flex items-start gap-3">
@@ -130,7 +130,7 @@ export const Footer = () => {
               <div className="flex items-start gap-3">
                 <Phone className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-muted-foreground">
-                  {content["footer.brand.phone"] || "+351 123 456 789"}
+                  {content["footer.brand.phone"] || "+351 934 924 235"}
                 </span>
               </div>
             </div>
