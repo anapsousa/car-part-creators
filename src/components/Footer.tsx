@@ -202,7 +202,7 @@ export const Footer = () => {
                 <Checkbox
                   id="newsletter-consent"
                   checked={consent}
-                  onCheckedChange={setConsent}
+                  onCheckedChange={(checked) => setConsent(checked === "indeterminate" ? false : checked)}
                 />
                 <Label htmlFor="newsletter-consent" className="text-sm text-muted-foreground leading-relaxed">
                   {(() => {
