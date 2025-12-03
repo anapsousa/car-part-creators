@@ -6,16 +6,29 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
+import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from 'react';
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, cartCount } = useCart();
   const navigate = useNavigate();
   const { content } = useContent("cart");
+  const [user, setUser] = useState<any>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setIsCheckingAuth(false);
+    };
+    checkAuth();
+  }, []);
 
   const handleCheckout = () => {
     navigate(`/checkout?type=products`);
@@ -41,6 +54,14 @@ export default function Cart() {
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">{content["cart.title"] || "Shopping Cart"} ({cartCount} {content["cart.items_count"] || "items"})</h1>
+
+        {!user && !isCheckingAuth && (
+          <div className="bg-muted/50 p-4 rounded-lg mb-6">
+            <p className="text-sm text-muted-foreground">
+              💡 {content['cart.anonymous_banner.message'] || 'You can complete your purchase without creating an account, or'} or <Button variant="link" className="h-auto p-0 text-sm" onClick={() => navigate('/auth')}>{content['cart.anonymous_banner.login_link'] || 'log in'}</Button> {content['cart.anonymous_banner.suffix'] || 'to save your order history'}
+            </p>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">

@@ -100,13 +100,30 @@
     "empty": "Your cart is empty",
     "browse": "Browse Products",
     "item": "Item",
+    "migration": {
+      "loading": "Syncing cart...",
+      "loading_description": "Transferring your items to your account",
+      "success_title": "Cart Synchronized",
+      "success_description": "Your items have been transferred to your account"
+    },
     "price": "Price",
     "quantity": "Quantity",
     "total": "Total",
     "remove": "Remove",
     "summary": "Order Summary",
     "subtotal": "Subtotal",
-    "checkout": "Proceed to Checkout"
+    "add": {
+      "anonymous": {
+        "title": "Added to cart",
+        "description": "You can checkout without registration. Create an account later to save your order history!"
+      }
+    },
+    "checkout": "Proceed to Checkout",
+    "anonymous_banner": {
+      "message": "You can complete your purchase without creating an account, or",
+      "login_link": "log in",
+      "suffix": "to save your order history"
+    }
   },
   "wishlist": {
     "title": "My Wishlist",
@@ -260,7 +277,9 @@
   "auth": {
     "title": "3D Model Generator",
     "subtitle": "Sign in to your account",
-    "email": "Email",
+    "email": {
+      "prefilled": "Email pre-filled from your order"
+    },
     "password": "Password",
     "login": "Sign In",
     "signup": "Create Account",
@@ -285,11 +304,51 @@
   "checkout": {
     "title": "Checkout",
     "summary": "Order Summary",
+    "success": {
+      "guest_prompt": {
+        "title": "Create an Account?",
+        "description": "Save your order history and enjoy faster checkouts in the future",
+        "button": "Create Account"
+      },
+      "order_details": {
+        "title": "Order Details",
+        "items": "Items",
+        "total": "Total",
+        "shipping": "Shipping Address"
+      }
+    },
     "total": "Total",
     "paymentMethod": "Payment Method",
     "paymentDescription": "We accept all major credit cards and payment methods through Stripe",
     "payWithStripe": "Pay with Stripe",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "guest": {
+      "title": "Guest Checkout Information",
+      "description": "Complete your purchase without creating an account",
+      "email": "Email Address",
+      "name": "Full Name",
+      "phone": "Phone Number",
+      "phone_hint": "Include country code (e.g., +351 912 345 678)",
+      "address": "Street Address",
+      "city": "City",
+      "postal_code": "Postal Code",
+      "country": "Country",
+      "gdpr_consent": "I agree to the processing of my personal data in accordance with the",
+      "privacy_policy": "Privacy Policy",
+      "have_account": "Already have an account?",
+      "login": "Log in"
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalid_email": "Please enter a valid email address",
+      "gdpr_required": "You must agree to the privacy policy to continue",
+      "form_errors": "Please correct the errors in the form"
+    },
+    "product": {
+      "title": "Product Checkout",
+      "cart_empty": "Your cart is empty",
+      "items_summary": "Order Items"
+    }
   },
   "common": {
     "loading": "Loading...",
@@ -310,7 +369,7 @@
       "description": "3D model generation for custom car parts and home decorations.",
       "address": "Travessa Cabo Luis N9, 3800-294 Aveiro, Portugal",
       "email": "info@pompousweek.com",
-      "phone": "+351 934 234 235"
+      "phone": "+351 934 924 235"
     },
     "products": "Products",
     "services": "Services",

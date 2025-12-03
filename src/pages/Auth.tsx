@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,9 +14,11 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 const Auth = () => {
   const navigate = useNavigate();
   const { content } = useContent("auth");
+  const [searchParams] = useSearchParams();
+  const emailParam = searchParams.get('email');
   const [isLoading, setIsLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailParam || "");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
@@ -39,6 +41,12 @@ const Auth = () => {
       }
     };
   }, [navigate]);
+
+  useEffect(() => {
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+  }, [emailParam]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,6 +161,11 @@ const Auth = () => {
                   required
                   disabled={isLoading}
                 />
+                {emailParam && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {content['auth.email.prefilled'] || 'Email pre-filled from your order'}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">{content["auth.password"] || "Password"}</Label>

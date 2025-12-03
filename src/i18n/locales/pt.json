@@ -106,7 +106,24 @@
     "remove": "Remover",
     "summary": "Resumo do Pedido",
     "subtotal": "Subtotal",
-    "checkout": "Proceder ao Pagamento"
+    "checkout": "Proceder ao Pagamento",
+    "anonymous_banner": {
+      "message": "Pode finalizar a compra sem criar conta, ou",
+      "login_link": "fazer login",
+      "suffix": "para guardar o histórico de pedidos"
+    },
+    "migration": {
+      "loading": "A sincronizar carrinho...",
+      "loading_description": "A transferir os seus itens para a sua conta",
+      "success_title": "Carrinho Sincronizado",
+      "success_description": "Os seus itens foram transferidos para a sua conta"
+    },
+    "add": {
+      "anonymous": {
+        "title": "Adicionado ao carrinho",
+        "description": "Pode finalizar a compra sem registo. Crie uma conta mais tarde para guardar o histórico de pedidos!"
+      }
+    }
   },
   "wishlist": {
     "title": "Os Meus Favoritos",
@@ -280,6 +297,9 @@
       "github": "GitHub",
       "discord": "Discord",
       "error": "Falha ao entrar com {provider}. Por favor, tente novamente."
+    },
+    "email": {
+      "prefilled": "Email pré-preenchido do seu pedido"
     }
   },
   "checkout": {
@@ -289,7 +309,47 @@
     "paymentMethod": "Método de Pagamento",
     "paymentDescription": "Aceitamos todos os principais cartões de crédito e métodos de pagamento através do Stripe",
     "payWithStripe": "Pagar com Stripe",
-    "processing": "A processar..."
+    "processing": "A processar...",
+    "guest": {
+      "title": "Informações de Checkout como Convidado",
+      "description": "Complete a sua compra sem criar uma conta",
+      "email": "Endereço de Email",
+      "name": "Nome Completo",
+      "phone": "Número de Telefone",
+      "phone_hint": "Inclua o código do país (ex: +351 912 345 678)",
+      "address": "Morada",
+      "city": "Cidade",
+      "postal_code": "Código Postal",
+      "country": "País",
+      "gdpr_consent": "Concordo com o processamento dos meus dados pessoais de acordo com a",
+      "privacy_policy": "Política de Privacidade",
+      "have_account": "Já tem uma conta?",
+      "login": "Entrar"
+    },
+    "validation": {
+      "required": "Este campo é obrigatório",
+      "invalid_email": "Por favor, insira um endereço de email válido",
+      "gdpr_required": "Deve concordar com a política de privacidade para continuar",
+      "form_errors": "Por favor, corrija os erros no formulário"
+    },
+    "product": {
+      "title": "Checkout de Produtos",
+      "cart_empty": "O seu carrinho está vazio",
+      "items_summary": "Itens do Pedido"
+    },
+    "success": {
+      "guest_prompt": {
+        "title": "Criar uma Conta?",
+        "description": "Guarde o histórico de pedidos e desfrute de checkouts mais rápidos no futuro",
+        "button": "Criar Conta"
+      },
+      "order_details": {
+        "title": "Detalhes do Pedido",
+        "items": "Itens",
+        "total": "Total",
+        "shipping": "Morada de Envio"
+      }
+    }
   },
   "common": {
     "loading": "A carregar...",
