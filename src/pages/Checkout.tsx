@@ -170,7 +170,7 @@ const Checkout = () => {
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
+            <img src={pompousweekLogo} alt="From Dream To Real 3D" className="h-10 w-auto" />
             <div>
               <h1 className="text-xl font-bold">{content["checkout.title"] || "Checkout"}</h1>
               <p className="text-xs text-muted-foreground">{content["checkout.subtitle"] || "Complete Your Purchase"}</p>

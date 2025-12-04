@@ -294,7 +294,7 @@ const UserDashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto cursor-pointer" onClick={() => navigate("/")} />
+              <img src={pompousweekLogo} alt="Dr3am ToReal" className="h-10 w-auto cursor-pointer" onClick={() => navigate("/")} />
               <div>
                 <h1 className="text-xl font-bold">{content["dashboard.title"] || "My Dashboard"}</h1>
                 <p className="text-xs text-muted-foreground">{content["dashboard.subtitle"] || "Manage your account"}</p>

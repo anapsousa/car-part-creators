@@ -81,7 +81,7 @@ const CheckoutSuccess = () => {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
+            <img src={pompousweekLogo} alt="From Dream To Real 3D" className="h-10 w-auto" />
             <div>
               <h1 className="text-xl font-bold">
                 {orderId ? (content["checkout.success.order_title"] || "Order Successful") : (content["checkout.success.title"] || "Payment Successful")}

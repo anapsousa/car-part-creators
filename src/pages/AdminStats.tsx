@@ -125,7 +125,7 @@ const AdminStats = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <img src={pompousweekLogo} alt="Pompousweek" className="h-10 w-auto" />
+              <img src={pompousweekLogo} alt="Dr3am ToReal" className="h-10 w-auto" />
               <div>
                 <h1 className="text-xl font-bold">{content["admin.stats.title"] || "Business Statistics"}</h1>
                 <p className="text-xs text-muted-foreground">{content["admin.stats.subtitle"] || "Overview & Analytics"}</p>

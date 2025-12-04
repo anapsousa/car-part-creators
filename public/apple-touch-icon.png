@@ -1,0 +1,18 @@
+from PIL import Image
+
+# Load the Dr3am ToReal logo image
+logo_path = '/Volumes/Backup/Documents/Pompousweek/3D/website/car-part-creators/public/favicon.ico'
+logo = Image.open(logo_path)
+
+# Create a new 180x180 pixel image with a white background (suitable for Apple devices)
+icon = Image.new('RGBA', (180, 180), (255, 255, 255, 255))
+
+# Calculate the position to center the logo with appropriate padding
+x = (180 - logo.width) // 2
+y = (180 - logo.height) // 2
+
+# Paste the logo onto the icon, using the logo's alpha channel if available
+icon.paste(logo, (x, y), logo if logo.mode == 'RGBA' else None)
+
+# Save the icon as a PNG file
+icon.save('/Volumes/Backup/Documents/Pompousweek/3D/website/car-part-creators/public/apple-touch-icon.png')

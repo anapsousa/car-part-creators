@@ -105,10 +105,10 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_2fr] gap-8">
           {/* Brand */}
           <div>
-            <img 
-              src={pompousweekLogo} 
-              alt="Pompousweek" 
-              className="h-12 w-auto mb-4 cursor-pointer" 
+            <img
+              src={pompousweekLogo}
+              alt="From Dream To Real 3D"
+              className="h-12 w-auto mb-4 cursor-pointer"
               onClick={() => navigate("/")}
             />
             <p className="text-sm text-muted-foreground">

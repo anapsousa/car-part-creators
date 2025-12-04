@@ -89,9 +89,9 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate("/")}>
-            <img 
-              src={pompousweekLogo} 
-              alt="PompousWeek" 
+            <img
+              src={pompousweekLogo}
+              alt="From Dream To Real 3D"
               className="h-10 w-auto"
             />
             {pageTitle && (
