@@ -275,7 +275,7 @@ const Checkout = () => {
                   <Checkbox
                     id="gdpr"
                     checked={gdprConsent}
-                    onCheckedChange={setGdprConsent}
+                    onCheckedChange={(checked) => setGdprConsent(checked === true)}
                     disabled={isProcessing}
                   />
                   <Label htmlFor="gdpr" className="text-sm">
