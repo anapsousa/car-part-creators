@@ -27,6 +27,7 @@ import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import PriceCalculator from "./pages/PriceCalculator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,6 +64,7 @@ const App = () => (
             <Route path="/admin/products/new" element={<AdminProductForm />} />
             <Route path="/admin/products/edit/:id" element={<AdminProductForm />} />
             <Route path="/admin/content" element={<AdminContentManager />} />
+            <Route path="/price-calculator" element={<PriceCalculator />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
