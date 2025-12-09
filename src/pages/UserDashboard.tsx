@@ -59,6 +59,7 @@ interface Order {
   estimated_delivery?: string;
   created_at: string;
   updated_at: string;
+  order_items?: OrderItem[];
 }
 
 interface OrderItem {
@@ -121,7 +122,18 @@ const UserDashboard = () => {
 
       if (paymentsRes.data) setPayments(paymentsRes.data);
       if (profileRes.data) setProfile(profileRes.data);
-      if (ordersRes.data) setOrders(ordersRes.data);
+      if (ordersRes.data) {
+        // Map the database response to our Order interface
+        const mappedOrders: Order[] = ordersRes.data.map((o: any) => ({
+          ...o,
+          status: o.status as Order['status'],
+          order_items: o.order_items?.map((item: any) => ({
+            ...item,
+            product: item.products,
+          })),
+        }));
+        setOrders(mappedOrders);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

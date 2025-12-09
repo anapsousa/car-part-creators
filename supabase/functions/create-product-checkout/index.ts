@@ -115,7 +115,7 @@ serve(async (req) => {
     if (user) {
       orderData.user_id = user.id;
       orderData.is_guest_order = false;
-    } else {
+    } else if (sanitizedGuestInfo) {
       orderData.is_guest_order = true;
       orderData.guest_email = sanitizedGuestInfo.email;
       orderData.guest_name = sanitizedGuestInfo.name;
@@ -129,7 +129,7 @@ serve(async (req) => {
     if (orderError) throw orderError;
     console.log('Creating order:', { is_guest: !user, order_id: order.id });
 
-    await logAudit(supabaseClient, order.id, 'created', sanitizedGuestInfo?.email || user?.email, req, { total_amount: totalAmount, item_count: cartItems.length });
+    await logAudit(supabaseClient, order.id, 'created', sanitizedGuestInfo?.email || user?.email || 'unknown', req, { total_amount: totalAmount, item_count: cartItems.length });
 
     // Create order items
     for (const item of cartItems) {
@@ -176,9 +176,9 @@ serve(async (req) => {
       headers: { ...corsHeaders, ...getSecurityHeaders(), "Content-Type": "application/json" },
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error('Checkout error:', { error: errorMessage, ip: clientIp, is_guest: !user, cart_items: cartItems?.length, timestamp: new Date().toISOString() });
+    console.error('Checkout error:', { error: errorMessage, ip: clientIp, is_guest: !user, timestamp: new Date().toISOString() });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, ...getSecurityHeaders(), "Content-Type": "application/json" },
       status: 500,

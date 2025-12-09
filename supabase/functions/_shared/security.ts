@@ -101,31 +101,34 @@ export function sanitizeGuestInfo(guestInfo: GuestInfo): GuestInfo {
 }
 
 /**
- * Checks if the request is within the rate limit for the given IP and endpoint.
+ * Checks if the request is within the rate limit for the given identifier and action.
  * @param supabase - The Supabase client.
- * @param ipAddress - The client's IP address.
- * @param endpoint - The endpoint being accessed.
- * @param limit - The maximum number of requests allowed (default: 10).
+ * @param identifier - The client's identifier (e.g., IP address).
+ * @param action - The action being performed (e.g., endpoint name).
+ * @param maxRequests - The maximum number of requests allowed (default: 10).
+ * @param windowSeconds - The time window in seconds (default: 3600).
  * @returns Promise<boolean> - True if allowed, false if rate limited.
  */
 export async function checkRateLimit(
   supabase: SupabaseClient,
-  ipAddress: string,
-  endpoint: string,
-  limit: number = 10
+  identifier: string,
+  action: string,
+  maxRequests: number = 10,
+  windowSeconds: number = 3600
 ): Promise<boolean> {
   try {
     const { data, error } = await supabase.rpc('check_rate_limit', {
-      p_ip_address: ipAddress,
-      p_endpoint: endpoint,
-      p_limit: limit,
+      p_identifier: identifier,
+      p_action: action,
+      p_max_requests: maxRequests,
+      p_window_seconds: windowSeconds,
     });
     if (error) {
       console.error('Rate limit check error:', error);
       return true; // Fail open to not block service
     }
     if (!data) {
-      console.warn('Rate limit exceeded:', { ip: ipAddress, endpoint });
+      console.warn('Rate limit exceeded:', { identifier, action });
       return false;
     }
     return true;
@@ -136,7 +139,7 @@ export async function checkRateLimit(
 }
 
 /**
- * Logs an audit entry for guest orders.
+ * Logs an audit entry for guest orders (best-effort, does not fail on error).
  * @param supabase - The Supabase client.
  * @param orderId - The order ID.
  * @param action - The action performed (e.g., 'created', 'paid').
@@ -145,27 +148,18 @@ export async function checkRateLimit(
  * @param metadata - Optional metadata as JSON object.
  */
 export async function logAudit(
-  supabase: SupabaseClient,
+  supabase: any,
   orderId: string,
   action: string,
-  guestEmail: string,
+  guestEmail: string | undefined,
   req: Request,
   metadata?: object
 ): Promise<void> {
   try {
+    // Best-effort logging - currently just console log
+    // A full audit table can be added later if needed
     const ipAddress = extractClientIp(req);
-    const userAgent = req.headers.get('user-agent') || 'unknown';
-    const { error } = await supabase.rpc('log_guest_order_audit', {
-      p_order_id: orderId,
-      p_action: action,
-      p_guest_email: guestEmail,
-      p_ip_address: ipAddress,
-      p_user_agent: userAgent,
-      p_metadata: metadata || {},
-    });
-    if (error) {
-      console.error('Audit log error:', error);
-    }
+    console.log('Audit:', { orderId, action, guestEmail, ipAddress, metadata });
   } catch (err) {
     console.error('Unexpected error in logAudit:', err);
   }

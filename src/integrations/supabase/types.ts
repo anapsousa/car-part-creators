@@ -243,42 +243,33 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
-          guest_email: string | null
-          guest_name: string | null
           id: string
-          is_guest_order: boolean | null
           shipping_address: Json
           status: string
           stripe_session_id: string | null
           total_amount: number
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
-          guest_email?: string | null
-          guest_name?: string | null
           id?: string
-          is_guest_order?: boolean | null
           shipping_address: Json
           status?: string
           stripe_session_id?: string | null
           total_amount: number
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
-          guest_email?: string | null
-          guest_name?: string | null
           id?: string
-          is_guest_order?: boolean | null
           shipping_address?: Json
           status?: string
           stripe_session_id?: string | null
           total_amount?: number
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -431,6 +422,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_requests: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          identifier: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          identifier: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          identifier?: string
+        }
+        Relationships: []
+      }
       uploads: {
         Row: {
           created_at: string
@@ -543,11 +555,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          p_action: string
+          p_identifier: string
+          p_max_requests?: number
+          p_window_seconds?: number
+        }
+        Returns: boolean
+      }
+      cleanup_rate_limit_requests: { Args: never; Returns: undefined }
+      decrement_user_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      increment_user_credits: {
+        Args: { p_amount: number; p_user_id: string }
         Returns: boolean
       }
     }

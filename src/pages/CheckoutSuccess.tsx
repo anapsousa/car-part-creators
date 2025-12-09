@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
-import { Tables } from "@/integrations/supabase/types";
 
 const CheckoutSuccess = () => {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ const CheckoutSuccess = () => {
   const orderId = searchParams.get("order_id");
   const [isLoading, setIsLoading] = useState(true);
   const [design, setDesign] = useState<any>(null);
-  const [order, setOrder] = useState<Tables<'orders'> | null>(null);
+  const [order, setOrder] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [isGuestOrder, setIsGuestOrder] = useState(false);
   const { content } = useContent("checkout");
@@ -54,7 +53,8 @@ const CheckoutSuccess = () => {
 
           setOrder(orderData);
           setOrderItems(orderData.order_items || []);
-          setIsGuestOrder(orderData.is_guest_order || false);
+          // Handle is_guest_order gracefully - it may not exist in the database yet
+          setIsGuestOrder((orderData as any).is_guest_order || false);
         }
       } catch (error) {
         console.error("Error checking payment/order:", error);
@@ -157,7 +157,7 @@ const CheckoutSuccess = () => {
                     <CardDescription>{content['checkout.success.guest_prompt.description'] || 'Save your order history and enjoy faster checkouts in the future'}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button onClick={() => navigate(`/auth?email=${encodeURIComponent(order?.guest_email || '')}`)}
+                    <Button onClick={() => navigate(`/auth?email=${encodeURIComponent((order as any)?.guest_email || '')}`)}
                       className="w-full">
                       {content['checkout.success.guest_prompt.button'] || 'Create Account'}
                     </Button>

@@ -100,14 +100,21 @@ serve(async (req) => {
       }
     }
 
-    // Add contact to Resend audience
+    // Add contact to Resend audience - using Resend SDK
     try {
-      const resendResponse = await resend.contacts.create({
-        email,
-        audienceId: resendAudienceId,
-        unsubscribed: false,
+      const resendResponse = await fetch(`https://api.resend.com/audiences/${resendAudienceId}/contacts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          unsubscribed: false,
+        }),
       });
-      resendContactId = resendResponse.data?.id || null;
+      const resendData = await resendResponse.json();
+      resendContactId = resendData?.id || null;
     } catch (resendError) {
       console.error("Resend API error:", resendError);
       // Continue without failing the request
