@@ -108,7 +108,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink to="/">{content["nav.home"] || "Home"}</NavLink>
             <NavLink to="/shop">{content["nav.shop"] || "Shop"}</NavLink>
-            <NavLink to="/priceCalculator">{content["nav.pricecalculator"] || "Price Calculator"}</NavLink>
+            <NavLink to="/costcalculator">{content["nav.costcalculator"] || "Cost Calculator"}</NavLink>
             <NavLink to="/about">{content["nav.about"] || "About"}</NavLink>
             <NavLink to="/contact">{content["nav.contact"] || "Contact"}</NavLink>
             <NavLink to="/faq">{content["nav.faq"] || "FAQ"}</NavLink>

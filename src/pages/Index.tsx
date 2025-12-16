@@ -42,7 +42,7 @@ export default function Index() {
                       <>
                         {parts[0]}.{" "}
                         <span className="bg-gradient-primary bg-clip-text text-transparent">
-                          {parts.slice(1).join(" ")}.
+                          {parts.slice(1).join(" ")}
                         </span>
                       </>
                     );
