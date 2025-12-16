@@ -82,18 +82,18 @@ export const Footer = () => {
       });
       if (error) {
         if (error.message?.includes("Already subscribed") || error.status === 409) {
-          toast.info(content["footer.newsletter.already_subscribed"] || "Já está subscrito!");
+          toast.info(content["footer.newsletter.already_subscribed"] || "You are already subscribed!");
         } else {
-          toast.error(content["footer.newsletter.error"] || "Erro ao subscrever. Tente novamente.");
+          toast.error(content["footer.newsletter.error"] || "Error subscribing. Please try again.");
         }
       } else {
-        toast.success(content["footer.newsletter.success"] || "Obrigado por subscrever!");
+        toast.success(content["footer.newsletter.success"] || "Thank you for subscribing!");
         setEmail('');
         setConsent(false);
       }
     } catch (err) {
       console.error('Network error:', err);
-      toast.error(content["footer.newsletter.error"] || "Erro ao subscrever. Tente novamente.");
+      toast.error(content["footer.newsletter.error"] || "Error subscribing. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -124,13 +124,13 @@ export const Footer = () => {
               <div className="flex items-start gap-3">
                 <Mail className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-muted-foreground">
-                  {content["footer.brand.email"] || "info@pompousweek.com"}
+                  {content["footer.brand.email"] || "dr3amtoreal@gmail.com"}
                 </span>
               </div>
               <div className="flex items-start gap-3">
                 <Phone className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-muted-foreground">
-                  {content["footer.brand.phone"] || "+351 934 924 235"}
+                  {content["footer.brand.phone"] || "+351 963 007 377"}
                 </span>
               </div>
             </div>
@@ -138,26 +138,26 @@ export const Footer = () => {
 
           {/* Ajuda & Suporte */}
           <div>
-            <h3 className="font-semibold text-foreground mb-6">{content["footer.help.title"] || "Ajuda & Suporte"}</h3>
+            <h3 className="font-semibold text-foreground mb-6">{content["footer.help.title"] || "Help & Support"}</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <button onClick={() => navigate("/dashboard?tab=orders")} className="hover:text-primary transition-colors">
-                  {content["footer.help.my_order"] || "A minha encomenda"}
+                  {content["footer.help.my_order"] || "My Order"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/delivery-shipping")} className="hover:text-primary transition-colors">
-                  {content["footer.help.delivery"] || "Entrega e Envio"}
+                  {content["footer.help.delivery"] || "Delivery and Shipping"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/returns-refunds")} className="hover:text-primary transition-colors">
-                  {content["footer.help.returns"] || "Devoluções e Reembolsos"}
+                  {content["footer.help.returns"] || "Returns and Refunds"}
                 </button>
               </li>
               <li>
                 <button onClick={() => navigate("/terms")} className="hover:text-primary transition-colors">
-                  {content["footer.help.terms"] || "Termos e Condições"}
+                  {content["footer.help.terms"] || "Terms and Conditions"}
                 </button>
               </li>
             </ul>
@@ -169,7 +169,7 @@ export const Footer = () => {
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <button onClick={() => navigate("/livro-reclamacoes")} className="hover:text-primary transition-colors">
-                  {content["footer.info.complaints"] || "Livro de Reclamações"}
+                  {content["footer.info.complaints"] || "Complaints Book"}
                 </button>
               </li>
 {/*               <li>
@@ -184,7 +184,7 @@ export const Footer = () => {
         <div>
             <h3 className="font-semibold text-foreground mb-6">{content["footer.newsletter.title"] || "Receber ofertas e descontos por e-mail:"}</h3>
             <p className="text-sm text-muted-foreground mb-6">
-              {content["footer.newsletter.description"] || "Assine a newsletter e fique por dentro de nossas ofertas incríveis e das últimas novidades."}
+              {content["footer.newsletter.description"] || "Subscribe to our newsletter to get the latest news and offers."}
             </p>
             <form onSubmit={handleNewsletterSubmit} className="space-y-5">
               <div>
@@ -192,7 +192,7 @@ export const Footer = () => {
                 <Input
                   id="newsletter-email"
                   type="email"
-                  placeholder={content["footer.newsletter.placeholder"] || "o.seu@email.com"}
+                  placeholder={content["footer.newsletter.placeholder"] || "your@email.com"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -206,8 +206,8 @@ export const Footer = () => {
                 />
                 <Label htmlFor="newsletter-consent" className="text-sm text-muted-foreground leading-relaxed">
                   {(() => {
-                    const consentText = content["footer.newsletter.consent"] || "Ao confirmar o registo, aceitas que os teus dados sejam processados por nós, conforme a Política de Proteção de Dados.";
-                    const parts = consentText.split("Política de Proteção de Dados");
+                    const consentText = content["footer.newsletter.consent"] || "By confirming your registration, you agree that your data will be processed by us, in accordance with the Data Protection Policy.";
+                    const parts = consentText.split("Data Protection Policy");
                     return (
                       <>
                         {parts[0]}
@@ -216,7 +216,7 @@ export const Footer = () => {
                           onClick={() => navigate("/terms")}
                           className="underline hover:text-primary transition-colors"
                         >
-                          Política de Proteção de Dados
+                          Data Protection Policy
                         </button>
                         {parts[1]}
                       </>
@@ -229,16 +229,16 @@ export const Footer = () => {
                 disabled={isSubmitting || !consent || !email}
                 className="w-full"
               >
-                {content["footer.newsletter.button"] || "Subscrever"}
+                {content["footer.newsletter.button"] || "Subscribe"}
               </Button>
             </form>
 
         {/* Social Media */}
         <div className="mt-8">
-            <h3 className="font-semibold text-foreground mb-6">{content["footer.social.title"] || "Segue-nos!"}</h3>
+            <h3 className="font-semibold text-foreground mb-6">{content["footer.social.title"] || "Follow us!"}</h3>
             <div className="flex space-x-4">
               <a
-                href={content["footer.social.instagram_url"] || "https://instagram.com/pompousweek"}
+                href={content["footer.social.instagram_url"] || "https://instagram.com/dr3amtoreal"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={content["footer.social.instagram_label"] || "Follow us on Instagram"}
@@ -246,7 +246,7 @@ export const Footer = () => {
               >
                 <Instagram className="h-6 w-6" />
               </a>
-              <a
+              {/* <a
                 href={content["footer.social.youtube_url"] || "https://youtube.com/@pompousweek"}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -254,9 +254,9 @@ export const Footer = () => {
                 className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
               >
                 <Youtube className="h-6 w-6" />
-              </a>
+              </a> */}
               <a
-                href={content["footer.social.facebook_url"] || "https://facebook.com/pompousweek"}
+                href={content["footer.social.facebook_url"] || "https://facebook.com/dr3amtoreal"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={content["footer.social.facebook_label"] || "Follow us on Facebook"}

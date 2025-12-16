@@ -25,3 +25,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?.env
+._.env
+._.env.example
+._index.html
+._package-lock.json
+._package.json
+._README.md
+._SECURITY.md
+.env.example
