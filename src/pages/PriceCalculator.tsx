@@ -4,41 +4,21 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Loader2 } from 'lucide-react';
 
-const PriceCalculator = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-    
-    checkAuth();
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
+const CostCalculator = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <div className="min-h-screen flex flex-col bg-gradient-mesh">
+      <Header pageTitle="Cost Calculator" pageSubtitle="3D Printing Price Calculator" />
       
-      <main className="flex-grow">
-        {isAuthenticated === null ? (
-          <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          </div>
-        ) : (
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="bg-card/80 backdrop-blur-md border border-primary/20 rounded-lg shadow-glow overflow-hidden">
           <iframe
-            src="https://b31e5363-66d3-4282-8018-c8e94a105f9a.lovableproject.com/"
-            title="Dr3amToReal Price Calculator"
-            className="w-full h-[calc(100vh-140px)] border-0"
+            src="https://print3dpricecalculator.lovable.app/"
+            title="3D Printing Cost Calculator"
+            className="w-full h-[calc(100vh-250px)] border-0"
             allow="clipboard-write"
+            allowFullScreen
           />
-        )}
+        </div>
       </main>
       
       <Footer />
@@ -46,4 +26,4 @@ const PriceCalculator = () => {
   );
 };
 
-export default PriceCalculator;
+export default CostCalculator;
