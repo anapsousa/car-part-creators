@@ -6,7 +6,7 @@ const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL || 'https://khdczrzplqssygwoyjte.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoZGN6cnpwbHFzc3lnd3Bxb2NqdGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczMTY5MzM3NCwiZXhwIjoxNzYzMjQ5Mzc0fQ.6x9iTbyR-qJmLZpoVxxhVc7ApehB1Q05bV0y15v58qw';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoZGN6cnpwbHFzc3lnd295anRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE0MzIsImV4cCI6MjA3ODQ0NzQzMn0.hy7utgt29ZpLHyMyz-Tx7h3rNhWAJKDvZw13jR_oyUM';
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
