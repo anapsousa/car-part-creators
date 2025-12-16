@@ -118,15 +118,25 @@ const Auth = () => {
   const handleSocialLogin = async (provider: "google" | "facebook" | "twitter" | "github" | "discord") => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const redirectUrl = `${window.location.origin}/auth`;
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider as any,
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: redirectUrl,
+          skipBrowserRedirect: false,
         },
       });
-      if (error) throw error;
+      
+      if (error) {
+        if (error.message.includes("provider is not enabled")) {
+          toast.error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not configured. Please use email/password or contact support.`);
+        } else {
+          throw error;
+        }
+      }
     } catch (error: any) {
-      console.error(error);
+      console.error("OAuth error:", error);
       toast.error((content["auth.social.error"] || "Failed to sign in with {provider}. Please try again.").replace("{provider}", provider.charAt(0).toUpperCase() + provider.slice(1)));
     } finally {
       setIsLoading(false);
