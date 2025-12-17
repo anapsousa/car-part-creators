@@ -57,10 +57,10 @@ export default function Index() {
                 <Button size="lg" onClick={() => navigate("/shop")}>
                   {content["home.hero.cta"] || "Browse Catalog"}
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
+{/*                 <Button size="lg" variant="outline" onClick={() => navigate("/generator")}>
                   <Sparkles className="mr-2 h-4 w-4" />
                   {content["home.hero.cta_generator"] || "Generate Custom Part"}
-                </Button>
+                </Button> */}
               </div>
               <div className="flex gap-8 pt-4">
                 <div>
@@ -100,7 +100,7 @@ export default function Index() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
             <Card className="text-center p-6">
               <CardContent className="pt-6">
                 <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
@@ -123,7 +123,7 @@ export default function Index() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="text-center p-6">
+            {/* <Card className="text-center p-6">
               <CardContent className="pt-6">
                 <div className="mx-auto w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
                   <Cpu className="h-6 w-6 text-accent" />
@@ -133,7 +133,7 @@ export default function Index() {
                   {content["home.usp.ai.title"] || "Powered"}
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </section>
@@ -166,7 +166,7 @@ export default function Index() {
             </Card>
 
             <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6 space-y-4">
+              <CardContent className="pt-6 space-y-3">
                 <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
                   <Sparkles className="h-6 w-6 text-secondary" />
                 </div>
@@ -178,7 +178,7 @@ export default function Index() {
                 </p>
               </CardContent>
             </Card>
-
+{/* 
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <CardContent className="pt-6 space-y-4">
                 <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
@@ -191,7 +191,7 @@ export default function Index() {
                   {content["home.usp.ai.description"] || "Use our advanced AI to generate custom 3D models from descriptions"}
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <CardContent className="pt-6 space-y-4">
