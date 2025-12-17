@@ -264,18 +264,19 @@ export const Footer = () => {
                   aria-label={content["footer.social.linktree_label"] || "All our links on Linktree"}
                   className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors"
                 >
-                  {content["footer.social.linktree_text"] || "All links in one place"}
+                  {content["footer.social.linktree_text"] || "All links"}
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-xs text-muted-foreground hidden sm:inline">
                   {content["footer.social.linktree_qr_caption"] || "Scan the QR to open our Linktree"}
                 </span>
-                <img
+                <div style={{ backgroundColor: 'white' }}>  <img
                   src={dr3amtorealLinktreeQR}
                   alt={content["footer.social.linktree_qr_alt"] || "QR code linking to our Linktree"}
                   className="h-16 w-16 rounded-md border border-border object-contain"
                 />
+                </div>
               </div>
             </div>
           </div>
