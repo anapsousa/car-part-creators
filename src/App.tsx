@@ -30,6 +30,12 @@ import Wishlist from "./pages/Wishlist";
 import PriceCalculator from "./pages/PriceCalculator";
 import CostCalculator from "./pages/CostCalculator";
 import NotFound from "./pages/NotFound";
+// Calculator pages
+import CalcDashboard from "./pages/calculator/CalcDashboard";
+import CalcPrinters from "./pages/calculator/CalcPrinters";
+import CalcFilaments from "./pages/calculator/CalcFilaments";
+import CalcPrints from "./pages/calculator/CalcPrints";
+import CalcSettings from "./pages/calculator/CalcSettings";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +73,12 @@ const App = () => (
             <Route path="/admin/content" element={<AdminContentManager />} />
             <Route path="/price-calculator" element={<PriceCalculator />} />
             <Route path="/costcalculator" element={<CostCalculator />} />
+            {/* Calculator routes */}
+            <Route path="/calculator" element={<CalcDashboard />} />
+            <Route path="/calculator/printers" element={<CalcPrinters />} />
+            <Route path="/calculator/filaments" element={<CalcFilaments />} />
+            <Route path="/calculator/prints" element={<CalcPrints />} />
+            <Route path="/calculator/settings" element={<CalcSettings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
