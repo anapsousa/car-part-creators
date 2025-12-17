@@ -320,6 +320,26 @@ const UserDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        {/* Quick Access to Price Calculator */}
+        <Card className="mb-6 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/20 rounded-lg">
+                  <Calculator className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">{content["dashboard.nav.calculator"] || "Price Calculator"}</h3>
+                  <p className="text-sm text-muted-foreground">{content["dashboard.nav.calculator_desc"] || "Calculate 3D printing costs"}</p>
+                </div>
+              </div>
+              <Button onClick={() => navigate("/calculator")} variant="default" size="sm">
+                Open Calculator
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs value={activeTab} onValueChange={(newTab) => navigate(`/dashboard?tab=${newTab}`, { replace: true })} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="designs">{content["dashboard.tabs.designs"] || "My Designs"}</TabsTrigger>

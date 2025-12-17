@@ -36,6 +36,7 @@ import CalcPrinters from "./pages/calculator/CalcPrinters";
 import CalcFilaments from "./pages/calculator/CalcFilaments";
 import CalcPrints from "./pages/calculator/CalcPrints";
 import CalcSettings from "./pages/calculator/CalcSettings";
+import { SetupWizard } from "./components/calculator/onboarding/SetupWizard";
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,7 @@ const App = () => (
             <Route path="/calculator/filaments" element={<CalcFilaments />} />
             <Route path="/calculator/prints" element={<CalcPrints />} />
             <Route path="/calculator/settings" element={<CalcSettings />} />
+            <Route path="/calculator/setup" element={<SetupWizard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
