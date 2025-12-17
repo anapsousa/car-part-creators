@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, Loader2, Palette } from 'lucide-react';
-import { filamentBrands, filamentMaterials, filamentColors } from '@/lib/calculator/filamentData';
+import { FILAMENT_BRANDS, FILAMENT_MATERIALS, FILAMENT_COLORS } from '@/lib/calculator/filamentData';
 
 interface FilamentStepProps {
   userId: string;
@@ -110,7 +110,7 @@ export function FilamentStep({ userId, onComplete, onBack, isCompleted }: Filame
                 <SelectValue placeholder="Select brand" />
               </SelectTrigger>
               <SelectContent>
-                {filamentBrands.map(b => (
+                {FILAMENT_BRANDS.map(b => (
                   <SelectItem key={b} value={b}>{b}</SelectItem>
                 ))}
               </SelectContent>
@@ -123,7 +123,7 @@ export function FilamentStep({ userId, onComplete, onBack, isCompleted }: Filame
                 <SelectValue placeholder="Select material" />
               </SelectTrigger>
               <SelectContent>
-                {filamentMaterials.map(m => (
+                {FILAMENT_MATERIALS.map(m => (
                   <SelectItem key={m} value={m}>{m}</SelectItem>
                 ))}
               </SelectContent>
@@ -138,7 +138,7 @@ export function FilamentStep({ userId, onComplete, onBack, isCompleted }: Filame
               <SelectValue placeholder="Select color" />
             </SelectTrigger>
             <SelectContent>
-              {filamentColors.map(c => (
+              {FILAMENT_COLORS.map(c => (
                 <SelectItem key={c} value={c}>{c}</SelectItem>
               ))}
             </SelectContent>

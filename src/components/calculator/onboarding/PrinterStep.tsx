@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, Loader2, Printer } from 'lucide-react';
-import { printerBrands, getModelsForBrand, getPrinterSpec } from '@/lib/calculator/printerData';
+import { PRINTER_BRANDS, PRINTER_MODELS, getPrinterSpec, PrinterBrand } from '@/lib/calculator/printerData';
 
 interface PrinterStepProps {
   userId: string;
@@ -26,7 +26,7 @@ export function PrinterStep({ userId, onComplete, onBack, isCompleted }: Printer
   const [powerWatts, setPowerWatts] = useState('200');
   const [depreciationMonths, setDepreciationMonths] = useState('36');
 
-  const models = brand ? getModelsForBrand(brand) : [];
+  const models = brand ? (PRINTER_MODELS[brand as PrinterBrand] || []) : [];
 
   const handleBrandChange = (value: string) => {
     setBrand(value);
@@ -36,7 +36,7 @@ export function PrinterStep({ userId, onComplete, onBack, isCompleted }: Printer
 
   const handleModelChange = (value: string) => {
     setModel(value);
-    const spec = getPrinterSpec(brand, value);
+    const spec = getPrinterSpec(brand as PrinterBrand, value);
     if (spec) {
       setName(`${brand} ${value}`);
       setPowerWatts(spec.powerWatts.toString());
@@ -114,7 +114,7 @@ export function PrinterStep({ userId, onComplete, onBack, isCompleted }: Printer
                 <SelectValue placeholder="Select brand" />
               </SelectTrigger>
               <SelectContent>
-                {printerBrands.map(b => (
+                {PRINTER_BRANDS.map(b => (
                   <SelectItem key={b} value={b}>{b}</SelectItem>
                 ))}
               </SelectContent>
@@ -128,7 +128,7 @@ export function PrinterStep({ userId, onComplete, onBack, isCompleted }: Printer
               </SelectTrigger>
               <SelectContent>
                 {models.map(m => (
-                  <SelectItem key={m} value={m}>{m}</SelectItem>
+                  <SelectItem key={m.model} value={m.model}>{m.model}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CalculatorLayout } from '@/components/calculator/CalculatorLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Printer, Palette, Calculator, Settings, Plus, ArrowRight, Loader2 } from 'lucide-react';
+import { Printer, Palette, Calculator, Settings, Plus, ArrowRight, Loader2, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '@/lib/calculator/calculations';
 
 export default function CalcDashboard() {
@@ -16,6 +15,7 @@ export default function CalcDashboard() {
   const [stats, setStats] = useState({
     printers: 0,
     filaments: 0,
+    electricity: 0,
     prints: 0,
     totalCost: 0,
     totalRevenue: 0,
@@ -37,9 +37,10 @@ export default function CalcDashboard() {
       setIsAuthenticated(true);
       
       try {
-        const [printersRes, filamentsRes, printsRes] = await Promise.all([
+        const [printersRes, filamentsRes, electricityRes, printsRes] = await Promise.all([
           supabase.from('calc_printers').select('id', { count: 'exact' }),
           supabase.from('calc_filaments').select('id', { count: 'exact' }),
+          supabase.from('calc_electricity_settings').select('id', { count: 'exact' }),
           supabase.from('calc_prints').select('*').order('created_at', { ascending: false }).limit(5),
         ]);
 
@@ -50,6 +51,7 @@ export default function CalcDashboard() {
         setStats({
           printers: printersRes.count || 0,
           filaments: filamentsRes.count || 0,
+          electricity: electricityRes.count || 0,
           prints: printsRes.data?.length || 0,
           totalCost,
           totalRevenue,
@@ -96,7 +98,7 @@ export default function CalcDashboard() {
     );
   }
 
-  const needsSetup = stats.printers === 0 || stats.filaments === 0;
+  const needsSetup = stats.printers === 0 || stats.filaments === 0 || stats.electricity === 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-mesh">
@@ -109,28 +111,28 @@ export default function CalcDashboard() {
             {needsSetup && (
               <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-2">Welcome to Price Calculator!</h3>
+                  <h3 className="text-lg font-semibold mb-2">Complete Your Setup</h3>
                   <p className="text-muted-foreground mb-4">
-                    To get started, you'll need to add at least one printer and one filament.
+                    To start calculating print costs, you need to add a printer, filament, and electricity settings.
                   </p>
-                  <div className="flex gap-3">
-                    {stats.printers === 0 && (
-                      <Button asChild>
-                        <Link to="/calculator/printers">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Printer
-                        </Link>
-                      </Button>
-                    )}
-                    {stats.filaments === 0 && (
-                      <Button asChild variant={stats.printers === 0 ? 'outline' : 'default'}>
-                        <Link to="/calculator/filaments">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Filament
-                        </Link>
-                      </Button>
-                    )}
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${stats.printers > 0 ? 'bg-green-500/20 text-green-500' : 'bg-muted text-muted-foreground'}`}>
+                      <Printer className="h-4 w-4" />
+                      {stats.printers > 0 ? 'Printer added' : 'Add printer'}
+                    </div>
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${stats.filaments > 0 ? 'bg-green-500/20 text-green-500' : 'bg-muted text-muted-foreground'}`}>
+                      <Palette className="h-4 w-4" />
+                      {stats.filaments > 0 ? 'Filament added' : 'Add filament'}
+                    </div>
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${stats.electricity > 0 ? 'bg-green-500/20 text-green-500' : 'bg-muted text-muted-foreground'}`}>
+                      <Zap className="h-4 w-4" />
+                      {stats.electricity > 0 ? 'Electricity configured' : 'Set electricity'}
+                    </div>
                   </div>
+                  <Button onClick={() => navigate('/calculator/setup')}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Start Setup Wizard
+                  </Button>
                 </CardContent>
               </Card>
             )}
