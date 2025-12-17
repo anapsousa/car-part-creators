@@ -222,7 +222,7 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="text-center space-y-4">
               <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto text-2xl font-bold text-primary">
                 1
