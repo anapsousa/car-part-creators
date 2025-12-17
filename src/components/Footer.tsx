@@ -166,7 +166,7 @@ export const Footer = () => {
 
           {/* Informação Útil */}
           <div>
-            <h3 className="font-semibold text-foreground mb-6">{content["footer.info.title"] || "Informação Útil"}</h3>
+            <h3 className="font-semibold text-foreground mb-6">{content["footer.info.title"] || "Useful Information"}</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <button onClick={() => navigate("/livro-reclamacoes")} className="hover:text-primary transition-colors">
