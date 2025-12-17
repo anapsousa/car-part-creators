@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Download, Calendar, CreditCard, User, MapPin, ChevronDown } from "lucide-react";
+import { Loader2, Download, Calendar, CreditCard, User, MapPin, ChevronDown, Calculator } from "lucide-react";
 import DesignHistory from "@/components/DesignHistory";
 import { CreditsDisplay } from "@/components/CreditsDisplay";
 import OrderStatusTimeline from '@/components/OrderStatusTimeline';
