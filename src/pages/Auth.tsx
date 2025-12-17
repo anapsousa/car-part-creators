@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Facebook, Twitter, Github, Globe, MessageCircle } from "lucide-react";
+import { Loader2, Facebook, Twitter, Github, Globe, MessageCircle, ShoppingBag, Calculator } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useContent } from "@/hooks/useContent";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState(emailParam || "");
   const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState<"user" | "creator">("user");
 
   useEffect(() => {
     // Check if user is already logged in
@@ -85,6 +87,9 @@ const Auth = () => {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: {
+              user_type: userType,
+            },
           },
         });
         
@@ -155,7 +160,7 @@ const Auth = () => {
               {content["auth.title"] || "Welcome to our page"}
             </CardTitle>
             <CardDescription>
-              {isLogin ? content["auth.login.subtitle"] || "Please login to continue." : content["auth.signup.subtitle"] || "Create an account to start generating 3D models."}
+              {isLogin ? content["auth.login.subtitle"] || "Please login to continue." : content["auth.signup.subtitle"] || "Create an account to get started."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -190,6 +195,65 @@ const Auth = () => {
                   minLength={6}
                 />
               </div>
+
+              {/* Role Selection - Only show during signup */}
+              {!isLogin && (
+                <div className="space-y-3 p-4 bg-muted/30 rounded-lg border border-border/50">
+                  <Label className="text-sm font-medium">
+                    {content["auth.user_type.label"] || "What brings you here?"}
+                  </Label>
+                  <RadioGroup
+                    value={userType}
+                    onValueChange={(value) => setUserType(value as "user" | "creator")}
+                    className="space-y-3"
+                  >
+                    <div 
+                      className={`flex items-start space-x-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
+                        userType === "user" 
+                          ? "border-primary bg-primary/5" 
+                          : "border-border/50 hover:border-primary/30"
+                      }`}
+                      onClick={() => setUserType("user")}
+                    >
+                      <RadioGroupItem value="user" id="user" className="mt-1" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <ShoppingBag className="h-4 w-4 text-primary" />
+                          <Label htmlFor="user" className="font-medium cursor-pointer">
+                            {content["auth.user_type.shopper"] || "I want to shop"}
+                          </Label>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {content["auth.user_type.shopper_desc"] || "Browse and purchase 3D printed products from our store."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div 
+                      className={`flex items-start space-x-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
+                        userType === "creator" 
+                          ? "border-secondary bg-secondary/5" 
+                          : "border-border/50 hover:border-secondary/30"
+                      }`}
+                      onClick={() => setUserType("creator")}
+                    >
+                      <RadioGroupItem value="creator" id="creator" className="mt-1" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <Calculator className="h-4 w-4 text-secondary" />
+                          <Label htmlFor="creator" className="font-medium cursor-pointer">
+                            {content["auth.user_type.creator"] || "I'm a creator"}
+                          </Label>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {content["auth.user_type.creator_desc"] || "Access price calculator tools to plan your 3D printing costs. You can also shop."}
+                        </p>
+                      </div>
+                    </div>
+                  </RadioGroup>
+                </div>
+              )}
+
               <Button
                 type="submit"
                 className="w-full"

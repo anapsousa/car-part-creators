@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, User, LogOut, LayoutDashboard, Package, Settings, BarChart3, FileText } from "lucide-react";
+import { ShoppingCart, Heart, User, LogOut, LayoutDashboard, Package, Settings, BarChart3, FileText, Calculator } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -25,13 +25,18 @@ interface HeaderProps {
   showAuth?: boolean;
 }
 
+type AppRole = "admin" | "creator" | "user";
+
 export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = true }: HeaderProps) {
   const navigate = useNavigate();
   const { content } = useContent("navigation");
   const { cartItems } = useCart();
   const { wishlistItems } = useWishlist();
   const [user, setUser] = useState<any>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [roles, setRoles] = useState<AppRole[]>([]);
+
+  const isAdmin = roles.includes("admin");
+  const isCreator = roles.includes("creator") || isAdmin;
 
   useEffect(() => {
     let subscription: { unsubscribe: () => void } | null = null;
@@ -54,29 +59,36 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
     
     if (session?.user) {
       setUser(session.user);
-
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", session.user.id);
-
-      const hasAdminRole = roles?.some((r) => r.role === "admin");
-      setIsAdmin(hasAdminRole || false);
+      await fetchUserRoles(session.user.id);
     } else {
       setUser(null);
-      setIsAdmin(false);
+      setRoles([]);
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
+        // Defer role fetch to avoid deadlock
+        setTimeout(() => {
+          fetchUserRoles(session.user.id);
+        }, 0);
       } else {
         setUser(null);
-        setIsAdmin(false);
+        setRoles([]);
       }
     });
 
     return subscription;
+  };
+
+  const fetchUserRoles = async (userId: string) => {
+    const { data: userRoles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId);
+
+    const fetchedRoles = userRoles?.map((r) => r.role as AppRole) || [];
+    setRoles(fetchedRoles);
   };
 
   const handleLogout = async () => {
@@ -162,12 +174,16 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       {content["nav.dashboard"] || "Dashboard"}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/calculator")}>
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      {content["nav.calculator"] || "Price Calculator"}
-                    </DropdownMenuItem>
+                    {/* Only show Price Calculator to creators and admins */}
+                    {isCreator && (
+                      <DropdownMenuItem onClick={() => navigate("/calculator")}>
+                        <Calculator className="mr-2 h-4 w-4" />
+                        {content["nav.calculator"] || "Price Calculator"}
+                      </DropdownMenuItem>
+                    )}
                     {isAdmin && (
                       <>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>
                           <BarChart3 className="mr-2 h-4 w-4" />
                           {content["nav.admin_dashboard"] || "Admin Dashboard"}

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Checkout from "./pages/Checkout";
@@ -74,13 +75,13 @@ const App = () => (
             <Route path="/admin/content" element={<AdminContentManager />} />
             <Route path="/price-calculator" element={<PriceCalculator />} />
             <Route path="/costcalculator" element={<CostCalculator />} />
-            {/* Calculator routes */}
-            <Route path="/calculator" element={<CalcDashboard />} />
-            <Route path="/calculator/printers" element={<CalcPrinters />} />
-            <Route path="/calculator/filaments" element={<CalcFilaments />} />
-            <Route path="/calculator/prints" element={<CalcPrints />} />
-            <Route path="/calculator/settings" element={<CalcSettings />} />
-            <Route path="/calculator/setup" element={<SetupWizard />} />
+            {/* Calculator routes - Protected for creators and admins only */}
+            <Route path="/calculator" element={<ProtectedRoute requiredRole="creator"><CalcDashboard /></ProtectedRoute>} />
+            <Route path="/calculator/printers" element={<ProtectedRoute requiredRole="creator"><CalcPrinters /></ProtectedRoute>} />
+            <Route path="/calculator/filaments" element={<ProtectedRoute requiredRole="creator"><CalcFilaments /></ProtectedRoute>} />
+            <Route path="/calculator/prints" element={<ProtectedRoute requiredRole="creator"><CalcPrints /></ProtectedRoute>} />
+            <Route path="/calculator/settings" element={<ProtectedRoute requiredRole="creator"><CalcSettings /></ProtectedRoute>} />
+            <Route path="/calculator/setup" element={<ProtectedRoute requiredRole="creator"><SetupWizard /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
