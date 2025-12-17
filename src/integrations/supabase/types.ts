@@ -14,6 +14,432 @@ export type Database = {
   }
   public: {
     Tables: {
+      calc_consumables: {
+        Row: {
+          cost: number
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cost?: number
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cost?: number
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      calc_electricity_settings: {
+        Row: {
+          contracted_power_kva: number | null
+          created_at: string | null
+          daily_fixed_cost: number | null
+          id: string
+          is_default: boolean | null
+          name: string
+          notes: string | null
+          price_per_kwh: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          contracted_power_kva?: number | null
+          created_at?: string | null
+          daily_fixed_cost?: number | null
+          id?: string
+          is_default?: boolean | null
+          name: string
+          notes?: string | null
+          price_per_kwh?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          contracted_power_kva?: number | null
+          created_at?: string | null
+          daily_fixed_cost?: number | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          notes?: string | null
+          price_per_kwh?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      calc_filaments: {
+        Row: {
+          brand: string | null
+          color: string | null
+          created_at: string | null
+          density: number | null
+          id: string
+          is_active: boolean | null
+          material: string
+          name: string
+          notes: string | null
+          spool_cost: number
+          spool_weight_grams: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          brand?: string | null
+          color?: string | null
+          created_at?: string | null
+          density?: number | null
+          id?: string
+          is_active?: boolean | null
+          material?: string
+          name: string
+          notes?: string | null
+          spool_cost?: number
+          spool_weight_grams?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          brand?: string | null
+          color?: string | null
+          created_at?: string | null
+          density?: number | null
+          id?: string
+          is_active?: boolean | null
+          material?: string
+          name?: string
+          notes?: string | null
+          spool_cost?: number
+          spool_weight_grams?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      calc_fixed_expenses: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          monthly_amount: number
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          monthly_amount?: number
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          monthly_amount?: number
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      calc_labor_settings: {
+        Row: {
+          created_at: string | null
+          default_minutes_per_print: number | null
+          hourly_rate: number
+          id: string
+          include_in_cost: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          default_minutes_per_print?: number | null
+          hourly_rate?: number
+          id?: string
+          include_in_cost?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          default_minutes_per_print?: number | null
+          hourly_rate?: number
+          id?: string
+          include_in_cost?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      calc_print_filaments: {
+        Row: {
+          created_at: string | null
+          filament_id: string
+          grams_used: number
+          id: string
+          print_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          filament_id: string
+          grams_used?: number
+          id?: string
+          print_id: string
+        }
+        Update: {
+          created_at?: string | null
+          filament_id?: string
+          grams_used?: number
+          id?: string
+          print_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calc_print_filaments_filament_id_fkey"
+            columns: ["filament_id"]
+            isOneToOne: false
+            referencedRelation: "calc_filaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calc_print_filaments_print_id_fkey"
+            columns: ["print_id"]
+            isOneToOne: false
+            referencedRelation: "calc_prints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calc_printers: {
+        Row: {
+          brand: string | null
+          created_at: string | null
+          default_electricity_settings_id: string | null
+          depreciation_hours: number | null
+          depreciation_months: number | null
+          id: string
+          is_active: boolean | null
+          maintenance_cost: number | null
+          model: string | null
+          name: string
+          notes: string | null
+          power_watts: number | null
+          purchase_cost: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          brand?: string | null
+          created_at?: string | null
+          default_electricity_settings_id?: string | null
+          depreciation_hours?: number | null
+          depreciation_months?: number | null
+          id?: string
+          is_active?: boolean | null
+          maintenance_cost?: number | null
+          model?: string | null
+          name: string
+          notes?: string | null
+          power_watts?: number | null
+          purchase_cost?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          brand?: string | null
+          created_at?: string | null
+          default_electricity_settings_id?: string | null
+          depreciation_hours?: number | null
+          depreciation_months?: number | null
+          id?: string
+          is_active?: boolean | null
+          maintenance_cost?: number | null
+          model?: string | null
+          name?: string
+          notes?: string | null
+          power_watts?: number | null
+          purchase_cost?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calc_printers_default_electricity_settings_id_fkey"
+            columns: ["default_electricity_settings_id"]
+            isOneToOne: false
+            referencedRelation: "calc_electricity_settings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calc_prints: {
+        Row: {
+          consumables_cost: number | null
+          created_at: string | null
+          depreciation_cost: number | null
+          electricity_cost: number | null
+          electricity_settings_id: string | null
+          failure_rate_percent: number | null
+          filament_cost: number | null
+          fixed_expenses_cost: number | null
+          id: string
+          is_template: boolean | null
+          labor_cost: number | null
+          labor_time_minutes: number | null
+          markup_percent: number | null
+          model_cost: number | null
+          name: string
+          notes: string | null
+          print_time_minutes: number
+          printer_id: string | null
+          profit: number | null
+          profit_margin_percent: number | null
+          quantity: number | null
+          sell_price: number | null
+          shipping_cost: number | null
+          shipping_option_id: string | null
+          total_cost: number | null
+          updated_at: string | null
+          user_id: string
+          wastage_percent: number | null
+        }
+        Insert: {
+          consumables_cost?: number | null
+          created_at?: string | null
+          depreciation_cost?: number | null
+          electricity_cost?: number | null
+          electricity_settings_id?: string | null
+          failure_rate_percent?: number | null
+          filament_cost?: number | null
+          fixed_expenses_cost?: number | null
+          id?: string
+          is_template?: boolean | null
+          labor_cost?: number | null
+          labor_time_minutes?: number | null
+          markup_percent?: number | null
+          model_cost?: number | null
+          name: string
+          notes?: string | null
+          print_time_minutes?: number
+          printer_id?: string | null
+          profit?: number | null
+          profit_margin_percent?: number | null
+          quantity?: number | null
+          sell_price?: number | null
+          shipping_cost?: number | null
+          shipping_option_id?: string | null
+          total_cost?: number | null
+          updated_at?: string | null
+          user_id: string
+          wastage_percent?: number | null
+        }
+        Update: {
+          consumables_cost?: number | null
+          created_at?: string | null
+          depreciation_cost?: number | null
+          electricity_cost?: number | null
+          electricity_settings_id?: string | null
+          failure_rate_percent?: number | null
+          filament_cost?: number | null
+          fixed_expenses_cost?: number | null
+          id?: string
+          is_template?: boolean | null
+          labor_cost?: number | null
+          labor_time_minutes?: number | null
+          markup_percent?: number | null
+          model_cost?: number | null
+          name?: string
+          notes?: string | null
+          print_time_minutes?: number
+          printer_id?: string | null
+          profit?: number | null
+          profit_margin_percent?: number | null
+          quantity?: number | null
+          sell_price?: number | null
+          shipping_cost?: number | null
+          shipping_option_id?: string | null
+          total_cost?: number | null
+          updated_at?: string | null
+          user_id?: string
+          wastage_percent?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calc_prints_electricity_settings_id_fkey"
+            columns: ["electricity_settings_id"]
+            isOneToOne: false
+            referencedRelation: "calc_electricity_settings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calc_prints_printer_id_fkey"
+            columns: ["printer_id"]
+            isOneToOne: false
+            referencedRelation: "calc_printers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calc_prints_shipping_option_id_fkey"
+            columns: ["shipping_option_id"]
+            isOneToOne: false
+            referencedRelation: "calc_shipping_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calc_shipping_options: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string
