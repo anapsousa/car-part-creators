@@ -33,3 +33,4 @@ dist-ssr
 ._README.md
 ._SECURITY.md
 .env.example
+._*
