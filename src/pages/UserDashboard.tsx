@@ -85,6 +85,12 @@ const UserDashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [changingPassword, setChangingPassword] = useState(false);
   const activeTab = searchParams.get('tab') || 'designs';
 
   useEffect(() => {
@@ -502,6 +508,126 @@ const UserDashboard = () => {
                     {content["dashboard.profile.save"] || "Save Changes"}
                   </Button>
                 </form>
+
+                {/* Change Password */}
+                <div className="mt-8 border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-2">
+                    {content["dashboard.profile.change_password.title"] || "Change Password"}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {content["dashboard.profile.change_password.description"] || "Update the password you use to sign in to your account."}
+                  </p>
+                  <form
+                    className="space-y-4"
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+
+                      if (!passwordForm.newPassword || passwordForm.newPassword.length < 8) {
+                        toast({
+                          title: "Password too short",
+                          description: "Your new password must be at least 8 characters long.",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+
+                      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+                        toast({
+                          title: "Passwords do not match",
+                          description: "Please make sure the new password and confirmation match.",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+
+                      setChangingPassword(true);
+
+                      try {
+                        const { data, error: userError } = await supabase.auth.getUser();
+                        if (userError || !data.user) {
+                          navigate("/auth");
+                          return;
+                        }
+
+                        const { error } = await supabase.auth.updateUser({
+                          password: passwordForm.newPassword,
+                        });
+
+                        if (error) {
+                          throw error;
+                        }
+
+                        setPasswordForm({
+                          currentPassword: "",
+                          newPassword: "",
+                          confirmPassword: "",
+                        });
+
+                        toast({
+                          title: "Password updated",
+                          description: "Your password has been changed successfully.",
+                        });
+                      } catch (error: any) {
+                        toast({
+                          title: "Error updating password",
+                          description: error?.message || "Something went wrong while updating your password.",
+                          variant: "destructive",
+                        });
+                      } finally {
+                        setChangingPassword(false);
+                      }
+                    }}
+                  >
+                    <div className="space-y-2">
+                      <Label htmlFor="current_password">
+                        {content["dashboard.profile.current_password"] || "Current Password"}
+                      </Label>
+                      <Input
+                        id="current_password"
+                        type="password"
+                        value={passwordForm.currentPassword}
+                        onChange={(e) =>
+                          setPasswordForm((prev) => ({ ...prev, currentPassword: e.target.value }))
+                        }
+                        autoComplete="current-password"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new_password">
+                        {content["dashboard.profile.new_password"] || "New Password"}
+                      </Label>
+                      <Input
+                        id="new_password"
+                        type="password"
+                        value={passwordForm.newPassword}
+                        onChange={(e) =>
+                          setPasswordForm((prev) => ({ ...prev, newPassword: e.target.value }))
+                        }
+                        autoComplete="new-password"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm_password">
+                        {content["dashboard.profile.confirm_password"] || "Confirm New Password"}
+                      </Label>
+                      <Input
+                        id="confirm_password"
+                        type="password"
+                        value={passwordForm.confirmPassword}
+                        onChange={(e) =>
+                          setPasswordForm((prev) => ({ ...prev, confirmPassword: e.target.value }))
+                        }
+                        autoComplete="new-password"
+                        required
+                      />
+                    </div>
+                    <Button type="submit" disabled={changingPassword}>
+                      {changingPassword && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {content["dashboard.profile.change_password.button"] || "Update Password"}
+                    </Button>
+                  </form>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
