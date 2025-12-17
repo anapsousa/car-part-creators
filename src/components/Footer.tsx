@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import dr3amtorealLogo from "@/assets/dr3amtoreal-logo.png";
 import { useContent } from "@/hooks/useContent";
 import { Instagram, Youtube, Facebook, MapPin, Mail, Phone } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -106,7 +107,7 @@ export const Footer = () => {
           {/* Brand */}
           <div>
             <img
-              src={pompousweekLogo}
+              src={dr3amtorealLogo}
               alt="From Dream To Real 3D"
               className="h-12 w-auto mb-4 cursor-pointer"
               onClick={() => navigate("/")}

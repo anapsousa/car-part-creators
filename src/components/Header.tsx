@@ -8,6 +8,7 @@ import { NavLink } from "./NavLink";
 import { LanguageSelector } from "./LanguageSelector";
 import { useContent } from "@/hooks/useContent";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
+import dr3amtorealLogo from "@/assets/dr3amtoreal-logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -90,7 +91,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
           {/* Logo and Title */}
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate("/")}>
             <img
-              src={pompousweekLogo}
+              src={dr3amtorealLogo}
               alt="From Dream To Real 3D"
               className="h-10 w-auto"
             />
@@ -108,7 +109,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink to="/">{content["nav.home"] || "Home"}</NavLink>
             <NavLink to="/shop">{content["nav.shop"] || "Shop"}</NavLink>
-            <NavLink to="/costcalculator">{content["nav.costcalculator"] || "Cost Calculator"}</NavLink>
+            {/* <NavLink to="/costcalculator">{content["nav.costcalculator"] || "Cost Calculator"}</NavLink> */}
             <NavLink to="/about">{content["nav.about"] || "About"}</NavLink>
             <NavLink to="/contact">{content["nav.contact"] || "Contact"}</NavLink>
             <NavLink to="/faq">{content["nav.faq"] || "FAQ"}</NavLink>
@@ -160,6 +161,10 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
                     <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       {content["nav.dashboard"] || "Dashboard"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/calculator")}>
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      {content["nav.calculator"] || "Price Calculator"}
                     </DropdownMenuItem>
                     {isAdmin && (
                       <>
