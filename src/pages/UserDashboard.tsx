@@ -16,6 +16,7 @@ import OrderStatusTimeline from '@/components/OrderStatusTimeline';
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
+import { useUserRole } from "@/hooks/useUserRole";
 import { 
   validatePhone, 
   validateShippingAddress, 
@@ -79,6 +80,7 @@ const UserDashboard = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { content } = useContent("dashboard");
+  const { isCreator, isAdmin } = useUserRole();
   const [loading, setLoading] = useState(true);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -326,25 +328,27 @@ const UserDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Quick Access to Price Calculator */}
-        <Card className="mb-6 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/20 rounded-lg">
-                  <Calculator className="h-5 w-5 text-primary" />
+        {/* Quick Access to Price Calculator - Only for creators and admins */}
+        {isCreator && (
+          <Card className="mb-6 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/20 rounded-lg">
+                    <Calculator className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{content["dashboard.nav.calculator"] || "Price Calculator"}</h3>
+                    <p className="text-sm text-muted-foreground">{content["dashboard.nav.calculator_desc"] || "Calculate 3D printing costs"}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold">{content["dashboard.nav.calculator"] || "Price Calculator"}</h3>
-                  <p className="text-sm text-muted-foreground">{content["dashboard.nav.calculator_desc"] || "Calculate 3D printing costs"}</p>
-                </div>
+                <Button onClick={() => navigate("/calculator")} variant="default" size="sm">
+                  Open Calculator
+                </Button>
               </div>
-              <Button onClick={() => navigate("/calculator")} variant="default" size="sm">
-                Open Calculator
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         <Tabs value={activeTab} onValueChange={(newTab) => navigate(`/dashboard?tab=${newTab}`, { replace: true })} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
