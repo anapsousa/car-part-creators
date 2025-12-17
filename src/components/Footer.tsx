@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import pompousweekLogo from "@/assets/pompousweek-logo.png";
 import dr3amtorealLogo from "@/assets/dr3amtoreal-logo.png";
+import dr3amtorealLinktreeQR from "@/assets/dr3amtoreal-qrcode.png";
 import { useContent } from "@/hooks/useContent";
 import { Instagram, Youtube, Facebook, MapPin, Mail, Phone } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -237,34 +237,46 @@ export const Footer = () => {
         {/* Social Media */}
         <div className="mt-8">
             <h3 className="font-semibold text-foreground mb-6">{content["footer.social.title"] || "Follow us!"}</h3>
-            <div className="flex space-x-4">
-              <a
-                href={content["footer.social.instagram_url"] || "https://instagram.com/dr3amtoreal"}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={content["footer.social.instagram_label"] || "Follow us on Instagram"}
-                className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
-              >
-                <Instagram className="h-6 w-6" />
-              </a>
-              {/* <a
-                href={content["footer.social.youtube_url"] || "https://youtube.com/@pompousweek"}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={content["footer.social.youtube_label"] || "Follow us on YouTube"}
-                className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
-              >
-                <Youtube className="h-6 w-6" />
-              </a> */}
-              <a
-                href={content["footer.social.facebook_url"] || "https://facebook.com/dr3amtoreal"}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={content["footer.social.facebook_label"] || "Follow us on Facebook"}
-                className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
-              >
-                <Facebook className="h-6 w-6" />
-              </a>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center space-x-4">
+                <a
+                  href={content["footer.social.instagram_url"] || "https://instagram.com/dr3amtoreal"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={content["footer.social.instagram_label"] || "Follow us on Instagram"}
+                  className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
+                >
+                  <Instagram className="h-6 w-6" />
+                </a>
+                <a
+                  href={content["footer.social.facebook_url"] || "https://facebook.com/dr3amtoreal"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={content["footer.social.facebook_label"] || "Follow us on Facebook"}
+                  className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
+                >
+                  <Facebook className="h-6 w-6" />
+                </a>
+                <a
+                  href={content["footer.social.linktree_url"] || "https://linktr.ee/dr3amtoreal"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={content["footer.social.linktree_label"] || "All our links on Linktree"}
+                  className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors"
+                >
+                  {content["footer.social.linktree_text"] || "All links in one place"}
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground hidden sm:inline">
+                  {content["footer.social.linktree_qr_caption"] || "Scan the QR to open our Linktree"}
+                </span>
+                <img
+                  src={dr3amtorealLinktreeQR}
+                  alt={content["footer.social.linktree_qr_alt"] || "QR code linking to our Linktree"}
+                  className="h-16 w-16 rounded-md border border-border object-contain"
+                />
+              </div>
             </div>
           </div>
         </div>
