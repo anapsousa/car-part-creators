@@ -35,13 +35,13 @@ export function PrintImageUpload({ imageUrl, onImageChange, disabled }: PrintIma
       const filePath = `prints/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('user-uploads')
+        .from('design-files')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('user-uploads')
+        .from('design-files')
         .getPublicUrl(filePath);
 
       onImageChange(publicUrl);
