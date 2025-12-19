@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Trash2, Edit, Loader2, Zap, DollarSign, Package, Truck, Settings } from 'lucide-react';
+import { Plus, Trash2, Loader2, Zap, DollarSign, Package, Truck, Settings } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,9 @@ export default function CalcSettings() {
   const [consumables, setConsumables] = useState<any[]>([]);
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [laborSettings, setLaborSettings] = useState<any>(null);
+  
+  // React state for labor rate input (fixes DOM query anti-pattern)
+  const [laborRateInput, setLaborRateInput] = useState<number>(10);
 
   useEffect(() => {
     checkAuthAndFetch();
@@ -56,6 +59,7 @@ export default function CalcSettings() {
       setConsumables(consRes.data || []);
       setShippingOptions(shipRes.data || []);
       setLaborSettings(laborRes.data);
+      setLaborRateInput(laborRes.data?.hourly_rate || 10);
     } catch (error: any) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {
@@ -72,7 +76,11 @@ export default function CalcSettings() {
       name: 'New Electricity Config',
       price_per_kwh: 0.15,
     });
-    if (!error) fetchAllSettings();
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      fetchAllSettings();
+    }
   };
 
   const addExpense = async () => {
@@ -84,7 +92,11 @@ export default function CalcSettings() {
       name: 'New Expense',
       monthly_amount: 0,
     });
-    if (!error) fetchAllSettings();
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      fetchAllSettings();
+    }
   };
 
   const addConsumable = async () => {
@@ -96,7 +108,11 @@ export default function CalcSettings() {
       name: 'New Consumable',
       cost: 0,
     });
-    if (!error) fetchAllSettings();
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      fetchAllSettings();
+    }
   };
 
   const addShipping = async () => {
@@ -108,20 +124,57 @@ export default function CalcSettings() {
       name: 'New Shipping',
       price: 0,
     });
-    if (!error) fetchAllSettings();
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      fetchAllSettings();
+    }
   };
 
-  const saveLaborSettings = async (hourlyRate: number) => {
+  const saveLaborSettings = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     
+    let error;
     if (laborSettings) {
-      await supabase.from('calc_labor_settings').update({ hourly_rate: hourlyRate }).eq('id', laborSettings.id);
+      const result = await supabase.from('calc_labor_settings').update({ hourly_rate: laborRateInput }).eq('id', laborSettings.id);
+      error = result.error;
     } else {
-      await supabase.from('calc_labor_settings').insert({ user_id: user.id, hourly_rate: hourlyRate });
+      const result = await supabase.from('calc_labor_settings').insert({ user_id: user.id, hourly_rate: laborRateInput });
+      error = result.error;
     }
-    fetchAllSettings();
-    toast({ title: 'Labor settings saved' });
+    
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      fetchAllSettings();
+      toast({ title: 'Labor settings saved' });
+    }
+  };
+
+  // Handler for inline updates with proper await and error handling
+  const handleInlineUpdate = async (
+    table: 'calc_electricity_settings' | 'calc_fixed_expenses' | 'calc_consumables' | 'calc_shipping_options', 
+    id: string, 
+    field: string, 
+    value: any
+  ) => {
+    const { error } = await supabase.from(table).update({ [field]: value }).eq('id', id);
+    if (error) {
+      toast({ title: 'Error saving', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleDelete = async (
+    table: 'calc_electricity_settings' | 'calc_fixed_expenses' | 'calc_consumables' | 'calc_shipping_options', 
+    id: string
+  ) => {
+    const { error } = await supabase.from(table).delete().eq('id', id);
+    if (error) {
+      toast({ title: 'Error deleting', description: error.message, variant: 'destructive' });
+    } else {
+      fetchAllSettings();
+    }
   };
 
   if (!isAuthenticated && !loading) {
@@ -169,10 +222,22 @@ export default function CalcSettings() {
                   <CardContent className="space-y-3">
                     {electricitySettings.map(e => (
                       <div key={e.id} className="flex items-center gap-3 p-3 bg-background/50 rounded">
-                        <Input defaultValue={e.name} className="flex-1" onBlur={(ev) => supabase.from('calc_electricity_settings').update({ name: ev.target.value }).eq('id', e.id)} />
-                        <Input type="number" step="0.01" defaultValue={e.price_per_kwh} className="w-24" onBlur={(ev) => supabase.from('calc_electricity_settings').update({ price_per_kwh: parseFloat(ev.target.value) }).eq('id', e.id)} />
+                        <Input 
+                          defaultValue={e.name} 
+                          className="flex-1" 
+                          onBlur={(ev) => handleInlineUpdate('calc_electricity_settings', e.id, 'name', ev.target.value)} 
+                        />
+                        <Input 
+                          type="number" 
+                          step="0.01" 
+                          defaultValue={e.price_per_kwh} 
+                          className="w-24" 
+                          onBlur={(ev) => handleInlineUpdate('calc_electricity_settings', e.id, 'price_per_kwh', parseFloat(ev.target.value))} 
+                        />
                         <span className="text-sm text-muted-foreground">€/kWh</span>
-                        <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => { await supabase.from('calc_electricity_settings').delete().eq('id', e.id); fetchAllSettings(); }}><Trash2 className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_electricity_settings', e.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                     {electricitySettings.length === 0 && <p className="text-muted-foreground text-center py-4">No electricity settings yet</p>}
@@ -189,10 +254,22 @@ export default function CalcSettings() {
                   <CardContent className="space-y-3">
                     {fixedExpenses.map(e => (
                       <div key={e.id} className="flex items-center gap-3 p-3 bg-background/50 rounded">
-                        <Input defaultValue={e.name} className="flex-1" onBlur={(ev) => supabase.from('calc_fixed_expenses').update({ name: ev.target.value }).eq('id', e.id)} />
-                        <Input type="number" step="0.01" defaultValue={e.monthly_amount} className="w-24" onBlur={(ev) => supabase.from('calc_fixed_expenses').update({ monthly_amount: parseFloat(ev.target.value) }).eq('id', e.id)} />
+                        <Input 
+                          defaultValue={e.name} 
+                          className="flex-1" 
+                          onBlur={(ev) => handleInlineUpdate('calc_fixed_expenses', e.id, 'name', ev.target.value)} 
+                        />
+                        <Input 
+                          type="number" 
+                          step="0.01" 
+                          defaultValue={e.monthly_amount} 
+                          className="w-24" 
+                          onBlur={(ev) => handleInlineUpdate('calc_fixed_expenses', e.id, 'monthly_amount', parseFloat(ev.target.value))} 
+                        />
                         <span className="text-sm text-muted-foreground">€/month</span>
-                        <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => { await supabase.from('calc_fixed_expenses').delete().eq('id', e.id); fetchAllSettings(); }}><Trash2 className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_fixed_expenses', e.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                     {fixedExpenses.length === 0 && <p className="text-muted-foreground text-center py-4">No fixed expenses yet</p>}
@@ -209,10 +286,22 @@ export default function CalcSettings() {
                   <CardContent className="space-y-3">
                     {consumables.map(c => (
                       <div key={c.id} className="flex items-center gap-3 p-3 bg-background/50 rounded">
-                        <Input defaultValue={c.name} className="flex-1" onBlur={(ev) => supabase.from('calc_consumables').update({ name: ev.target.value }).eq('id', c.id)} />
-                        <Input type="number" step="0.01" defaultValue={c.cost} className="w-24" onBlur={(ev) => supabase.from('calc_consumables').update({ cost: parseFloat(ev.target.value) }).eq('id', c.id)} />
+                        <Input 
+                          defaultValue={c.name} 
+                          className="flex-1" 
+                          onBlur={(ev) => handleInlineUpdate('calc_consumables', c.id, 'name', ev.target.value)} 
+                        />
+                        <Input 
+                          type="number" 
+                          step="0.01" 
+                          defaultValue={c.cost} 
+                          className="w-24" 
+                          onBlur={(ev) => handleInlineUpdate('calc_consumables', c.id, 'cost', parseFloat(ev.target.value))} 
+                        />
                         <span className="text-sm text-muted-foreground">€</span>
-                        <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => { await supabase.from('calc_consumables').delete().eq('id', c.id); fetchAllSettings(); }}><Trash2 className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_consumables', c.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                     {consumables.length === 0 && <p className="text-muted-foreground text-center py-4">No consumables yet</p>}
@@ -229,10 +318,22 @@ export default function CalcSettings() {
                   <CardContent className="space-y-3">
                     {shippingOptions.map(s => (
                       <div key={s.id} className="flex items-center gap-3 p-3 bg-background/50 rounded">
-                        <Input defaultValue={s.name} className="flex-1" onBlur={(ev) => supabase.from('calc_shipping_options').update({ name: ev.target.value }).eq('id', s.id)} />
-                        <Input type="number" step="0.01" defaultValue={s.price} className="w-24" onBlur={(ev) => supabase.from('calc_shipping_options').update({ price: parseFloat(ev.target.value) }).eq('id', s.id)} />
+                        <Input 
+                          defaultValue={s.name} 
+                          className="flex-1" 
+                          onBlur={(ev) => handleInlineUpdate('calc_shipping_options', s.id, 'name', ev.target.value)} 
+                        />
+                        <Input 
+                          type="number" 
+                          step="0.01" 
+                          defaultValue={s.price} 
+                          className="w-24" 
+                          onBlur={(ev) => handleInlineUpdate('calc_shipping_options', s.id, 'price', parseFloat(ev.target.value))} 
+                        />
                         <span className="text-sm text-muted-foreground">€</span>
-                        <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => { await supabase.from('calc_shipping_options').delete().eq('id', s.id); fetchAllSettings(); }}><Trash2 className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_shipping_options', s.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                     {shippingOptions.length === 0 && <p className="text-muted-foreground text-center py-4">No shipping options yet</p>}
@@ -248,8 +349,14 @@ export default function CalcSettings() {
                   <CardContent>
                     <div className="flex items-center gap-3">
                       <Label>Hourly Rate (€)</Label>
-                      <Input type="number" step="0.01" defaultValue={laborSettings?.hourly_rate || 10} className="w-32" id="labor-rate" />
-                      <Button onClick={() => saveLaborSettings(parseFloat((document.getElementById('labor-rate') as HTMLInputElement).value) || 10)}>Save</Button>
+                      <Input 
+                        type="number" 
+                        step="0.01" 
+                        value={laborRateInput} 
+                        onChange={(e) => setLaborRateInput(parseFloat(e.target.value) || 0)}
+                        className="w-32" 
+                      />
+                      <Button onClick={saveLaborSettings}>Save</Button>
                     </div>
                   </CardContent>
                 </Card>

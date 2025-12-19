@@ -107,10 +107,10 @@ export default function CalcPrints() {
         supabase.from('calc_filaments').select('*').eq('user_id', userId).eq('is_active', true),
         supabase.from('calc_electricity_settings').select('*').eq('user_id', userId),
         supabase.from('calc_shipping_options').select('*').eq('user_id', userId).eq('is_active', true),
-        supabase.from('calc_labor_settings').select('*').eq('user_id', userId).single(),
+        supabase.from('calc_labor_settings').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('calc_consumables').select('*').eq('user_id', userId).eq('is_active', true),
         supabase.from('calc_fixed_expenses').select('*').eq('user_id', userId).eq('is_active', true),
-        supabase.from('calc_print_filaments').select('*')
+        supabase.from('calc_print_filaments').select('*, calc_prints!inner(user_id)').eq('calc_prints.user_id', userId)
       ]);
 
       if (printsRes.data) setPrints(printsRes.data);

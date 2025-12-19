@@ -4,6 +4,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const ALLOWED_ORIGINS = [
   "https://pompousweek.com",
   "http://localhost:5173",
+  "https://lovable.dev",
+  "https://khdczrzplqssygwoyjte.lovable.app",
 ];
 
 const getCorsHeaders = (origin: string | null) => {
@@ -127,7 +129,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
+        model: "google/gemini-3-pro-image-preview",
         messages: [
           {
             role: "user",
