@@ -1,5 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -13,9 +14,22 @@ interface ProductCardProps {
   price: number;
   images: string[];
   stock_quantity: number;
+  base_price?: number | null;
+  discount_enabled?: boolean;
+  discount_percent?: number | null;
 }
 
-export const ProductCard = ({ id, name, description, price, images, stock_quantity }: ProductCardProps) => {
+export const ProductCard = ({ 
+  id, 
+  name, 
+  description, 
+  price, 
+  images, 
+  stock_quantity,
+  base_price,
+  discount_enabled,
+  discount_percent 
+}: ProductCardProps) => {
   const { addToCart, isLoading } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const navigate = useNavigate();
@@ -38,6 +52,13 @@ export const ProductCard = ({ id, name, description, price, images, stock_quanti
 
   const imageUrl = images && images.length > 0 ? images[0] : '/placeholder.svg';
 
+  // Calculate displayed prices
+  const hasDiscount = discount_enabled && discount_percent && discount_percent > 0;
+  const originalPrice = base_price || price;
+  const finalPrice = hasDiscount 
+    ? originalPrice * (1 - (discount_percent || 0) / 100) 
+    : price;
+
   return (
     <Card 
       className="overflow-hidden hover:shadow-glow transition-all duration-300 hover:scale-105 cursor-pointer bg-gradient-to-br from-card via-card to-primary/5 border-2 hover:border-primary/30"
@@ -50,6 +71,17 @@ export const ProductCard = ({ id, name, description, price, images, stock_quanti
           className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+        
+        {/* Discount Badge */}
+        {hasDiscount && (
+          <Badge 
+            variant="destructive" 
+            className="absolute top-2 left-2 text-sm font-bold"
+          >
+            -{discount_percent}%
+          </Badge>
+        )}
+        
         <Button
           variant="ghost"
           size="icon"
@@ -66,7 +98,25 @@ export const ProductCard = ({ id, name, description, price, images, stock_quanti
         {description && (
           <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{description}</p>
         )}
-        <p className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent mt-2">€{price.toFixed(2)}</p>
+        
+        {/* Price Display */}
+        <div className="mt-2 flex items-center gap-2">
+          {hasDiscount ? (
+            <>
+              <span className="text-sm line-through text-muted-foreground">
+                €{originalPrice.toFixed(2)}
+              </span>
+              <span className="text-xl font-bold text-destructive">
+                €{finalPrice.toFixed(2)}
+              </span>
+            </>
+          ) : (
+            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              €{price.toFixed(2)}
+            </span>
+          )}
+        </div>
+        
         {stock_quantity === 0 && (
           <p className="text-sm text-destructive mt-1">{content["shop.product.out_of_stock"] || "Out of stock"}</p>
         )}
