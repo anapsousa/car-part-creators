@@ -6,6 +6,8 @@ import { getSecurityHeaders, logAudit, extractClientIp } from '../_shared/securi
 const ALLOWED_ORIGINS = [
   "https://pompousweek.com",
   "http://localhost:5173",
+  "https://lovable.dev",
+  "https://khdczrzplqssygwoyjte.lovable.app",
 ];
 
 const getCorsHeaders = (origin: string | null) => {
