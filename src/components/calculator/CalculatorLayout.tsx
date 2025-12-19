@@ -1,21 +1,23 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Calculator, Printer, Palette, FileText, Settings, LayoutDashboard } from 'lucide-react';
+import { Calculator, Printer, Palette, Settings, LayoutDashboard } from 'lucide-react';
+import { useContent } from '@/hooks/useContent';
 
 interface CalculatorLayoutProps {
   children: React.ReactNode;
 }
 
-const navItems = [
-  { path: '/calculator', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/calculator/prints', label: 'Prints', icon: Calculator },
-  { path: '/calculator/printers', label: 'Printers', icon: Printer },
-  { path: '/calculator/filaments', label: 'Filaments', icon: Palette },
-  { path: '/calculator/settings', label: 'Settings', icon: Settings },
-];
-
 export function CalculatorLayout({ children }: CalculatorLayoutProps) {
   const location = useLocation();
+  const { content } = useContent('calculator');
+
+  const navItems = [
+    { path: '/calculator', label: content['calculator.nav.dashboard'] || 'Dashboard', icon: LayoutDashboard },
+    { path: '/calculator/prints', label: content['calculator.nav.prints'] || 'Prints', icon: Calculator },
+    { path: '/calculator/printers', label: content['calculator.nav.printers'] || 'Printers', icon: Printer },
+    { path: '/calculator/filaments', label: content['calculator.nav.filaments'] || 'Filaments', icon: Palette },
+    { path: '/calculator/settings', label: content['calculator.nav.settings'] || 'Settings', icon: Settings },
+  ];
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
@@ -24,7 +26,7 @@ export function CalculatorLayout({ children }: CalculatorLayoutProps) {
         <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <Calculator className="h-5 w-5 text-primary" />
-            Price Calculator
+            {content['calculator.nav.title'] || 'Price Calculator'}
           </h2>
           <ul className="space-y-1">
             {navItems.map((item) => {
