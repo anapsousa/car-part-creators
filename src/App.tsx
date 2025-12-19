@@ -21,6 +21,7 @@ import DeliveryShipping from "./pages/DeliveryShipping";
 import ReturnsRefunds from "./pages/ReturnsRefunds";
 import ComplaintsBook from "./pages/ComplaintsBook";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminProfitMargins from "./pages/AdminProfitMargins";
 import AdminProducts from "./pages/AdminProducts";
 import AdminProductForm from "./pages/AdminProductForm";
 import AdminContentManager from "./pages/AdminContentManager";
@@ -73,6 +74,7 @@ const App = () => (
             <Route path="/admin/products/new" element={<AdminProductForm />} />
             <Route path="/admin/products/edit/:id" element={<AdminProductForm />} />
             <Route path="/admin/content" element={<AdminContentManager />} />
+            <Route path="/admin/profit-margins" element={<AdminProfitMargins />} />
             <Route path="/price-calculator" element={<PriceCalculator />} />
             <Route path="/costcalculator" element={<CostCalculator />} />
             {/* Calculator routes - Protected for creators and admins only */}

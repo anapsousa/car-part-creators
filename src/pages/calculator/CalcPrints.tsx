@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useContent } from '@/hooks/useContent';
+import { useUserRole } from '@/hooks/useUserRole';
 import { CalculatorLayout } from '@/components/calculator/CalculatorLayout';
 import { MultiFilamentSelector } from '@/components/calculator/MultiFilamentSelector';
 import { PrintListItem } from '@/components/calculator/PrintListItem';
@@ -14,9 +15,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Calculator, Save, Search, FileText, Download, DollarSign, TrendingUp } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Plus, Calculator, Save, Search, FileText, Download, DollarSign, TrendingUp, ShoppingBag, Store } from 'lucide-react';
 import { calculatePrintCost, calculatePricingFromMarkup, formatCurrency, formatTime, parseTimeToMinutes, PrintCostBreakdown, PricingResult } from '@/lib/calculator/calculations';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -41,6 +43,7 @@ export default function CalcPrints() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { content } = useContent('calculator');
+  const { isAdmin } = useUserRole();
   const t = (key: string, fallback: string) => content[key] || fallback;
 
   const [loading, setLoading] = useState(true);
@@ -66,6 +69,15 @@ export default function CalcPrints() {
   const [filterPrinter, setFilterPrinter] = useState<string>('all');
   const [filterFilament, setFilterFilament] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('newest');
+
+  // Publish to Shop state
+  const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
+  const [publishOverridePrice, setPublishOverridePrice] = useState(false);
+  const [publishPrice, setPublishPrice] = useState(0);
+  const [publishCategory, setPublishCategory] = useState('car-parts');
+  const [publishDescription, setPublishDescription] = useState('');
+  const [publishStock, setPublishStock] = useState(1);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // Form fields
   const [name, setName] = useState('');
@@ -402,6 +414,50 @@ export default function CalcPrints() {
     setName(`${print.name} (copy)`);
   };
 
+  // Open publish dialog
+  const openPublishDialog = (print: Print) => {
+    setPublishPrice(Number(print.sell_price) || 0);
+    setPublishOverridePrice(false);
+    setPublishDescription(print.notes || '');
+    setPublishStock(1);
+    setPublishCategory('car-parts');
+    setIsPublishDialogOpen(true);
+  };
+
+  // Handle publishing to shop
+  const handlePublishToShop = async () => {
+    if (!selectedPrint || !user) return;
+    
+    setIsPublishing(true);
+    try {
+      const finalPrice = publishOverridePrice ? publishPrice : Number(selectedPrint.sell_price);
+      
+      const productData = {
+        name: selectedPrint.name,
+        description: publishDescription || selectedPrint.notes || '',
+        category: publishCategory,
+        price: finalPrice,
+        base_price: Number(selectedPrint.sell_price),
+        cost_price: Number(selectedPrint.total_cost),
+        stock_quantity: publishStock,
+        calc_print_id: selectedPrint.id,
+        images: selectedPrint.image_url ? [selectedPrint.image_url] : [],
+        is_active: true,
+      };
+
+      const { error } = await supabase.from('products').insert(productData);
+      if (error) throw error;
+
+      toast({ title: 'Product published to shop!' });
+      setIsPublishDialogOpen(false);
+    } catch (error) {
+      console.error('Error publishing to shop:', error);
+      toast({ title: 'Error publishing product', variant: 'destructive' });
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   // Selected print details
   const selectedPrint = prints.find(p => p.id === selectedPrintId);
   const selectedPrintFilamentUsages = printFilaments.filter(pf => pf.print_id === selectedPrintId);
@@ -638,6 +694,18 @@ export default function CalcPrints() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Publish to Shop Button - Admin Only */}
+                {isAdmin && (
+                  <Button 
+                    className="w-full" 
+                    variant="default"
+                    onClick={() => openPublishDialog(selectedPrint)}
+                  >
+                    <Store className="h-4 w-4 mr-2" />
+                    Publish to Shop
+                  </Button>
+                )}
 
                 {/* Cost Breakdown */}
                 <Card>
@@ -1001,6 +1069,117 @@ export default function CalcPrints() {
                 <>
                   <Save className="h-4 w-4 mr-2" />
                   {t('calculator.common.save', 'Save')}
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Publish to Shop Dialog */}
+      <Dialog open={isPublishDialogOpen} onOpenChange={setIsPublishDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Store className="h-5 w-5" />
+              Publish to Shop
+            </DialogTitle>
+            <DialogDescription>
+              Create a product from "{selectedPrint?.name}"
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Category</Label>
+              <Select value={publishCategory} onValueChange={setPublishCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="car-parts">Car Parts</SelectItem>
+                  <SelectItem value="home-decor">Home Decor</SelectItem>
+                  <SelectItem value="accessories">Accessories</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Description</Label>
+              <Textarea 
+                value={publishDescription}
+                onChange={(e) => setPublishDescription(e.target.value)}
+                placeholder="Product description..."
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <Label>Initial Stock</Label>
+              <Input 
+                type="number"
+                min={1}
+                value={publishStock}
+                onChange={(e) => setPublishStock(parseInt(e.target.value) || 1)}
+              />
+            </div>
+
+            <Separator />
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Override Price</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Calculated: {formatCurrency(Number(selectedPrint?.sell_price) || 0)}
+                  </p>
+                </div>
+                <Switch 
+                  checked={publishOverridePrice}
+                  onCheckedChange={setPublishOverridePrice}
+                />
+              </div>
+
+              {publishOverridePrice && (
+                <div>
+                  <Label>Custom Price (€)</Label>
+                  <Input 
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={publishPrice}
+                    onChange={(e) => setPublishPrice(parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="bg-muted p-3 rounded-lg text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Cost Price:</span>
+                <span>{formatCurrency(Number(selectedPrint?.total_cost) || 0)}</span>
+              </div>
+              <div className="flex justify-between font-medium">
+                <span>Final Price:</span>
+                <span>{formatCurrency(publishOverridePrice ? publishPrice : Number(selectedPrint?.sell_price) || 0)}</span>
+              </div>
+              <div className="flex justify-between text-green-600">
+                <span>Profit:</span>
+                <span>{formatCurrency((publishOverridePrice ? publishPrice : Number(selectedPrint?.sell_price) || 0) - (Number(selectedPrint?.total_cost) || 0))}</span>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPublishDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handlePublishToShop} disabled={isPublishing}>
+              {isPublishing ? 'Publishing...' : (
+                <>
+                  <ShoppingBag className="h-4 w-4 mr-2" />
+                  Publish Product
                 </>
               )}
             </Button>
