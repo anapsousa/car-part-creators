@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -13,10 +14,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageUpload } from "@/components/ImageUpload";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Calculator, Percent } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useContent } from "@/hooks/useContent";
 import { Footer } from "@/components/Footer";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+interface CalcPrint {
+  id: string;
+  name: string;
+  sell_price: number | null;
+  total_cost: number | null;
+  image_url: string | null;
+  filament_cost: number | null;
+}
 
 export default function AdminProductForm() {
   const { id } = useParams();
@@ -36,15 +47,38 @@ export default function AdminProductForm() {
     height: "",
     depth: "",
     is_active: true,
+    calc_print_id: "",
+    base_price: "",
+    discount_enabled: false,
+    discount_percent: "0",
+    cost_price: "",
   });
   const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [calcPrints, setCalcPrints] = useState<CalcPrint[]>([]);
+  const [isLoadingCalcPrints, setIsLoadingCalcPrints] = useState(false);
 
   useEffect(() => {
+    fetchCalcPrints();
     if (isEditMode) {
       fetchProduct();
     }
   }, [id]);
+
+  const fetchCalcPrints = async () => {
+    setIsLoadingCalcPrints(true);
+    const { data, error } = await supabase
+      .from("calc_prints")
+      .select("id, name, sell_price, total_cost, image_url, filament_cost")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching calc prints:", error);
+    } else {
+      setCalcPrints(data || []);
+    }
+    setIsLoadingCalcPrints(false);
+  };
 
   const fetchProduct = async () => {
     const { data, error } = await supabase
@@ -75,8 +109,45 @@ export default function AdminProductForm() {
       height: data.height?.toString() || "",
       depth: data.depth?.toString() || "",
       is_active: data.is_active,
+      calc_print_id: data.calc_print_id || "",
+      base_price: data.base_price?.toString() || "",
+      discount_enabled: data.discount_enabled || false,
+      discount_percent: data.discount_percent?.toString() || "0",
+      cost_price: data.cost_price?.toString() || "",
     });
     setImages(data.images || []);
+  };
+
+  const handleCalcPrintSelect = (printId: string) => {
+    if (printId === "none") {
+      setFormData(prev => ({ ...prev, calc_print_id: "" }));
+      return;
+    }
+
+    const selectedPrint = calcPrints.find(p => p.id === printId);
+    if (selectedPrint) {
+      const sellPrice = selectedPrint.sell_price?.toString() || "";
+      const costPrice = selectedPrint.total_cost?.toString() || "";
+      
+      setFormData(prev => ({
+        ...prev,
+        calc_print_id: printId,
+        price: sellPrice,
+        base_price: sellPrice,
+        cost_price: costPrice,
+        name: prev.name || selectedPrint.name,
+      }));
+
+      // Add image if available and no images exist
+      if (selectedPrint.image_url && images.length === 0) {
+        setImages([selectedPrint.image_url]);
+      }
+
+      toast({
+        title: "Calculator data imported",
+        description: `Price set to €${parseFloat(sellPrice).toFixed(2)} from ${selectedPrint.name}`,
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -95,6 +166,11 @@ export default function AdminProductForm() {
       depth: formData.depth ? parseFloat(formData.depth) : null,
       images,
       is_active: formData.is_active,
+      calc_print_id: formData.calc_print_id || null,
+      base_price: formData.base_price ? parseFloat(formData.base_price) : null,
+      discount_enabled: formData.discount_enabled,
+      discount_percent: formData.discount_percent ? parseFloat(formData.discount_percent) : 0,
+      cost_price: formData.cost_price ? parseFloat(formData.cost_price) : null,
     };
 
     const { error } = isEditMode
@@ -119,6 +195,13 @@ export default function AdminProductForm() {
     setIsLoading(false);
   };
 
+  // Calculate final price preview
+  const basePrice = parseFloat(formData.price) || 0;
+  const discountPercent = parseFloat(formData.discount_percent) || 0;
+  const finalPrice = formData.discount_enabled 
+    ? basePrice * (1 - discountPercent / 100) 
+    : basePrice;
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -136,6 +219,41 @@ export default function AdminProductForm() {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Calculator Import Section */}
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-primary" />
+                Import from Price Calculator
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Select
+                value={formData.calc_print_id || "none"}
+                onValueChange={handleCalcPrintSelect}
+                disabled={isLoadingCalcPrints}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a calculation to import pricing..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None - Manual pricing</SelectItem>
+                  {calcPrints.map((print) => (
+                    <SelectItem key={print.id} value={print.id}>
+                      {print.name} - €{(print.sell_price || 0).toFixed(2)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formData.calc_print_id && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Cost: €{parseFloat(formData.cost_price || "0").toFixed(2)} | 
+                  Sell Price: €{parseFloat(formData.base_price || "0").toFixed(2)}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
           <div>
             <Label htmlFor="name">Product Name *</Label>
             <Input
@@ -211,6 +329,69 @@ export default function AdminProductForm() {
               />
             </div>
           </div>
+
+          {/* Discount Settings Section */}
+          <Card className="border-accent/20 bg-accent/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Percent className="h-5 w-5 text-accent" />
+                Discount Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="discount_enabled" className="text-base">
+                    Enable Discount on Website
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Show discounted price in shop
+                  </p>
+                </div>
+                <Switch
+                  id="discount_enabled"
+                  checked={formData.discount_enabled}
+                  onCheckedChange={(checked) => 
+                    setFormData({ ...formData, discount_enabled: checked })
+                  }
+                />
+              </div>
+              
+              {formData.discount_enabled && (
+                <>
+                  <div>
+                    <Label htmlFor="discount_percent">Discount Percentage (%)</Label>
+                    <Input
+                      id="discount_percent"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={formData.discount_percent}
+                      onChange={(e) => 
+                        setFormData({ ...formData, discount_percent: e.target.value })
+                      }
+                    />
+                  </div>
+                  
+                  <div className="p-4 bg-background rounded-lg border">
+                    <p className="text-sm text-muted-foreground mb-1">Price Preview:</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg line-through text-muted-foreground">
+                        €{basePrice.toFixed(2)}
+                      </span>
+                      <span className="text-2xl font-bold text-primary">
+                        €{finalPrice.toFixed(2)}
+                      </span>
+                      <span className="text-sm bg-destructive text-destructive-foreground px-2 py-1 rounded">
+                        -{discountPercent}%
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
 
           <div>
             <Label className="mb-2 block">Dimensions (cm)</Label>

@@ -16,6 +16,9 @@ interface Product {
   images: string[];
   stock_quantity: number;
   category: string;
+  base_price: number | null;
+  discount_enabled: boolean | null;
+  discount_percent: number | null;
 }
 
 export default function Shop() {
@@ -38,7 +41,7 @@ export default function Shop() {
     setIsLoading(true);
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select("id, name, description, price, images, stock_quantity, category, base_price, discount_enabled, discount_percent")
       .eq("is_active", true)
       .order("created_at", { ascending: false });
 
@@ -131,7 +134,18 @@ export default function Shop() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard 
+                key={product.id} 
+                id={product.id}
+                name={product.name}
+                description={product.description || undefined}
+                price={product.price}
+                images={product.images}
+                stock_quantity={product.stock_quantity}
+                base_price={product.base_price}
+                discount_enabled={product.discount_enabled || false}
+                discount_percent={product.discount_percent}
+              />
             ))}
           </div>
         )}

@@ -23,6 +23,9 @@ interface Product {
   height: number | null;
   depth: number | null;
   material: string | null;
+  base_price: number | null;
+  discount_enabled: boolean | null;
+  discount_percent: number | null;
 }
 
 export default function ProductDetail() {
@@ -177,7 +180,25 @@ export default function ProductDetail() {
               </Button>
             </div>
             <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
-            <p className="text-3xl font-bold text-primary mb-6">€{product.price.toFixed(2)}</p>
+            
+            {/* Price Display with Discount */}
+            {product.discount_enabled && product.discount_percent && product.discount_percent > 0 ? (
+              <div className="mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl line-through text-muted-foreground">
+                    €{(product.base_price || product.price).toFixed(2)}
+                  </span>
+                  <span className="text-3xl font-bold text-destructive">
+                    €{((product.base_price || product.price) * (1 - product.discount_percent / 100)).toFixed(2)}
+                  </span>
+                  <Badge variant="destructive" className="text-sm">
+                    -{product.discount_percent}%
+                  </Badge>
+                </div>
+              </div>
+            ) : (
+              <p className="text-3xl font-bold text-primary mb-6">€{product.price.toFixed(2)}</p>
+            )}
 
             {product.description && (
               <div className="mb-6">

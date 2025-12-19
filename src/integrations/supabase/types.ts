@@ -763,10 +763,15 @@ export type Database = {
       }
       products: {
         Row: {
+          base_price: number | null
+          calc_print_id: string | null
           category: string
+          cost_price: number | null
           created_at: string
           depth: number | null
           description: string | null
+          discount_enabled: boolean | null
+          discount_percent: number | null
           height: number | null
           id: string
           images: string[] | null
@@ -779,10 +784,15 @@ export type Database = {
           width: number | null
         }
         Insert: {
+          base_price?: number | null
+          calc_print_id?: string | null
           category: string
+          cost_price?: number | null
           created_at?: string
           depth?: number | null
           description?: string | null
+          discount_enabled?: boolean | null
+          discount_percent?: number | null
           height?: number | null
           id?: string
           images?: string[] | null
@@ -795,10 +805,15 @@ export type Database = {
           width?: number | null
         }
         Update: {
+          base_price?: number | null
+          calc_print_id?: string | null
           category?: string
+          cost_price?: number | null
           created_at?: string
           depth?: number | null
           description?: string | null
+          discount_enabled?: boolean | null
+          discount_percent?: number | null
           height?: number | null
           id?: string
           images?: string[] | null
