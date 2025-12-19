@@ -303,6 +303,7 @@ export type Database = {
           filament_cost: number | null
           fixed_expenses_cost: number | null
           id: string
+          image_url: string | null
           is_template: boolean | null
           labor_cost: number | null
           labor_time_minutes: number | null
@@ -333,6 +334,7 @@ export type Database = {
           filament_cost?: number | null
           fixed_expenses_cost?: number | null
           id?: string
+          image_url?: string | null
           is_template?: boolean | null
           labor_cost?: number | null
           labor_time_minutes?: number | null
@@ -363,6 +365,7 @@ export type Database = {
           filament_cost?: number | null
           fixed_expenses_cost?: number | null
           id?: string
+          image_url?: string | null
           is_template?: boolean | null
           labor_cost?: number | null
           labor_time_minutes?: number | null
