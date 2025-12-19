@@ -848,12 +848,12 @@ export default function CalcPrints() {
 
                 <div>
                   <Label htmlFor="shipping">{t('calculator.prints.shippingOption', 'Shipping Option')}</Label>
-                  <Select value={selectedShippingId} onValueChange={setSelectedShippingId}>
+                  <Select value={selectedShippingId || 'none'} onValueChange={(v) => setSelectedShippingId(v === 'none' ? '' : v)}>
                     <SelectTrigger>
                       <SelectValue placeholder={t('calculator.prints.noShipping', 'No shipping')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{t('calculator.prints.noShipping', 'No shipping')}</SelectItem>
+                      <SelectItem value="none">{t('calculator.prints.noShipping', 'No shipping')}</SelectItem>
                       {shippingOptions.map(option => (
                         <SelectItem key={option.id} value={option.id}>
                           {option.name} ({formatCurrency(Number(option.price))})
