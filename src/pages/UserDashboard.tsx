@@ -380,7 +380,9 @@ const UserDashboard = () => {
                     </div>
                   ) : (
                     orders.map((order) => {
-                      const address = JSON.parse(order.shipping_address);
+                      const address = typeof order.shipping_address === 'string' 
+                        ? JSON.parse(order.shipping_address) 
+                        : order.shipping_address;
                       return (
                         <Card key={order.id} className="mb-4">
                           <CardHeader>
