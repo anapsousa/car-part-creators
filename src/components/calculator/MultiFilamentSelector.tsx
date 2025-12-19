@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { calculateCostPerGram } from '@/lib/calculator/filamentData';
+import { useContent } from '@/hooks/useContent';
 
 export interface FilamentSelection {
   filamentId: string;
@@ -33,6 +33,9 @@ export function MultiFilamentSelector({
   selectedFilaments,
   onChange,
 }: MultiFilamentSelectorProps) {
+  const { content } = useContent('calculator');
+  const t = (key: string, fallback: string) => content[key] || fallback;
+
   const addFilament = () => {
     if (filaments.length === 0) return;
     
@@ -93,7 +96,7 @@ export function MultiFilamentSelector({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">Filaments Used</Label>
+        <Label className="text-sm font-medium">{t('calculator.multiFilament.title', 'Filaments Used')}</Label>
         <Button
           type="button"
           variant="outline"
@@ -102,13 +105,13 @@ export function MultiFilamentSelector({
           disabled={filaments.length === 0}
         >
           <Plus className="h-4 w-4 mr-1" />
-          Add Filament
+          {t('calculator.multiFilament.addFilament', 'Add Filament')}
         </Button>
       </div>
 
       {selectedFilaments.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-md">
-          No filaments selected. Click "Add Filament" to begin.
+          {t('calculator.multiFilament.noFilaments', 'No filaments selected. Click "Add Filament" to begin.')}
         </p>
       ) : (
         <div className="space-y-3">
@@ -118,13 +121,13 @@ export function MultiFilamentSelector({
               className="flex items-end gap-3 p-3 bg-background/50 border rounded-md"
             >
               <div className="flex-1">
-                <Label className="text-xs text-muted-foreground">Filament</Label>
+                <Label className="text-xs text-muted-foreground">{t('calculator.multiFilament.filament', 'Filament')}</Label>
                 <Select
                   value={selection.filamentId}
                   onValueChange={(value) => updateFilament(index, value)}
                 >
                   <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Select filament" />
+                    <SelectValue placeholder={t('calculator.multiFilament.selectFilament', 'Select filament')} />
                   </SelectTrigger>
                   <SelectContent>
                     {filaments.map((f) => (
@@ -137,7 +140,7 @@ export function MultiFilamentSelector({
               </div>
 
               <div className="w-28">
-                <Label className="text-xs text-muted-foreground">Grams</Label>
+                <Label className="text-xs text-muted-foreground">{t('calculator.multiFilament.grams', 'Grams')}</Label>
                 <Input
                   type="number"
                   min="0"
@@ -150,7 +153,7 @@ export function MultiFilamentSelector({
               </div>
 
               <div className="w-24 text-right">
-                <Label className="text-xs text-muted-foreground">Cost</Label>
+                <Label className="text-xs text-muted-foreground">{t('calculator.multiFilament.cost', 'Cost')}</Label>
                 <p className="text-sm font-medium mt-2">
                   €{(selection.gramsUsed * selection.costPerGram).toFixed(2)}
                 </p>
@@ -170,7 +173,7 @@ export function MultiFilamentSelector({
 
           <div className="flex justify-end pt-2 border-t">
             <p className="text-sm">
-              Total Filament Cost:{' '}
+              {t('calculator.multiFilament.totalCost', 'Total Filament Cost')}:{' '}
               <span className="font-semibold text-primary">
                 €{totalFilamentCost.toFixed(2)}
               </span>

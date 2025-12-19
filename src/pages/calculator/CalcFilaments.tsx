@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { FILAMENT_BRANDS, FILAMENT_MATERIALS, FILAMENT_COLORS, getMaterialDensity, calculateCostPerGram } from '@/lib/calculator/filamentData';
+import { useContent } from '@/hooks/useContent';
 
 interface FilamentForm {
   name: string;
@@ -40,6 +41,7 @@ const defaultForm: FilamentForm = {
 export default function CalcFilaments() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { content } = useContent('calculator');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [filaments, setFilaments] = useState<any[]>([]);
@@ -47,6 +49,8 @@ export default function CalcFilaments() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FilamentForm>(defaultForm);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const t = (key: string, fallback: string) => content[key] || fallback;
 
   useEffect(() => {
     checkAuthAndFetch();
@@ -74,7 +78,7 @@ export default function CalcFilaments() {
       if (error) throw error;
       setFilaments(data || []);
     } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      toast({ title: t('calculator.common.error', 'Error'), description: error.message, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -87,7 +91,7 @@ export default function CalcFilaments() {
 
   const handleSave = async () => {
     if (!form.name.trim()) {
-      toast({ title: 'Error', description: 'Please enter a filament name', variant: 'destructive' });
+      toast({ title: t('calculator.common.error', 'Error'), description: t('calculator.filaments.enterName', 'Please enter a filament name'), variant: 'destructive' });
       return;
     }
 
@@ -114,13 +118,13 @@ export default function CalcFilaments() {
           .update(payload)
           .eq('id', editingId);
         if (error) throw error;
-        toast({ title: 'Filament updated' });
+        toast({ title: t('calculator.common.updated', 'Filament updated') });
       } else {
         const { error } = await supabase
           .from('calc_filaments')
           .insert(payload);
         if (error) throw error;
-        toast({ title: 'Filament added' });
+        toast({ title: t('calculator.common.saved', 'Filament added') });
       }
 
       setDialogOpen(false);
@@ -128,7 +132,7 @@ export default function CalcFilaments() {
       setForm(defaultForm);
       await fetchFilaments();
     } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      toast({ title: t('calculator.common.error', 'Error'), description: error.message, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -150,15 +154,15 @@ export default function CalcFilaments() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this filament?')) return;
+    if (!confirm(t('calculator.common.confirmDelete', 'Are you sure you want to delete this?'))) return;
     
     try {
       const { error } = await supabase.from('calc_filaments').delete().eq('id', id);
       if (error) throw error;
-      toast({ title: 'Filament deleted' });
+      toast({ title: t('calculator.common.deleted', 'Filament deleted') });
       await fetchFilaments();
     } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      toast({ title: t('calculator.common.error', 'Error'), description: error.message, variant: 'destructive' });
     }
   };
 
@@ -167,13 +171,13 @@ export default function CalcFilaments() {
   if (!isAuthenticated && !loading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-mesh">
-        <Header pageTitle="Filaments" pageSubtitle="Manage your filament inventory" />
+        <Header pageTitle={t('calculator.filaments.pageTitle', 'Filaments')} pageSubtitle={t('calculator.filaments.pageSubtitle', 'Manage your filament inventory')} />
         <main className="flex-grow container mx-auto px-4 py-8">
           <div className="text-center py-12">
             <Palette className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-2xl font-bold mb-2">Sign In Required</h2>
-            <p className="text-muted-foreground mb-6">Please sign in to manage your filaments</p>
-            <Button onClick={() => navigate('/auth')}>Sign In</Button>
+            <h2 className="text-2xl font-bold mb-2">{t('calculator.filaments.signInRequired', 'Sign In Required')}</h2>
+            <p className="text-muted-foreground mb-6">{t('calculator.filaments.signInMessage', 'Please sign in to manage your filaments')}</p>
+            <Button onClick={() => navigate('/auth')}>{t('calculator.filaments.signIn', 'Sign In')}</Button>
           </div>
         </main>
         <Footer />
@@ -183,13 +187,13 @@ export default function CalcFilaments() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-mesh">
-      <Header pageTitle="Filaments" pageSubtitle="Manage your filament inventory" />
+      <Header pageTitle={t('calculator.filaments.pageTitle', 'Filaments')} pageSubtitle={t('calculator.filaments.pageSubtitle', 'Manage your filament inventory')} />
       
       <main className="flex-grow container mx-auto px-4 py-8">
         <CalculatorLayout>
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Your Filaments</h2>
+              <h2 className="text-2xl font-bold">{t('calculator.filaments.yourFilaments', 'Your Filaments')}</h2>
               <Dialog open={dialogOpen} onOpenChange={(open) => {
                 setDialogOpen(open);
                 if (!open) {
@@ -200,17 +204,17 @@ export default function CalcFilaments() {
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Filament
+                    {t('calculator.filaments.addFilament', 'Add Filament')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{editingId ? 'Edit Filament' : 'Add New Filament'}</DialogTitle>
+                    <DialogTitle>{editingId ? t('calculator.filaments.editFilament', 'Edit Filament') : t('calculator.filaments.addNewFilament', 'Add New Filament')}</DialogTitle>
                   </DialogHeader>
                   
                   <div className="space-y-4 py-4">
                     <div>
-                      <Label>Filament Name</Label>
+                      <Label>{t('calculator.filaments.filamentName', 'Filament Name')}</Label>
                       <Input
                         value={form.name}
                         onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
@@ -220,10 +224,10 @@ export default function CalcFilaments() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label>Brand</Label>
+                        <Label>{t('calculator.filaments.brand', 'Brand')}</Label>
                         <Select value={form.brand} onValueChange={(v) => setForm(prev => ({ ...prev, brand: v }))}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select brand" />
+                            <SelectValue placeholder={t('calculator.filaments.selectBrand', 'Select brand')} />
                           </SelectTrigger>
                           <SelectContent>
                             {FILAMENT_BRANDS.map(brand => (
@@ -234,10 +238,10 @@ export default function CalcFilaments() {
                       </div>
                       
                       <div>
-                        <Label>Material</Label>
+                        <Label>{t('calculator.filaments.material', 'Material')}</Label>
                         <Select value={form.material} onValueChange={handleMaterialChange}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select material" />
+                            <SelectValue placeholder={t('calculator.filaments.selectMaterial', 'Select material')} />
                           </SelectTrigger>
                           <SelectContent>
                             {FILAMENT_MATERIALS.map(mat => (
@@ -249,10 +253,10 @@ export default function CalcFilaments() {
                     </div>
 
                     <div>
-                      <Label>Color</Label>
+                      <Label>{t('calculator.filaments.color', 'Color')}</Label>
                       <Select value={form.color} onValueChange={(v) => setForm(prev => ({ ...prev, color: v }))}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select color" />
+                          <SelectValue placeholder={t('calculator.filaments.selectColor', 'Select color')} />
                         </SelectTrigger>
                         <SelectContent>
                           {FILAMENT_COLORS.map(color => (
@@ -264,7 +268,7 @@ export default function CalcFilaments() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label>Spool Weight (g)</Label>
+                        <Label>{t('calculator.filaments.spoolWeight', 'Spool Weight (g)')}</Label>
                         <Input
                           type="number"
                           value={form.spool_weight_grams}
@@ -272,7 +276,7 @@ export default function CalcFilaments() {
                         />
                       </div>
                       <div>
-                        <Label>Spool Cost (€)</Label>
+                        <Label>{t('calculator.filaments.spoolCost', 'Spool Cost (€)')}</Label>
                         <Input
                           type="number"
                           step="0.01"
@@ -284,12 +288,12 @@ export default function CalcFilaments() {
 
                     <div className="p-3 bg-primary/5 rounded-md">
                       <p className="text-sm">
-                        Cost per gram: <span className="font-semibold">€{costPerGram.toFixed(4)}</span>
+                        {t('calculator.filaments.costPerGram', 'Cost per gram')}: <span className="font-semibold">€{costPerGram.toFixed(4)}</span>
                       </p>
                     </div>
 
                     <div>
-                      <Label>Density (g/cm³)</Label>
+                      <Label>{t('calculator.filaments.density', 'Density (g/cm³)')}</Label>
                       <Input
                         type="number"
                         step="0.01"
@@ -299,17 +303,17 @@ export default function CalcFilaments() {
                     </div>
 
                     <div>
-                      <Label>Notes</Label>
+                      <Label>{t('calculator.filaments.notes', 'Notes')}</Label>
                       <Textarea
                         value={form.notes}
                         onChange={(e) => setForm(prev => ({ ...prev, notes: e.target.value }))}
-                        placeholder="Optional notes..."
+                        placeholder={t('calculator.common.optionalNotes', 'Optional notes...')}
                       />
                     </div>
 
                     <Button onClick={handleSave} disabled={saving} className="w-full">
                       {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                      {editingId ? 'Update Filament' : 'Add Filament'}
+                      {editingId ? t('calculator.filaments.updateFilament', 'Update Filament') : t('calculator.filaments.addFilament', 'Add Filament')}
                     </Button>
                   </div>
                 </DialogContent>
@@ -324,11 +328,11 @@ export default function CalcFilaments() {
               <Card className="bg-card/50 backdrop-blur-sm border-border/50">
                 <CardContent className="py-12 text-center">
                   <Palette className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">No filaments yet</h3>
-                  <p className="text-muted-foreground mb-4">Add your first filament to start calculating costs</p>
+                  <h3 className="text-lg font-semibold mb-2">{t('calculator.filaments.noFilaments', 'No filaments yet')}</h3>
+                  <p className="text-muted-foreground mb-4">{t('calculator.filaments.addFirstMessage', 'Add your first filament to start calculating costs')}</p>
                   <Button onClick={() => setDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Filament
+                    {t('calculator.filaments.addFilament', 'Add Filament')}
                   </Button>
                 </CardContent>
               </Card>
