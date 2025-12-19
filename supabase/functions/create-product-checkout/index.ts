@@ -177,8 +177,8 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error: any) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error('Checkout error:', { error: errorMessage, ip: clientIp, is_guest: !user, timestamp: new Date().toISOString() });
+    const errorMessage = error?.message || error?.error_description || (typeof error === 'string' ? error : JSON.stringify(error) || "Unknown error");
+    console.error('Checkout error:', { error: errorMessage, fullError: error, ip: clientIp, is_guest: !user, timestamp: new Date().toISOString() });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, ...getSecurityHeaders(), "Content-Type": "application/json" },
       status: 500,
