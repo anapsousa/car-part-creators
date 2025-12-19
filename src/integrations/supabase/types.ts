@@ -672,33 +672,42 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
+          guest_email: string | null
+          guest_name: string | null
           id: string
+          is_guest_order: boolean | null
           shipping_address: Json
           status: string
           stripe_session_id: string | null
           total_amount: number
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          guest_email?: string | null
+          guest_name?: string | null
           id?: string
+          is_guest_order?: boolean | null
           shipping_address: Json
           status?: string
           stripe_session_id?: string | null
           total_amount: number
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          guest_email?: string | null
+          guest_name?: string | null
           id?: string
+          is_guest_order?: boolean | null
           shipping_address?: Json
           status?: string
           stripe_session_id?: string | null
           total_amount?: number
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
