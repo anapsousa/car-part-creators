@@ -34,6 +34,18 @@ serve(async (req) => {
       throw new Error("STRIPE_SECRET_KEY is not configured");
     }
 
+    // SECURITY: Webhook secret is mandatory to prevent forged webhook attacks
+    if (!webhookSecret) {
+      console.error("STRIPE_WEBHOOK_SECRET not configured - webhook rejected for security");
+      return new Response(
+        JSON.stringify({ error: "Webhook secret not configured" }),
+        {
+          status: 500,
+          headers: { ...getCorsHeaders(origin), ...getSecurityHeaders(), "Content-Type": "application/json" },
+        },
+      );
+    }
+
     const stripe = new Stripe(stripeKey, {
       apiVersion: "2023-10-16",
     });
@@ -50,13 +62,21 @@ serve(async (req) => {
     const body = await req.text();
     let event: Stripe.Event;
 
-    // Verify webhook signature if secret is configured
-    // Note: Signature validation is critical for security to prevent spoofed webhooks
-    if (webhookSecret) {
+    // SECURITY: Always verify webhook signature - no fallback to unsigned webhooks
+    try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } else {
-      event = JSON.parse(body);
-      console.warn("Webhook signature verification skipped - configure STRIPE_WEBHOOK_SECRET");
+    } catch (err: any) {
+      console.error('Webhook signature verification failed:', { 
+        error: err.message, 
+        ip: extractClientIp(req) 
+      });
+      return new Response(
+        JSON.stringify({ error: 'Invalid signature' }),
+        {
+          status: 400,
+          headers: { ...getCorsHeaders(origin), ...getSecurityHeaders(), "Content-Type": "application/json" },
+        },
+      );
     }
 
     // Rate limiting omitted - Stripe webhooks are already rate-limited and signature-verified
