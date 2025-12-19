@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, Loader2, Zap, DollarSign, Package, Truck, Settings, Save, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate, useBlocker } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useContent } from '@/hooks/useContent';
 
 export default function CalcSettings() {
@@ -36,22 +36,17 @@ export default function CalcSettings() {
 
   const t = (key: string, fallback: string) => content[key] || fallback;
 
-  // Block navigation when there are unsaved changes
-  const blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      hasUnsavedChanges && currentLocation.pathname !== nextLocation.pathname
-  );
-
+  // Warn user before closing/refreshing page with unsaved changes
   useEffect(() => {
-    if (blocker.state === 'blocked') {
-      const confirmed = window.confirm(t('calculator.common.unsavedChangesWarning', 'You have unsaved changes. Are you sure you want to leave?'));
-      if (confirmed) {
-        blocker.proceed();
-      } else {
-        blocker.reset();
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
       }
-    }
-  }, [blocker, t]);
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   // Check for unsaved changes
   const checkForChanges = useCallback(() => {
