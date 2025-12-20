@@ -148,18 +148,29 @@ export interface PricingInputs {
 
 export interface PricingResult {
   sellPrice: number;
+  sellPriceWithTax: number;
+  taxAmount: number;
+  taxPercent: number;
   profit: number;
   profitMarginPercent: number;
   markupPercent: number;
 }
 
+// Portuguese IVA tax rate for 3D printed items
+export const IVA_TAX_PERCENT = 23;
+
 export function calculatePricingFromMarkup(totalCost: number, markupPercent: number): PricingResult {
   const sellPrice = totalCost * (1 + markupPercent / 100);
+  const taxAmount = sellPrice * (IVA_TAX_PERCENT / 100);
+  const sellPriceWithTax = sellPrice + taxAmount;
   const profit = sellPrice - totalCost;
   const profitMarginPercent = totalCost > 0 ? (profit / sellPrice) * 100 : 0;
 
   return {
     sellPrice,
+    sellPriceWithTax,
+    taxAmount,
+    taxPercent: IVA_TAX_PERCENT,
     profit,
     profitMarginPercent,
     markupPercent,
@@ -171,11 +182,16 @@ export function calculatePricingFromMargin(totalCost: number, targetMarginPercen
   // Sell = Cost / (1 - Margin)
   const marginDecimal = targetMarginPercent / 100;
   const sellPrice = marginDecimal < 1 ? totalCost / (1 - marginDecimal) : totalCost;
+  const taxAmount = sellPrice * (IVA_TAX_PERCENT / 100);
+  const sellPriceWithTax = sellPrice + taxAmount;
   const profit = sellPrice - totalCost;
   const markupPercent = totalCost > 0 ? (profit / totalCost) * 100 : 0;
 
   return {
     sellPrice,
+    sellPriceWithTax,
+    taxAmount,
+    taxPercent: IVA_TAX_PERCENT,
     profit,
     profitMarginPercent: targetMarginPercent,
     markupPercent,
@@ -183,12 +199,17 @@ export function calculatePricingFromMargin(totalCost: number, targetMarginPercen
 }
 
 export function calculatePricingFromSellPrice(totalCost: number, sellPrice: number): PricingResult {
+  const taxAmount = sellPrice * (IVA_TAX_PERCENT / 100);
+  const sellPriceWithTax = sellPrice + taxAmount;
   const profit = sellPrice - totalCost;
   const profitMarginPercent = sellPrice > 0 ? (profit / sellPrice) * 100 : 0;
   const markupPercent = totalCost > 0 ? (profit / totalCost) * 100 : 0;
 
   return {
     sellPrice,
+    sellPriceWithTax,
+    taxAmount,
+    taxPercent: IVA_TAX_PERCENT,
     profit,
     profitMarginPercent,
     markupPercent,
