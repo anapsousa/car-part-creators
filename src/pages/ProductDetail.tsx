@@ -195,9 +195,13 @@ export default function ProductDetail() {
                     -{product.discount_percent}%
                   </Badge>
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">* Preço inclui IVA (23%)</p>
               </div>
             ) : (
-              <p className="text-3xl font-bold text-primary mb-6">€{product.price.toFixed(2)}</p>
+              <div className="mb-6">
+                <p className="text-3xl font-bold text-primary">€{product.price.toFixed(2)}</p>
+                <p className="text-xs text-muted-foreground mt-1">* Preço inclui IVA (23%)</p>
+              </div>
             )}
 
             {product.description && (

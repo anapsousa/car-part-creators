@@ -132,22 +132,27 @@ export default function Shop() {
             <p className="text-lg text-muted-foreground">{content["shop.no_products"] || "No products found"}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard 
-                key={product.id} 
-                id={product.id}
-                name={product.name}
-                description={product.description || undefined}
-                price={product.price}
-                images={product.images}
-                stock_quantity={product.stock_quantity}
-                base_price={product.base_price}
-                discount_enabled={product.discount_enabled || false}
-                discount_percent={product.discount_percent}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <ProductCard 
+                  key={product.id} 
+                  id={product.id}
+                  name={product.name}
+                  description={product.description || undefined}
+                  price={product.price}
+                  images={product.images}
+                  stock_quantity={product.stock_quantity}
+                  base_price={product.base_price}
+                  discount_enabled={product.discount_enabled || false}
+                  discount_percent={product.discount_percent}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground text-center mt-6">
+              * {content["shop.iva_disclosure"] || "Todos os preços incluem IVA à taxa legal em vigor (23%)."}
+            </p>
+          </>
         )}
       </main>
 

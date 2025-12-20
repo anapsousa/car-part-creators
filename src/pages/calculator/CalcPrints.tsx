@@ -687,7 +687,12 @@ export default function CalcPrints() {
                       <DollarSign className="h-5 w-5" />
                       <span className="font-medium">{t('calculator.prints.recommendedPrice', 'Recommended Sale Price')}</span>
                     </div>
-                    <p className="text-4xl font-bold">{formatCurrency(Number(selectedPrint.sell_price) || 0)}</p>
+                    <p className="text-2xl font-bold">{formatCurrency(Number(selectedPrint.sell_price) || 0)}</p>
+                    <div className="flex items-center gap-2 mt-2 text-amber-900">
+                      <span>+ IVA (23%): {formatCurrency((Number(selectedPrint.sell_price) || 0) * 0.23)}</span>
+                    </div>
+                    <p className="text-4xl font-bold mt-2">{formatCurrency((Number(selectedPrint.sell_price) || 0) * 1.23)}</p>
+                    <p className="text-xs text-amber-800 mt-1">{t('calculator.prints.priceWithTax', 'Price with IVA included')}</p>
                     <div className="flex items-center gap-2 mt-2 text-amber-900">
                       <TrendingUp className="h-4 w-4" />
                       <span>{t('calculator.prints.profit', 'Profit')}: {formatCurrency(Number(selectedPrint.profit) || 0)}</span>
