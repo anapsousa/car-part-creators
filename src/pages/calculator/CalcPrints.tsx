@@ -416,7 +416,9 @@ export default function CalcPrints() {
 
   // Open publish dialog
   const openPublishDialog = (print: Print) => {
-    setPublishPrice(Number(print.sell_price) || 0);
+    // Set default price with IVA (23%)
+    const priceWithVat = (Number(print.sell_price) || 0) * 1.23;
+    setPublishPrice(priceWithVat);
     setPublishOverridePrice(false);
     setPublishDescription(print.notes || '');
     setPublishStock(1);
@@ -430,14 +432,17 @@ export default function CalcPrints() {
     
     setIsPublishing(true);
     try {
-      const finalPrice = publishOverridePrice ? publishPrice : Number(selectedPrint.sell_price);
+      // Calculate price with IVA (23%)
+      const baseSellPrice = Number(selectedPrint.sell_price) || 0;
+      const priceWithVat = baseSellPrice * 1.23;
+      const finalPrice = publishOverridePrice ? publishPrice : priceWithVat;
       
       const productData = {
         name: selectedPrint.name,
         description: publishDescription || selectedPrint.notes || '',
         category: publishCategory,
         price: finalPrice,
-        base_price: Number(selectedPrint.sell_price),
+        base_price: priceWithVat,
         cost_price: Number(selectedPrint.total_cost),
         stock_quantity: publishStock,
         calc_print_id: selectedPrint.id,
