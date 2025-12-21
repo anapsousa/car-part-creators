@@ -8,6 +8,7 @@ import { CalculatorLayout } from '@/components/calculator/CalculatorLayout';
 import { MultiFilamentSelector } from '@/components/calculator/MultiFilamentSelector';
 import { PrintListItem } from '@/components/calculator/PrintListItem';
 import { PrintImageUpload } from '@/components/calculator/PrintImageUpload';
+import { DeleteConfirmDialog } from '@/components/calculator/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -79,6 +80,15 @@ export default function CalcPrints() {
   const [publishStock, setPublishStock] = useState(1);
   const [isPublishing, setIsPublishing] = useState(false);
 
+  // VAT settings
+  const [showVatInCalculator, setShowVatInCalculator] = useState(true);
+  const [vatRate, setVatRate] = useState(23);
+
+  // Delete confirmation
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [deleteTargetName, setDeleteTargetName] = useState<string>('');
+
   // Form fields
   const [name, setName] = useState('');
   const [printTimeInput, setPrintTimeInput] = useState('60');
@@ -114,7 +124,7 @@ export default function CalcPrints() {
     try {
       const [
         printsRes, printersRes, filamentsRes, electricityRes, shippingRes,
-        laborRes, consumablesRes, expensesRes, printFilamentsRes
+        laborRes, consumablesRes, expensesRes, printFilamentsRes, vatRes
       ] = await Promise.all([
         supabase.from('calc_prints').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
         supabase.from('calc_printers').select('*').eq('user_id', userId).eq('is_active', true),
@@ -124,7 +134,8 @@ export default function CalcPrints() {
         supabase.from('calc_labor_settings').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('calc_consumables').select('*').eq('user_id', userId).eq('is_active', true),
         supabase.from('calc_fixed_expenses').select('*').eq('user_id', userId).eq('is_active', true),
-        supabase.from('calc_print_filaments').select('*, calc_prints!inner(user_id)').eq('calc_prints.user_id', userId)
+        supabase.from('calc_print_filaments').select('*, calc_prints!inner(user_id)').eq('calc_prints.user_id', userId),
+        supabase.from('calc_vat_settings').select('*').eq('user_id', userId).maybeSingle()
       ]);
 
       if (printsRes.data) setPrints(printsRes.data);
@@ -136,6 +147,12 @@ export default function CalcPrints() {
       if (consumablesRes.data) setConsumables(consumablesRes.data);
       if (expensesRes.data) setFixedExpenses(expensesRes.data);
       if (printFilamentsRes.data) setPrintFilaments(printFilamentsRes.data);
+      
+      // Load VAT settings
+      if (vatRes.data) {
+        setShowVatInCalculator(vatRes.data.show_vat_in_calculator ?? true);
+        setVatRate(Number(vatRes.data.vat_rate) || 23);
+      }
 
       // Set defaults
       if (printersRes.data?.length && !selectedPrinterId) {
@@ -408,6 +425,21 @@ export default function CalcPrints() {
     }
   };
 
+  const openDeleteDialog = (printId: string, printName: string) => {
+    setDeleteTargetId(printId);
+    setDeleteTargetName(printName);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await handleDeletePrint(deleteTargetId);
+    }
+    setDeleteDialogOpen(false);
+    setDeleteTargetId(null);
+    setDeleteTargetName('');
+  };
+
   const handleDuplicatePrint = async (print: Print) => {
     await handleEditPrint(print);
     setEditingPrint(null);
@@ -622,7 +654,10 @@ export default function CalcPrints() {
                           const p = prints.find(pr => pr.id === id);
                           if (p) handleEditPrint(p);
                         }}
-                        onDelete={handleDeletePrint}
+                        onDelete={(id) => {
+                          const p = prints.find(pr => pr.id === id);
+                          if (p) openDeleteDialog(id, p.name);
+                        }}
                         onDuplicate={(id) => {
                           const p = prints.find(pr => pr.id === id);
                           if (p) handleDuplicatePrint(p);
@@ -747,6 +782,27 @@ export default function CalcPrints() {
                       <span>{t('calculator.prints.profitPercent', 'Profit')} ({(selectedPrint.profit_margin_percent ?? 0).toFixed(0)}%)</span>
                       <span>{formatCurrency(Number(selectedPrint.profit) || 0)}</span>
                     </div>
+                    
+                    {/* VAT Breakdown */}
+                    {showVatInCalculator && (
+                      <>
+                        <Separator className="my-2" />
+                        <div className="bg-muted/50 p-3 rounded-lg space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">{t('calculator.prints.basePrice', 'Base Price (excl. VAT)')}</span>
+                            <span>{formatCurrency(Number(selectedPrint.sell_price) || 0)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">{t('calculator.prints.vatAmount', 'VAT')} ({vatRate}%)</span>
+                            <span>{formatCurrency((Number(selectedPrint.sell_price) || 0) * (vatRate / 100))}</span>
+                          </div>
+                          <div className="flex justify-between font-bold text-primary">
+                            <span>{t('calculator.prints.totalWithVat', 'Total (incl. VAT)')}</span>
+                            <span>{formatCurrency((Number(selectedPrint.sell_price) || 0) * (1 + vatRate / 100))}</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -1196,6 +1252,14 @@ export default function CalcPrints() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title={t('calculator.prints.deleteConfirmTitle', 'Delete Calculation')}
+        description={`${t('calculator.prints.deleteConfirmMessage', 'Are you sure you want to delete')} "${deleteTargetName}"?`}
+      />
     </CalculatorLayout>
   );
 }

@@ -8,11 +8,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, Loader2, Zap, DollarSign, Package, Truck, Settings, Save, AlertCircle } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Plus, Trash2, Loader2, Zap, DollarSign, Package, Truck, Settings, Save, AlertCircle, Percent } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useContent } from '@/hooks/useContent';
+import { DeleteConfirmDialog } from '@/components/calculator/DeleteConfirmDialog';
 
 export default function CalcSettings() {
   const { toast } = useToast();
@@ -30,6 +32,13 @@ export default function CalcSettings() {
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [laborSettings, setLaborSettings] = useState<any>(null);
   const [laborRateInput, setLaborRateInput] = useState<number>(10);
+  const [vatSettings, setVatSettings] = useState<any>(null);
+  const [showVatInCalculator, setShowVatInCalculator] = useState(true);
+  const [vatRate, setVatRate] = useState(23);
+
+  // Delete confirmation state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ table: string; id: string; name: string } | null>(null);
 
   // Original data for comparison
   const [originalData, setOriginalData] = useState<string>('');
@@ -50,13 +59,13 @@ export default function CalcSettings() {
 
   // Check for unsaved changes
   const checkForChanges = useCallback(() => {
-    const currentData = JSON.stringify({ electricitySettings, fixedExpenses, consumables, shippingOptions, laborRateInput });
+    const currentData = JSON.stringify({ electricitySettings, fixedExpenses, consumables, shippingOptions, laborRateInput, showVatInCalculator, vatRate });
     setHasUnsavedChanges(currentData !== originalData);
-  }, [electricitySettings, fixedExpenses, consumables, shippingOptions, laborRateInput, originalData]);
+  }, [electricitySettings, fixedExpenses, consumables, shippingOptions, laborRateInput, showVatInCalculator, vatRate, originalData]);
 
   useEffect(() => {
     if (!loading) checkForChanges();
-  }, [electricitySettings, fixedExpenses, consumables, shippingOptions, laborRateInput, checkForChanges, loading]);
+  }, [electricitySettings, fixedExpenses, consumables, shippingOptions, laborRateInput, showVatInCalculator, vatRate, checkForChanges, loading]);
 
   useEffect(() => {
     checkAuthAndFetch();
@@ -76,12 +85,13 @@ export default function CalcSettings() {
   const fetchAllSettings = async () => {
     try {
       setLoading(true);
-      const [elecRes, expRes, consRes, shipRes, laborRes] = await Promise.all([
+      const [elecRes, expRes, consRes, shipRes, laborRes, vatRes] = await Promise.all([
         supabase.from('calc_electricity_settings').select('*').order('name'),
         supabase.from('calc_fixed_expenses').select('*').order('name'),
         supabase.from('calc_consumables').select('*').order('name'),
         supabase.from('calc_shipping_options').select('*').order('name'),
         supabase.from('calc_labor_settings').select('*').maybeSingle(),
+        supabase.from('calc_vat_settings').select('*').maybeSingle(),
       ]);
 
       const elec = elecRes.data || [];
@@ -90,6 +100,9 @@ export default function CalcSettings() {
       const ship = shipRes.data || [];
       const labor = laborRes.data;
       const laborRate = labor?.hourly_rate || 10;
+      const vat = vatRes.data;
+      const showVat = vat?.show_vat_in_calculator ?? true;
+      const vatRateVal = vat?.vat_rate ?? 23;
 
       setElectricitySettings(elec);
       setFixedExpenses(exp);
@@ -97,8 +110,11 @@ export default function CalcSettings() {
       setShippingOptions(ship);
       setLaborSettings(labor);
       setLaborRateInput(laborRate);
+      setVatSettings(vat);
+      setShowVatInCalculator(showVat);
+      setVatRate(vatRateVal);
 
-      setOriginalData(JSON.stringify({ electricitySettings: elec, fixedExpenses: exp, consumables: cons, shippingOptions: ship, laborRateInput: laborRate }));
+      setOriginalData(JSON.stringify({ electricitySettings: elec, fixedExpenses: exp, consumables: cons, shippingOptions: ship, laborRateInput: laborRate, showVatInCalculator: showVat, vatRate: vatRateVal }));
       setHasUnsavedChanges(false);
     } catch (error: any) {
       toast({ title: t('calculator.common.error', 'Error'), description: error.message, variant: 'destructive' });
@@ -139,10 +155,21 @@ export default function CalcSettings() {
     else fetchAllSettings();
   };
 
-  const handleDelete = async (table: 'calc_electricity_settings' | 'calc_fixed_expenses' | 'calc_consumables' | 'calc_shipping_options', id: string) => {
-    const { error } = await supabase.from(table).delete().eq('id', id);
+  const openDeleteDialog = (table: string, id: string, name: string) => {
+    setDeleteTarget({ table, id, name });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const { error } = await supabase.from(deleteTarget.table as any).delete().eq('id', deleteTarget.id);
     if (error) toast({ title: t('calculator.common.error', 'Error'), description: error.message, variant: 'destructive' });
-    else fetchAllSettings();
+    else {
+      toast({ title: t('calculator.common.deleted', 'Deleted successfully') });
+      fetchAllSettings();
+    }
+    setDeleteDialogOpen(false);
+    setDeleteTarget(null);
   };
 
   const saveAllSettings = async () => {
@@ -168,6 +195,16 @@ export default function CalcSettings() {
       } else {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) updates.push(supabase.from('calc_labor_settings').insert({ user_id: user.id, hourly_rate: laborRateInput }));
+      }
+
+      // Save VAT settings
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        if (vatSettings) {
+          updates.push(supabase.from('calc_vat_settings').update({ show_vat_in_calculator: showVatInCalculator, vat_rate: vatRate }).eq('id', vatSettings.id));
+        } else {
+          updates.push(supabase.from('calc_vat_settings').insert({ user_id: user.id, show_vat_in_calculator: showVatInCalculator, vat_rate: vatRate }));
+        }
       }
 
       const results = await Promise.all(updates);
@@ -223,12 +260,13 @@ export default function CalcSettings() {
               </div>
 
               <Tabs defaultValue="electricity" className="space-y-6">
-                <TabsList className="grid grid-cols-5 w-full">
+                <TabsList className="grid grid-cols-6 w-full">
                   <TabsTrigger value="electricity"><Zap className="h-4 w-4 mr-1 hidden sm:inline" />{t('calculator.settings.electricity', 'Electricity')}</TabsTrigger>
                   <TabsTrigger value="expenses"><DollarSign className="h-4 w-4 mr-1 hidden sm:inline" />{t('calculator.settings.expenses', 'Expenses')}</TabsTrigger>
                   <TabsTrigger value="consumables"><Package className="h-4 w-4 mr-1 hidden sm:inline" />{t('calculator.settings.consumables', 'Consumables')}</TabsTrigger>
                   <TabsTrigger value="shipping"><Truck className="h-4 w-4 mr-1 hidden sm:inline" />{t('calculator.settings.shipping', 'Shipping')}</TabsTrigger>
                   <TabsTrigger value="labor">{t('calculator.settings.labor', 'Labor')}</TabsTrigger>
+                  <TabsTrigger value="vat"><Percent className="h-4 w-4 mr-1 hidden sm:inline" />{t('calculator.settings.vat', 'VAT')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="electricity">
@@ -243,7 +281,7 @@ export default function CalcSettings() {
                           <Input value={e.name ?? ''} className="flex-1" onChange={(ev) => setElectricitySettings((prev) => prev.map((x) => (x.id === e.id ? { ...x, name: ev.target.value } : x)))} />
                           <Input type="number" step="0.01" value={e.price_per_kwh ?? 0} className="w-24" onChange={(ev) => setElectricitySettings((prev) => prev.map((x) => (x.id === e.id ? { ...x, price_per_kwh: parseFloat(ev.target.value) || 0 } : x)))} />
                           <span className="text-sm text-muted-foreground">{t('calculator.settings.perKwh', '€/kWh')}</span>
-                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_electricity_settings', e.id)}><Trash2 className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog('calc_electricity_settings', e.id, e.name)}><Trash2 className="h-4 w-4" /></Button>
                         </div>
                       ))}
                       {electricitySettings.length === 0 && <p className="text-muted-foreground text-center py-4">{t('calculator.settings.noElectricity', 'No electricity settings yet')}</p>}
@@ -263,7 +301,7 @@ export default function CalcSettings() {
                           <Input value={e.name ?? ''} className="flex-1" onChange={(ev) => setFixedExpenses((prev) => prev.map((x) => (x.id === e.id ? { ...x, name: ev.target.value } : x)))} />
                           <Input type="number" step="0.01" value={e.monthly_amount ?? 0} className="w-24" onChange={(ev) => setFixedExpenses((prev) => prev.map((x) => (x.id === e.id ? { ...x, monthly_amount: parseFloat(ev.target.value) || 0 } : x)))} />
                           <span className="text-sm text-muted-foreground">{t('calculator.settings.perMonth', '€/month')}</span>
-                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_fixed_expenses', e.id)}><Trash2 className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog('calc_fixed_expenses', e.id, e.name)}><Trash2 className="h-4 w-4" /></Button>
                         </div>
                       ))}
                       {fixedExpenses.length === 0 && <p className="text-muted-foreground text-center py-4">{t('calculator.settings.noExpenses', 'No fixed expenses yet')}</p>}
@@ -283,7 +321,7 @@ export default function CalcSettings() {
                           <Input value={c.name ?? ''} className="flex-1" onChange={(ev) => setConsumables((prev) => prev.map((x) => (x.id === c.id ? { ...x, name: ev.target.value } : x)))} />
                           <Input type="number" step="0.01" value={c.cost ?? 0} className="w-24" onChange={(ev) => setConsumables((prev) => prev.map((x) => (x.id === c.id ? { ...x, cost: parseFloat(ev.target.value) || 0 } : x)))} />
                           <span className="text-sm text-muted-foreground">{t('calculator.settings.perPrint', '€/print')}</span>
-                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_consumables', c.id)}><Trash2 className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog('calc_consumables', c.id, c.name)}><Trash2 className="h-4 w-4" /></Button>
                         </div>
                       ))}
                       {consumables.length === 0 && <p className="text-muted-foreground text-center py-4">{t('calculator.settings.noConsumables', 'No consumables yet')}</p>}
@@ -303,7 +341,7 @@ export default function CalcSettings() {
                           <Input value={s.name ?? ''} className="flex-1" onChange={(ev) => setShippingOptions((prev) => prev.map((x) => (x.id === s.id ? { ...x, name: ev.target.value } : x)))} />
                           <Input type="number" step="0.01" value={s.price ?? 0} className="w-24" onChange={(ev) => setShippingOptions((prev) => prev.map((x) => (x.id === s.id ? { ...x, price: parseFloat(ev.target.value) || 0 } : x)))} />
                           <span className="text-sm text-muted-foreground">€</span>
-                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete('calc_shipping_options', s.id)}><Trash2 className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog('calc_shipping_options', s.id, s.name)}><Trash2 className="h-4 w-4" /></Button>
                         </div>
                       ))}
                       {shippingOptions.length === 0 && <p className="text-muted-foreground text-center py-4">{t('calculator.settings.noShipping', 'No shipping options yet')}</p>}
@@ -323,12 +361,53 @@ export default function CalcSettings() {
                     </CardContent>
                   </Card>
                 </TabsContent>
+
+                <TabsContent value="vat">
+                  <Card className="bg-card/50 backdrop-blur-sm">
+                    <CardHeader><CardTitle>{t('calculator.settings.vatSettings', 'VAT Settings')}</CardTitle></CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="flex items-center justify-between p-4 bg-background/50 rounded-lg">
+                        <div className="space-y-1">
+                          <Label className="text-base">{t('calculator.settings.showVatInCalculator', 'Show VAT in Calculator')}</Label>
+                          <p className="text-sm text-muted-foreground">
+                            {t('calculator.settings.showVatDescription', 'When enabled, prices will display VAT breakdown with base cost, VAT amount, and total')}
+                          </p>
+                        </div>
+                        <Switch 
+                          checked={showVatInCalculator} 
+                          onCheckedChange={setShowVatInCalculator}
+                        />
+                      </div>
+                      <div>
+                        <Label>{t('calculator.settings.vatRate', 'VAT Rate (%)')}</Label>
+                        <Input 
+                          type="number" 
+                          step="0.1" 
+                          min="0"
+                          max="100"
+                          value={vatRate} 
+                          onChange={(e) => setVatRate(parseFloat(e.target.value) || 0)} 
+                          className="mt-1 max-w-xs" 
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">{t('calculator.settings.vatRateHint', 'The VAT rate to apply to selling prices (default 23% for Portugal)')}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
               </Tabs>
             </div>
           )}
         </CalculatorLayout>
       </main>
       <Footer />
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title={t('calculator.common.confirmDeleteTitle', 'Delete Item')}
+        description={`${t('calculator.common.confirmDeleteMessage', 'Are you sure you want to delete')} "${deleteTarget?.name || ''}"? ${t('calculator.common.cannotBeUndone', 'This action cannot be undone.')}`}
+      />
     </div>
   );
 }
