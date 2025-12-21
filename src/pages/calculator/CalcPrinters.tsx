@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, Printer, Trash2, Edit, Loader2 } from 'lucide-react';
+import { DeleteConfirmDialog } from '@/components/calculator/DeleteConfirmDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -51,6 +52,8 @@ export default function CalcPrinters() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<PrinterForm>(defaultForm);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
   const t = (key: string, fallback: string) => content[key] || fallback;
 
@@ -174,17 +177,23 @@ export default function CalcPrinters() {
     setDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('calculator.common.confirmDelete', 'Are you sure you want to delete this?'))) return;
-    
+  const openDeleteDialog = (printer: any) => {
+    setDeleteTarget({ id: printer.id, name: printer.name });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      const { error } = await supabase.from('calc_printers').delete().eq('id', id);
+      const { error } = await supabase.from('calc_printers').delete().eq('id', deleteTarget.id);
       if (error) throw error;
       toast({ title: t('calculator.common.deleted', 'Printer deleted') });
       await fetchPrinters();
     } catch (error: any) {
       toast({ title: t('calculator.common.error', 'Error'), description: error.message, variant: 'destructive' });
     }
+    setDeleteDialogOpen(false);
+    setDeleteTarget(null);
   };
 
   const models = form.brand ? getModelsForBrand(form.brand as PrinterBrand) : [];
@@ -380,7 +389,7 @@ export default function CalcPrinters() {
                           <Button variant="ghost" size="icon" onClick={() => handleEdit(printer)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(printer.id)}>
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog(printer)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -395,6 +404,14 @@ export default function CalcPrinters() {
       </main>
       
       <Footer />
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title={t('calculator.printers.deleteConfirmTitle', 'Delete Printer')}
+        description={`${t('calculator.common.confirmDeleteMessage', 'Are you sure you want to delete')} "${deleteTarget?.name || ''}"?`}
+      />
     </div>
   );
 }

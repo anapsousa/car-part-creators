@@ -443,6 +443,33 @@ export type Database = {
         }
         Relationships: []
       }
+      calc_vat_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          show_vat_in_calculator: boolean | null
+          updated_at: string | null
+          user_id: string
+          vat_rate: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          show_vat_in_calculator?: boolean | null
+          updated_at?: string | null
+          user_id: string
+          vat_rate?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          show_vat_in_calculator?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+          vat_rate?: number | null
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string
