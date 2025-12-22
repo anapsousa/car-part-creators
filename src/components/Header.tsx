@@ -109,7 +109,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
             />
             {pageTitle && (
               <div>
-                <h1 className="text-xl font-bold">{pageTitle}</h1>
+                <div className="text-xl font-bold">{pageTitle}</div>
                 {pageSubtitle && (
                   <p className="text-xs text-muted-foreground">{pageSubtitle}</p>
                 )}

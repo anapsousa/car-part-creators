@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useContent } from "@/hooks/useContent";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,8 @@ interface Product {
   base_price: number | null;
   discount_enabled: boolean | null;
   discount_percent: number | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 }
 
 export default function ProductDetail() {
@@ -85,6 +88,31 @@ export default function ProductDetail() {
     custom_designs: "Custom Designs",
   };
 
+  // Generate SEO metadata based on product category
+  const getSEOData = () => {
+    const productName = product?.name || "";
+    
+    if (product?.category === "car_parts") {
+      return {
+        title: product.seoTitle || `Custom 3D Printed Replacement Part | Dr3amToReal`,
+        description: product.seoDescription || `High-quality custom 3D printed replacement part, designed and tested for fit and function. Made to order by Dr3amToReal in Portugal.`,
+      };
+    } else if (product?.category === "home_decor") {
+      return {
+        title: product.seoTitle || `3D Printed Home Décor | Custom & Original Designs – Dr3amToReal`,
+        description: product.seoDescription || `Original 3D printed home décor designed with intention. Customisable, small-batch pieces made in Portugal by Dr3amToReal.`,
+      };
+    } else {
+      // custom_designs or personalised products
+      return {
+        title: product.seoTitle || `Personalised 3D Printed Object | Made to Order – Dr3amToReal`,
+        description: product.seoDescription || `Personalised 3D printed object tailored to your needs. Designed and printed with care by Dr3amToReal, a Portugal-based studio.`,
+      };
+    }
+  };
+
+  const seoData = product ? getSEOData() : { title: "", description: "" };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -115,6 +143,17 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-background">
+      {product && (
+        <Helmet>
+          <title>{seoData.title}</title>
+          <meta name="description" content={seoData.description} />
+          <link rel="canonical" href={`https://dr3amtoreal.com/product/${product.id}`} />
+          <meta property="og:title" content={seoData.title} />
+          <meta property="og:description" content={seoData.description} />
+          <meta property="og:url" content={`https://dr3amtoreal.com/product/${product.id}`} />
+          <meta property="og:type" content="product" />
+        </Helmet>
+      )}
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
           <Button variant="ghost" onClick={() => navigate("/shop")}>
@@ -264,6 +303,21 @@ export default function ProductDetail() {
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
+              </Button>
+            </div>
+
+            {/* Custom Work CTA */}
+            <div className="mt-6 p-4 bg-muted/50 rounded-lg border">
+              <p className="text-sm text-muted-foreground mb-2">
+                Need this adapted?
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/contact")}
+                className="w-full"
+              >
+                Request custom work
               </Button>
             </div>
           </div>

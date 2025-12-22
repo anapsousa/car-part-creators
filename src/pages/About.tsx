@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
@@ -10,17 +11,23 @@ const About = () => {
   const { content } = useContent("about");
   
   return <div className="min-h-screen bg-gradient-mesh">
-      <Header
-        pageTitle={content["about.header.pageTitle"] || "About Dr3amToReal"}
-        pageSubtitle={content["about.header.subtitle"] || "From dream to real object."}
-      />
+      <Helmet>
+        <title>About Dr3amToReal | Design-Led 3D Printing Studio in Portugal</title>
+        <meta name="description" content="Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care." />
+        <link rel="canonical" href="https://dr3amtoreal.com/about" />
+        <meta property="og:title" content="About Dr3amToReal | Design-Led 3D Printing Studio in Portugal" />
+        <meta property="og:description" content="Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care." />
+        <meta property="og:url" content="https://dr3amtoreal.com/about" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <Header />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Hero Section - Short Version */}
           <div className="text-center space-y-4">
-            <h2 className="text-4xl font-bold">
+            <h1 className="text-4xl font-bold">
               {(() => {
                 const title = content["about.hero.title"] || "From dream to real object";
                 const parts = title.split(/\s+/);
@@ -36,9 +43,12 @@ const About = () => {
                 }
                 return title;
               })()}
-            </h2>
+            </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {content["about.hero.subtitle"] || "Dr3amToReal was born from a long-standing passion for building things that matter — objects that solve a problem, carry meaning, or simply feel right in your hands."}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              <a href="/#manifesto" className="text-primary hover:underline">Learn more about our values and approach</a>
             </p>
           </div>
 

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,16 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
+      <Helmet>
+        <title>Custom 3D Printing & Original Designs | Dr3amToReal Portugal</title>
+        <meta name="description" content="Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object." />
+        <meta name="keywords" content="custom 3D printing Portugal, 3D printing studio Portugal, custom 3D prints, personalised 3D printing, bespoke 3D printing, original 3D designs, small batch 3D printing, 3D printed parts Portugal, design-led 3D printing" />
+        <link rel="canonical" href="https://dr3amtoreal.com/" />
+        <meta property="og:title" content="Custom 3D Printing & Original Designs | Dr3amToReal Portugal" />
+        <meta property="og:description" content="Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object." />
+        <meta property="og:url" content="https://dr3amtoreal.com/" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header />
 
       {/* 1️⃣ Hero Section */}
@@ -56,6 +67,11 @@ export default function Index() {
                 <Button size="lg" variant="outline" onClick={() => navigate("/contact")}>
                   {content["home.hero.cta_secondary"] || "Request custom work"}
                 </Button>
+              </div>
+              <div className="flex gap-4 flex-wrap text-sm">
+                <a href="/about" className="text-primary hover:underline">About Dr3amToReal</a>
+                <span className="text-muted-foreground">•</span>
+                <a href="/contact" className="text-primary hover:underline">Custom Work Services</a>
               </div>
               <p className="text-sm text-muted-foreground">
                 {content["home.hero.trust_line"] || "Small-batch. Made to order. Quality-driven."}
@@ -315,7 +331,7 @@ export default function Index() {
       </section>
 
       {/* 7️⃣ Manifesto */}
-      <section className="py-20 bg-gradient-to-br from-secondary/5 via-background to-primary/5">
+      <section id="manifesto" className="py-20 bg-gradient-to-br from-secondary/5 via-background to-primary/5">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold text-center mb-12">

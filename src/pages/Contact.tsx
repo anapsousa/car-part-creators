@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,10 +37,16 @@ const Contact = () => {
     setIsSubmitting(false);
   };
   return <div className="min-h-screen bg-gradient-mesh">
-      <Header
-        pageTitle={content["contact.header.pageTitle"] || "Contact Us"}
-        pageSubtitle={content["contact.header.subtitle"] || "Get in Touch"}
-      />
+      <Helmet>
+        <title>Custom 3D Design & Printing Services | Dr3amToReal</title>
+        <meta name="description" content="Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based." />
+        <link rel="canonical" href="https://dr3amtoreal.com/contact" />
+        <meta property="og:title" content="Custom 3D Design & Printing Services | Dr3amToReal" />
+        <meta property="og:description" content="Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based." />
+        <meta property="og:url" content="https://dr3amtoreal.com/contact" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <Header />
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
@@ -48,9 +55,9 @@ const Contact = () => {
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 mb-4">
               <MessageSquare className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="text-4xl font-bold">
+            <h1 className="text-4xl font-bold">
               {(() => {
-                const title = content["contact.hero.title"] || "Let's Connect";
+                const title = content["contact.hero.title"] || "Custom 3D Design & Printing Services";
                 const parts = title.split(/\s+/);
                 if (parts.length >= 2) {
                   return (
@@ -64,7 +71,7 @@ const Contact = () => {
                 }
                 return title;
               })()}
-            </h2>
+            </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {content["contact.hero.subtitle"] || "Have a question or need support? We're here to help you create amazing 3D models"}
             </p>
