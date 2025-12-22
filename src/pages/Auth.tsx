@@ -58,9 +58,21 @@ const Auth = () => {
       return;
     }
 
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
       return;
+    }
+
+    // Validate password complexity for signup
+    if (!isLogin) {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumberOrSymbol = /[0-9!@#$%^&*(),.?":{}|<>]/.test(password);
+
+      if (!(hasUpperCase && hasLowerCase && hasNumberOrSymbol)) {
+        toast.error("Password must include uppercase, lowercase, and numbers or symbols");
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -198,8 +210,24 @@ const Auth = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
-                  minLength={6}
+                  minLength={8}
                 />
+                {!isLogin && password.length > 0 && (
+                  <div className="text-xs text-muted-foreground mt-1 space-y-1">
+                    <p className={password.length >= 8 ? "text-green-600" : "text-red-500"}>
+                      {password.length >= 8 ? "✓" : "✗"} At least 8 characters
+                    </p>
+                    <p className={/[A-Z]/.test(password) ? "text-green-600" : "text-red-500"}>
+                      {/[A-Z]/.test(password) ? "✓" : "✗"} Uppercase letter
+                    </p>
+                    <p className={/[a-z]/.test(password) ? "text-green-600" : "text-red-500"}>
+                      {/[a-z]/.test(password) ? "✓" : "✗"} Lowercase letter
+                    </p>
+                    <p className={/[0-9!@#$%^&*(),.?":{}|<>]/.test(password) ? "text-green-600" : "text-red-500"}>
+                      {/[0-9!@#$%^&*(),.?":{}|<>]/.test(password) ? "✓" : "✗"} Number or symbol
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Role Selection - Only show during signup */}
