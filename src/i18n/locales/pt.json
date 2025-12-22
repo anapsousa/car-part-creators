@@ -325,7 +325,8 @@
       }
     },
     "form": {
-      "title": "Envie-nos uma mensagem",
+      "title": "Envie-nos uma Mensagem",
+      "description": "Preencha o formulário abaixo e entraremos em contacto o mais breve possível",
       "name": "Nome",
       "namePlaceholder": "O seu nome",
       "email": "Email",
@@ -334,7 +335,7 @@
       "subjectPlaceholder": "Como podemos ajudar?",
       "message": "Mensagem",
       "messagePlaceholder": "Conte-nos mais sobre o seu pedido...",
-      "submit": "Enviar mensagem",
+      "submit": "Enviar Mensagem",
       "sending": "A enviar...",
       "success": "Obrigado pela sua mensagem! Entraremos em contacto em breve."
     }
