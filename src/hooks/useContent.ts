@@ -37,9 +37,18 @@ export function useContent(page?: string) {
   const { i18n } = useTranslation();
   const currentLanguage = i18n.language;
 
+  // Use JSON files as primary source (simpler, no database/RLS issues)
+  // Set USE_DB_CONTENT=true in .env if you want to use database instead
+  const useDatabase = import.meta.env.VITE_USE_DB_CONTENT === 'true';
+
   const { data: translations = [], isLoading, error } = useQuery({
-    queryKey: ["content-translations", page, currentLanguage],
+    queryKey: ["content-translations", page, currentLanguage, useDatabase],
     queryFn: async () => {
+      // If not using database, return empty to trigger JSON fallback
+      if (!useDatabase) {
+        return [];
+      }
+
       try {
         let query = supabase
           .from("content_translations")
@@ -78,36 +87,37 @@ export function useContent(page?: string) {
     refetchOnWindowFocus: false,
     staleTime: 0, // Always consider data stale to refetch on language change
     retry: 1, // Retry once on failure
+    enabled: useDatabase, // Only run query if using database
   });
 
-  const isFallback = translations.length === 0;
+  const isFallback = !useDatabase || translations.length === 0;
 
   // Create a content object with keys mapped to translated text
   const content = useMemo(() => {
-    if (isFallback) {
-      const selectedJSON = currentLanguage === "pt" ? ptTranslations : enTranslations;
-      if (!hasLoggedFallbackWarning) {
-        console.warn(`⚠️ Using fallback translations from JSON files. Supabase content_translations table is empty.
-Run: SUPABASE_SERVICE_ROLE_KEY=... npm run migrate:db
-Language: ${currentLanguage}`);
-        hasLoggedFallbackWarning = true;
-      }
-      return flattenObject(selectedJSON);
+    // Always use JSON files (primary source)
+    const selectedJSON = currentLanguage === "pt" ? ptTranslations : enTranslations;
+    
+    // If using database and we have translations, merge them (database overrides JSON)
+    if (useDatabase && translations.length > 0) {
+      const jsonContent = flattenObject(selectedJSON);
+      const dbContent: Record<string, string> = {};
+
+      translations.forEach((translation) => {
+        const text =
+          currentLanguage === "pt" && translation.portuguese_text
+            ? translation.portuguese_text
+            : translation.english_text;
+
+        dbContent[translation.content_key] = text;
+      });
+
+      // Merge: database content overrides JSON
+      return { ...jsonContent, ...dbContent };
     }
 
-    const contentObj: Record<string, string> = {};
+    // Use JSON files directly
+    return flattenObject(selectedJSON);
+  }, [translations, currentLanguage, isFallback, useDatabase]);
 
-    translations.forEach((translation) => {
-      const text =
-        currentLanguage === "pt" && translation.portuguese_text
-          ? translation.portuguese_text
-          : translation.english_text;
-
-      contentObj[translation.content_key] = text;
-    });
-
-    return contentObj;
-  }, [translations, currentLanguage, isFallback]);
-
-  return { content, isLoading, translations, isFallback };
+  return { content, isLoading: useDatabase ? isLoading : false, translations, isFallback };
 }
