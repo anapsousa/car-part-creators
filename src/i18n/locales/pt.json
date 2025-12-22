@@ -15,222 +15,222 @@
   },
   "home": {
     "hero": {
-      "title": "Restaure o Seu Clássico. Melhore a Sua Casa",
-      "subtitle": "Objetos pensados e cuidadosamente impressos — desde peças funcionais até decoração personalizada para casa — feitos em Portugal.",
+      "title": "Restaurar o clássico. Dar carácter à casa.",
+      "subtitle": "Objetos pensados ao detalhe e impressos com cuidado — de peças funcionais a decoração personalizada — feitos em Portugal.",
       "cta_primary": "Explorar a coleção",
-      "cta_secondary": "Solicitar trabalho personalizado",
-      "trust_line": "Pequenas séries. Feito sob encomenda. Orientado para a qualidade.",
-      "link_about": "Sobre Dr3amToReal",
-      "link_custom_work": "Serviços de Trabalho Personalizado"
+      "cta_secondary": "Pedir trabalho personalizado",
+      "trust_line": "Pequenas séries. Produção por encomenda. Foco na qualidade.",
+      "link_about": "Sobre a Dr3amToReal",
+      "link_custom_work": "Trabalhos personalizados"
     },
     "seo": {
-      "title": "Impressão 3D Personalizada e Designs Originais | Dr3amToReal Portugal",
-      "description": "Estúdio de impressão 3D personalizada orientado para o design em Portugal. Designs originais, peças personalizadas e impressões em pequenas séries — do sonho ao objeto real.",
-      "keywords": "impressão 3D personalizada Portugal, estúdio de impressão 3D Portugal, impressões 3D personalizadas, impressão 3D personalizada, impressão 3D sob medida, designs 3D originais, impressão 3D em pequenas séries, peças impressas em 3D Portugal, impressão 3D orientada para o design",
-      "og_title": "Impressão 3D Personalizada e Designs Originais | Dr3amToReal Portugal",
-      "og_description": "Estúdio de impressão 3D personalizada orientado para o design em Portugal. Designs originais, peças personalizadas e impressões em pequenas séries — do sonho ao objeto real."
+      "title": "Impressão 3D Personalizada & Design Original | Dr3amToReal Portugal",
+      "description": "Estúdio de impressão 3D orientado ao design, em Portugal. Peças originais, objetos personalizados e produção em pequenas séries — do sonho ao objeto real.",
+      "keywords": "impressão 3D personalizada Portugal, estúdio de impressão 3D Portugal, peças impressas em 3D, impressão 3D por medida, design 3D original, impressão 3D em pequenas séries, peças impressas em 3D Portugal, impressão 3D orientada ao design",
+      "og_title": "Impressão 3D Personalizada & Design Original | Dr3amToReal Portugal",
+      "og_description": "Estúdio de impressão 3D orientado ao design, em Portugal. Peças originais, objetos personalizados e produção em pequenas séries — do sonho ao objeto real."
     },
     "whatIs": {
-      "title": "O que é Dr3amToReal?",
-      "paragraph1": "A Dr3amToReal é um estúdio de impressão 3D orientado para o design, sediado em Portugal, criando peças personalizadas, objetos originais e impressões personalizadas.",
+      "title": "O que é a Dr3amToReal?",
+      "paragraph1": "A Dr3amToReal é um estúdio de impressão 3D orientado ao design, sediado em Portugal, que cria peças personalizadas, objetos originais e impressões à medida.",
       "paragraph2": "Isto não é produção em massa.",
-      "paragraph3": "Cada peça é desenhada, testada e refinada antes de estar disponível.",
-      "paragraph4": "Alguns designs começam como soluções funcionais — outros como experiências criativas — mas todos são construídos com a mesma atenção ao detalhe."
+      "paragraph3": "Cada peça é pensada, testada e refinada antes de ser disponibilizada.",
+      "paragraph4": "Alguns projetos nascem para resolver problemas concretos — outros como experiências criativas — mas todos têm o mesmo cuidado pelo detalhe."
     },
     "whatYouCanFind": {
       "title": "O que crio",
       "column1": {
-        "title": "Peças Funcionais e de Substituição",
+        "title": "Peças funcionais & de substituição",
         "description": "Componentes personalizados ou difíceis de encontrar, especialmente para modelos antigos ou descontinuados."
       },
       "column2": {
-        "title": "Decoração para Casa e Objetos do Dia a Dia",
-        "description": "Designs originais criados para serem úteis e visualmente significativos."
+        "title": "Decoração & objetos do dia a dia",
+        "description": "Designs originais pensados para serem úteis e visualmente marcantes."
       },
       "column3": {
-        "title": "Impressões Personalizadas",
-        "description": "Objetos adaptados ao seu gosto, tamanho ou caso de uso — sem soluções genéricas."
+        "title": "Impressões personalizadas",
+        "description": "Objetos adaptados ao seu gosto, dimensão ou utilização — sem soluções genéricas."
       }
     },
     "whyExists": {
-      "title": "Por que existe a Dr3amToReal",
-      "paragraph1": "A Dr3amToReal começou com uma simples frustração: precisar de uma peça que já não existia.",
-      "paragraph2": "Essa frustração transformou-se em desenhar substituições, melhorá-las e, eventualmente, criar objetos completamente novos — primeiro para carros antigos, depois para o dia a dia.",
-      "paragraph3": "Apoiado por anos de experiência em engenharia de qualidade e testes, este estúdio aplica a mesma mentalidade a objetos físicos:",
-      "paragraph4": "testar, refinar, melhorar — depois partilhar."
+      "title": "Porque existe a Dr3amToReal",
+      "paragraph1": "A Dr3amToReal nasceu de uma frustração simples: precisar de uma peça que já não existia.",
+      "paragraph2": "Essa frustração levou à criação de substituições, à sua melhoria, e mais tarde ao desenvolvimento de objetos totalmente novos — primeiro para carros clássicos, depois para o dia a dia.",
+      "paragraph3": "Com base em anos de experiência em engenharia da qualidade e testes, este estúdio aplica a mesma abordagem ao mundo físico:",
+      "paragraph4": "testar, refinar, melhorar — e só depois partilhar."
     },
     "howDifferent": {
-      "title": "Não é uma Quinta de Impressão",
+      "title": "Não somos uma “print farm”",
       "positive": {
         "title": "O que fazemos:",
-        "point1": "Desenhado, não apenas impresso",
+        "point1": "Design pensado, não apenas impressão",
         "point2": "Pequenas séries e peças únicas",
         "point3": "Colaboração em vez de encomendas anónimas",
-        "point4": "Material e função considerados primeiro"
+        "point4": "Materiais e função em primeiro lugar"
       },
       "negative": {
         "title": "O que não fazemos:",
-        "point1": "Sem produção em massa",
-        "point2": "Sem trabalhos apressados",
-        "point3": "Sem promessas de \"imprimir qualquer coisa instantaneamente\""
+        "point1": "Produção em massa",
+        "point2": "Trabalhos apressados",
+        "point3": "Promessas de \"imprimir qualquer coisa instantaneamente\""
       }
     },
     "customWork": {
-      "title": "Tem uma Ideia que Ainda Não Existe?",
+      "title": "Tem uma ideia que ainda não existe?",
       "description": "Alguns projetos não pertencem a um catálogo.",
-      "paragraph": "Se tem uma ideia, um problema para resolver, ou um objeto que quer adaptado às suas necessidades, a Dr3amToReal oferece serviços selecionados de design personalizado e impressão 3D.",
-      "paragraph2": "O trabalho personalizado é colaborativo, intencional e cotado com base na complexidade — não apressado ou automatizado.",
-      "cta": "Solicitar trabalho personalizado",
-      "cta_note": "Por favor, inclua o máximo de detalhes possível para uma resposta significativa."
+      "paragraph": "Se tem uma ideia, um problema para resolver ou um objeto que gostaria de adaptar às suas necessidades, a Dr3amToReal oferece serviços selecionados de design e impressão 3D personalizada.",
+      "paragraph2": "O trabalho personalizado é colaborativo, intencional e orçamentado com base na complexidade — não automatizado nem apressado.",
+      "cta": "Pedir trabalho personalizado",
+      "cta_note": "Quanto mais detalhe partilhar, mais significativa será a resposta."
     },
     "manifesto": {
-      "title": "Em que Acredita Este Estúdio",
+      "title": "No que este estúdio acredita",
       "point1": "Os objetos devem existir por uma razão",
-      "point2": "A qualidade vem da iteração, não da velocidade",
-      "point3": "Personalizado significa ouvir primeiro",
+      "point2": "A qualidade nasce da iteração, não da pressa",
+      "point3": "Personalizar começa por ouvir",
       "point4": "Pequenas séries superam a produção em massa",
-      "point5": "Coisas bem feitas são feitas para durar"
+      "point5": "Objetos bem feitos são feitos para durar"
     },
     "founderNote": {
-      "title": "Da Fundadora",
+      "title": "Nota da fundadora",
       "paragraph1": "A Dr3amToReal começou como um sonho pessoal.",
-      "paragraph2": "Após anos a trabalhar em engenharia de qualidade — testando sistemas antes de chegarem às pessoas — encontrei-me a aplicar a mesma disciplina à criação física.",
-      "paragraph3": "Desenhando, testando, refinando e melhorando objetos até sentirem bem.",
-      "paragraph4": "Este estúdio é a minha forma de combinar precisão de engenharia com criatividade — e partilhar esse processo com outros que se importam com a forma como as coisas são feitas.",
-      "paragraph5": "Obrigada por estarem aqui desde o início.",
+      "paragraph2": "Depois de anos a trabalhar em engenharia da qualidade — a testar sistemas antes de chegarem às pessoas — comecei naturalmente a aplicar a mesma disciplina à criação de objetos físicos.",
+      "paragraph3": "Desenhar, testar, ajustar e melhorar até tudo fazer sentido.",
+      "paragraph4": "Este estúdio é a minha forma de unir precisão técnica e criatividade — e de partilhar esse processo com quem valoriza como as coisas são feitas.",
+      "paragraph5": "Obrigada por fazer parte deste início.",
       "signature": "— Ana",
       "signature_title": "Fundadora, Dr3amToReal"
     },
     "locationShipping": {
-      "title": "Sediada em Portugal, Envios para Todo o Mundo",
-      "paragraph1": "A Dr3amToReal está orgulhosamente sediada em Portugal.",
+      "title": "Sediada em Portugal, com envios internacionais",
+      "paragraph1": "A Dr3amToReal tem base em Portugal.",
       "paragraph2": "As encomendas são produzidas localmente e enviadas com cuidado.",
-      "paragraph3": "A disponibilidade e opções de envio dependem do produto e destino e são confirmadas durante o checkout."
+      "paragraph3": "A disponibilidade e as opções de envio dependem do produto e do destino, e são confirmadas no momento da compra."
     },
     "finalCta": {
-      "title": "Cada Objeto Começa como uma Ideia",
-      "description": "Quer esteja à procura de um design acabado ou queira dar vida a algo novo, a Dr3amToReal existe para transformar ideias em objetos reais e bem feitos.",
+      "title": "Todos os objetos começam com uma ideia",
+      "description": "Quer esteja à procura de um design já existente ou queira dar vida a algo novo, a Dr3amToReal existe para transformar ideias em objetos reais e bem feitos.",
       "button_primary": "Explorar a coleção",
-      "button_secondary": "Solicitar trabalho personalizado"
+      "button_secondary": "Pedir trabalho personalizado"
     }
   },
   "shop": {
-    "title": "Explorar os Nossos Produtos",
-    "subtitle": "Descubra a nossa coleção de peças impressas em 3D e decorações personalizadas",
+    "title": "Explorar produtos",
+    "subtitle": "Descubra a nossa coleção de peças impressas em 3D e objetos de decoração",
     "search": "Pesquisar produtos...",
     "categories": {
-      "all": "Todos os Produtos",
-      "car_parts": "Peças de Automóvel",
-      "decorations": "Decorações"
+      "all": "Todos os produtos",
+      "car_parts": "Peças automóvel",
+      "decorations": "Decoração"
     },
-    "noProducts": "Não foram encontrados produtos que correspondam aos seus critérios.",
+    "noProducts": "Não foram encontrados produtos com esses critérios.",
     "loading": "A carregar produtos...",
-    "addToCart": "Adicionar ao Carrinho",
-    "inStock": "Em Stock",
+    "addToCart": "Adicionar ao carrinho",
+    "inStock": "Em stock",
     "outOfStock": "Esgotado"
   },
   "product": {
-    "details": "Detalhes do Produto",
+    "details": "Detalhes do produto",
     "price": "Preço",
     "stock": "Stock",
-    "inStock": "Em Stock",
+    "inStock": "Em stock",
     "outOfStock": "Esgotado",
-    "addToCart": "Adicionar ao Carrinho",
+    "addToCart": "Adicionar ao carrinho",
     "quantity": "Quantidade",
     "description": "Descrição",
     "specifications": "Especificações",
     "material": "Material",
     "dimensions": "Dimensões",
     "category": "Categoria",
-    "backToShop": "Voltar à Loja",
+    "backToShop": "Voltar à loja",
     "view3D": "Vista 3D",
     "images": "Imagens",
     "custom_work": {
-      "question": "Precisa de adaptação?",
-      "cta": "Solicitar trabalho personalizado"
+      "question": "Precisa de adaptar?",
+      "cta": "Pedir trabalho personalizado"
     },
     "viewer": {
-      "instructions": "Clique e arraste para rodar • Role para ampliar • Clique com botão direito e arraste para deslocar"
+      "instructions": "Clique e arraste para rodar • Role para ampliar • Clique com o botão direito e arraste para deslocar"
     },
     "seo": {
       "car_parts": {
-        "title": "Peça de Substituição Impressa em 3D Personalizada | Dr3amToReal",
-        "description": "Peça de substituição impressa em 3D personalizada de alta qualidade, desenhada e testada para ajuste e função. Feito sob encomenda pela Dr3amToReal em Portugal."
+        "title": "Peça de substituição impressa em 3D por medida | Dr3amToReal",
+        "description": "Peça de substituição impressa em 3D por medida, desenhada e testada para encaixe e função. Produção por encomenda em Portugal, pela Dr3amToReal."
       },
       "home_decor": {
-        "title": "Decoração para Casa Impressa em 3D | Designs Personalizados e Originais – Dr3amToReal",
-        "description": "Decoração para casa impressa em 3D original desenhada com intenção. Peças personalizáveis em pequenas séries feitas em Portugal pela Dr3amToReal."
+        "title": "Decoração para casa impressa em 3D | Design original – Dr3amToReal",
+        "description": "Decoração para casa impressa em 3D com design original. Peças personalizáveis, em pequenas séries, feitas em Portugal pela Dr3amToReal."
       },
       "personalised": {
-        "title": "Objeto Impresso em 3D Personalizado | Feito Sob Encomenda – Dr3amToReal",
-        "description": "Objeto impresso em 3D personalizado adaptado às suas necessidades. Desenhado e impresso com cuidado pela Dr3amToReal, um estúdio sediado em Portugal."
+        "title": "Objeto impresso em 3D personalizado | Por encomenda – Dr3amToReal",
+        "description": "Objeto impresso em 3D personalizado e adaptado às suas necessidades. Desenhado e impresso com cuidado pela Dr3amToReal, em Portugal."
       }
     }
   },
   "cart": {
-    "title": "Carrinho de Compras",
+    "title": "Carrinho de compras",
     "empty": "O seu carrinho está vazio",
-    "browse": "Explorar Produtos",
+    "browse": "Explorar produtos",
     "item": "Artigo",
     "price": "Preço",
     "quantity": "Quantidade",
     "total": "Total",
     "remove": "Remover",
-    "summary": "Resumo do Pedido",
+    "summary": "Resumo da encomenda",
     "subtotal": "Subtotal",
-    "checkout": "Proceder ao Pagamento",
+    "checkout": "Finalizar compra",
     "anonymous_banner": {
-      "message": "Pode finalizar a compra sem criar conta, ou",
-      "login_link": "fazer login",
-      "suffix": "para guardar o histórico de pedidos"
+      "message": "Pode concluir a compra sem criar conta, ou",
+      "login_link": "entrar",
+      "suffix": "para guardar o histórico de encomendas"
     },
     "migration": {
-      "loading": "A sincronizar carrinho...",
+      "loading": "A sincronizar o carrinho...",
       "loading_description": "A transferir os seus itens para a sua conta",
-      "success_title": "Carrinho Sincronizado",
+      "success_title": "Carrinho sincronizado",
       "success_description": "Os seus itens foram transferidos para a sua conta"
     },
     "add": {
       "anonymous": {
         "title": "Adicionado ao carrinho",
-        "description": "Pode finalizar a compra sem registo. Crie uma conta mais tarde para guardar o histórico de pedidos!"
+        "description": "Pode finalizar a compra sem registo. Mais tarde, pode criar conta para guardar o histórico de encomendas!"
       }
     }
   },
   "wishlist": {
-    "title": "Os Meus Favoritos",
+    "title": "Os meus favoritos",
     "products": "Produtos",
     "designs": "Designs",
     "empty": "A sua lista de favoritos está vazia",
-    "browse": "Explorar Loja",
-    "viewDesigns": "Ver Designs",
-    "addToCart": "Adicionar ao Carrinho",
+    "browse": "Explorar loja",
+    "viewDesigns": "Ver designs",
+    "addToCart": "Adicionar ao carrinho",
     "remove": "Remover",
-    "inStock": "Em Stock",
+    "inStock": "Em stock",
     "outOfStock": "Esgotado",
     "download": "Descarregar",
-    "viewDetails": "Ver Detalhes"
+    "viewDetails": "Ver detalhes"
   },
   "generator": {
-    "title": "Gerador de Modelos 3D",
-    "subtitle": "Criação de Designs com IA",
+    "title": "Gerador de modelos 3D",
+    "subtitle": "Criação de designs com IA",
     "create": {
-      "title": "Crie o Seu Modelo 3D",
-      "subtitle": "Descreva a sua visão e deixe a nossa IA dar-lhe vida",
+      "title": "Crie o seu modelo 3D",
+      "subtitle": "Descreva a sua ideia e deixe a nossa IA dar-lhe forma",
       "prompt": "Descreva o seu modelo",
-      "promptPlaceholder": "ex: Uma pega de porta personalizada para um BMW Série 3 de 2020",
+      "promptPlaceholder": "ex.: Uma pega de porta por medida para um BMW Série 3 de 2020",
       "category": "Categoria",
-      "carParts": "Peças de Automóvel",
-      "decorations": "Decorações para Casa",
-      "carModel": "Modelo do Automóvel",
-      "carYear": "Ano do Automóvel",
-      "partName": "Nome da Peça",
-      "decorationType": "Tipo de Decoração",
-      "generate": "Gerar Modelo",
+      "carParts": "Peças automóvel",
+      "decorations": "Decoração",
+      "carModel": "Modelo do automóvel",
+      "carYear": "Ano do automóvel",
+      "partName": "Nome da peça",
+      "decorationType": "Tipo de decoração",
+      "generate": "Gerar modelo",
       "generating": "A gerar..."
     },
     "history": {
-      "title": "Os Seus Designs",
+      "title": "Os seus designs",
       "empty": "Ainda não tem designs. Crie o seu primeiro modelo 3D!",
       "status": {
         "pending": "A gerar...",
@@ -238,54 +238,54 @@
         "failed": "Falhou"
       },
       "download": "Descarregar",
-      "viewDetails": "Ver Detalhes"
+      "viewDetails": "Ver detalhes"
     }
   },
   "about": {
     "header": {
-      "pageTitle": "Sobre Dr3amToReal",
+      "pageTitle": "Sobre a Dr3amToReal",
       "subtitle": "Do sonho ao objeto real."
     },
     "hero": {
       "title": "Do sonho ao objeto real",
-      "subtitle": "A Dr3amToReal nasceu de uma paixão de longa data por construir coisas que importam — objetos que resolvem um problema, carregam significado, ou simplesmente se sentem bem nas suas mãos.",
-      "link_manifesto": "Saiba mais sobre os nossos valores e abordagem"
+      "subtitle": "A Dr3amToReal nasceu de uma paixão de longa data por criar coisas que importam — objetos que resolvem um problema, carregam significado ou simplesmente se sentem bem nas mãos.",
+      "link_manifesto": "Saiba mais sobre os nossos valores e a nossa abordagem"
     },
     "seo": {
-      "title": "Sobre Dr3amToReal | Estúdio de Impressão 3D Orientado para o Design em Portugal",
-      "description": "A Dr3amToReal é um estúdio de impressão 3D orientado para o design sediado em Portugal, criando peças personalizadas, designs originais e objetos personalizados com cuidado.",
-      "og_title": "Sobre Dr3amToReal | Estúdio de Impressão 3D Orientado para o Design em Portugal",
-      "og_description": "A Dr3amToReal é um estúdio de impressão 3D orientado para o design sediado em Portugal, criando peças personalizadas, designs originais e objetos personalizados com cuidado."
+      "title": "Sobre a Dr3amToReal | Estúdio de Impressão 3D Orientado ao Design em Portugal",
+      "description": "A Dr3amToReal é um estúdio de impressão 3D orientado ao design, sediado em Portugal, que cria peças personalizadas, designs originais e objetos com cuidado.",
+      "og_title": "Sobre a Dr3amToReal | Estúdio de Impressão 3D Orientado ao Design em Portugal",
+      "og_description": "A Dr3amToReal é um estúdio de impressão 3D orientado ao design, sediado em Portugal, que cria peças personalizadas, designs originais e objetos com cuidado."
     },
     "intro": {
-      "title": "Sobre Dr3amToReal",
-      "paragraph1": "A Dr3amToReal é um estúdio criativo de impressão 3D sediado em Portugal, focado em peças personalizadas, designs originais e objetos personalizados — desde componentes funcionais até peças decorativas.",
-      "paragraph2": "Esta marca começou como um sonho: o desejo de desenhar o objeto certo, imprimi-lo corretamente, testá-lo minuciosamente e torná-lo disponível para outros que se importam com qualidade e detalhe tanto quanto eu.",
-      "paragraph3": "Por trás da Dr3amToReal está a PompousWeek Unipessoal Lda, uma empresa originalmente fundada em torno de Garantia de Qualidade, serviços de engenharia e formação. A qualidade sempre foi a base — e naturalmente passou para a criação física.",
-      "paragraph4": "O que começou com um amor por carros antigos e peças de substituição difíceis de encontrar rapidamente cresceu para algo mais amplo: um espaço para desenhar e produzir objetos que são funcionais, bonitos e pessoais."
+      "title": "Sobre a Dr3amToReal",
+      "paragraph1": "A Dr3amToReal é um estúdio criativo de impressão 3D, sediado em Portugal, focado em peças por medida, designs originais e objetos personalizados — desde componentes funcionais a peças decorativas.",
+      "paragraph2": "Esta marca começou como um sonho: a vontade de desenhar o objeto certo, imprimi-lo bem, testá-lo a sério e torná-lo disponível para quem valoriza qualidade e detalhe tanto quanto eu.",
+      "paragraph3": "Por trás da Dr3amToReal está a PompousWeek Unipessoal Lda, uma empresa inicialmente criada em torno de Qualidade (QA), serviços de engenharia e formação. A qualidade sempre foi a base — e passou naturalmente para a criação física.",
+      "paragraph4": "O que começou com um amor por carros clássicos e por peças difíceis de encontrar cresceu rapidamente para algo mais amplo: um espaço para desenhar e produzir objetos funcionais, bonitos e pessoais."
     },
     "whatICreate": {
       "title": "O que crio",
       "description": "A Dr3amToReal foca-se em:",
-      "item1": "Peças personalizadas e de substituição, especialmente para modelos antigos ou descontinuados",
-      "item2": "Decoração para casa e objetos funcionais, desenhados internamente",
-      "item3": "Impressões personalizadas, adaptadas ao seu gosto, dimensões ou caso de uso",
+      "item1": "Peças por medida e de substituição, especialmente para modelos antigos ou descontinuados",
+      "item2": "Decoração e objetos funcionais, desenhados internamente",
+      "item3": "Impressões personalizadas, adaptadas ao seu gosto, dimensões ou utilização",
       "item4": "Pequenas séries e peças únicas — não produção em massa",
-      "note": "Cada design passa por iteração, testes e refinamento antes de ser oferecido para venda."
+      "note": "Cada design passa por iteração, testes e refinamento antes de ser colocado à venda."
     },
     "howDifferent": {
-      "title": "Como isto é diferente",
-      "description": "A Dr3amToReal não é uma quinta de impressão.",
-      "subtitle": "É um estúdio orientado para o design e qualidade, onde:",
-      "point1": "os materiais são escolhidos intencionalmente",
+      "title": "O que nos diferencia",
+      "description": "A Dr3amToReal não é uma “print farm”.",
+      "subtitle": "É um estúdio orientado ao design e à qualidade, onde:",
+      "point1": "os materiais são escolhidos com intenção",
       "point2": "as impressões são testadas, ajustadas e melhoradas",
       "point3": "e os clientes podem colaborar em vez de apenas \"encomendar um ficheiro\"",
-      "note": "Algumas peças estão disponíveis como impressões acabadas. Outras são criadas em conjunto consigo."
+      "note": "Algumas peças estão disponíveis como prints finais. Outras são criadas em conjunto consigo."
     },
     "whereGoing": {
       "title": "Para onde isto vai",
-      "description": "Isto é apenas o começo.",
-      "paragraph": "A Dr3amToReal está a crescer passo a passo — expandindo o seu catálogo de designs, refinando a produção e explorando novos materiais e técnicas — sempre com o mesmo objetivo:",
+      "description": "Isto é só o início.",
+      "paragraph": "A Dr3amToReal está a crescer passo a passo — a expandir o catálogo, a refinar a produção e a explorar novos materiais e técnicas — sempre com o mesmo objetivo:",
       "goal": "Transformar ideias, memórias e necessidades em objetos bem feitos que duram."
     },
     "signature": {
@@ -293,7 +293,7 @@
       "line2": "Do sonho ao real."
     },
     "cta": {
-      "title": "Junte-se à Nossa Comunidade",
+      "title": "Junte-se à nossa comunidade",
       "description": "Comece a criar modelos 3D incríveis hoje",
       "button_get_started": "Começar",
       "button_contact": "Contacte-nos"
@@ -301,29 +301,29 @@
   },
   "contact": {
     "title": "Contacte-nos",
-    "subtitle": "Entre em contacto com a nossa equipa",
+    "subtitle": "Entre em contacto",
     "seo": {
       "title": "Serviços de Design e Impressão 3D Personalizados | Dr3amToReal",
-      "description": "Design e impressão 3D sob medida para peças funcionais, objetos personalizados e projetos únicos. Pequenas séries, orientado para a qualidade, sediado em Portugal.",
+      "description": "Design e impressão 3D por medida para peças funcionais, objetos personalizados e projetos únicos. Pequenas séries, foco na qualidade, em Portugal.",
       "og_title": "Serviços de Design e Impressão 3D Personalizados | Dr3amToReal",
-      "og_description": "Design e impressão 3D sob medida para peças funcionais, objetos personalizados e projetos únicos. Pequenas séries, orientado para a qualidade, sediado em Portugal."
+      "og_description": "Design e impressão 3D por medida para peças funcionais, objetos personalizados e projetos únicos. Pequenas séries, foco na qualidade, em Portugal."
     },
     "info": {
       "email": {
-        "title": "Envie-nos um Email",
+        "title": "Email",
         "description": "Envie-nos uma mensagem a qualquer momento"
       },
       "chat": {
-        "title": "Chat ao Vivo",
-        "description": "Disponível segunda a sexta-feira, 9h-18h GMT"
+        "title": "Chat em direto",
+        "description": "Disponível de segunda a sexta, 9h–18h (GMT)"
       },
       "response": {
-        "title": "Tempo de Resposta",
+        "title": "Tempo de resposta",
         "description": "Normalmente respondemos em 24 horas"
       }
     },
     "form": {
-      "title": "Envie-nos uma Mensagem",
+      "title": "Envie-nos uma mensagem",
       "name": "Nome",
       "namePlaceholder": "O seu nome",
       "email": "Email",
@@ -332,7 +332,7 @@
       "subjectPlaceholder": "Como podemos ajudar?",
       "message": "Mensagem",
       "messagePlaceholder": "Conte-nos mais sobre o seu pedido...",
-      "submit": "Enviar Mensagem",
+      "submit": "Enviar mensagem",
       "sending": "A enviar...",
       "success": "Obrigado pela sua mensagem! Entraremos em contacto em breve."
     }
@@ -344,66 +344,68 @@
     },
     "hero": {
       "title": "FAQ – Dr3amToReal",
-      "subtitle": "Encontre respostas para questões comuns sobre a Dr3amToReal"
+      "subtitle": "Respostas às dúvidas mais comuns sobre a Dr3amToReal"
     },
     "section": {
-      "title": "Perguntas Frequentes",
+      "title": "Perguntas frequentes",
       "description": "Tudo o que precisa de saber sobre a Dr3amToReal"
     },
     "questions": {
       "q1": {
-        "question": "A Dr3amToReal é um negócio novo?",
-        "answer": "Sim. A Dr3amToReal é uma marca jovem, atualmente a crescer sob a PompousWeek Unipessoal Lda, uma empresa portuguesa.\n\nEmbora o estúdio de impressão 3D seja novo, constrói sobre anos de experiência em engenharia, testes e trabalho focado na qualidade."
+        "question": "A Dr3amToReal é uma marca nova?",
+        "answer": "Sim. A Dr3amToReal é uma marca jovem, atualmente a crescer sob a PompousWeek Unipessoal Lda, uma empresa portuguesa.\n\nEmbora o estúdio de impressão 3D seja recente, assenta em anos de experiência em engenharia, testes e trabalho orientado à qualidade."
       },
       "q2": {
-        "question": "Apenas vendem o que está na loja?",
-        "answer": "Nem sempre.\n\nAlguns designs estão disponíveis como impressões prontas para encomendar, mas pedidos personalizados e personalização são uma grande parte do que faço.\n\nSe tiver:\n• uma peça difícil de encontrar\n• uma ideia que quer dar vida\n• ou um objeto que gostaria de adaptar\n\nPode contactar-me para discutir a viabilidade."
+        "question": "Só vendem o que está na loja?",
+        "answer": "Nem sempre.\n\nAlguns designs estão disponíveis como prints prontos a encomendar, mas pedidos personalizados e adaptações fazem parte do que faço.\n\nSe tiver:\n• uma peça difícil de encontrar\n• uma ideia que quer concretizar\n• ou um objeto que gostaria de adaptar\n\nPode contactar-me para avaliarmos a viabilidade."
       },
       "q3": {
-        "question": "Pode desenhar uma peça personalizada para mim?",
-        "answer": "Sim — dependendo da complexidade, propósito e prazo.\n\nO trabalho de design personalizado pode incluir:\n• medições ou fotos de referência\n• iteração e testes\n• orientação na seleção de materiais\n\nNem todos os pedidos serão adequados, mas estou sempre feliz em explorar possibilidades."
+        "question": "Pode desenhar uma peça por medida para mim?",
+        "answer": "Sim — dependendo da complexidade, do objetivo e do prazo.\n\nO trabalho de design por medida pode incluir:\n• medições ou fotos de referência\n• iteração e testes\n• orientação na escolha de materiais\n\nNem todos os pedidos serão adequados, mas terei todo o gosto em explorar possibilidades."
       },
       "q4": {
-        "question": "Vendem ficheiros digitais (STL)?",
-        "answer": "Neste momento, a Dr3amToReal foca-se principalmente em objetos impressos.\n\nFicheiros digitais podem ser oferecidos no futuro para designs selecionados, mas a prioridade agora é entregar resultados físicos testados."
+        "question": "Vendemos ficheiros digitais (STL)?",
+        "answer": "Neste momento, a Dr3amToReal foca-se principalmente em objetos impressos.\n\nNo futuro, poderá haver ficheiros digitais para alguns designs, mas a prioridade agora é entregar resultados físicos testados."
       },
       "q5": {
-        "question": "Que materiais usam?",
-        "answer": "A escolha do material depende do propósito do objeto.\n\nIsto pode incluir:\n• plásticos funcionais duráveis\n• materiais adequados para uso decorativo ou interior\n• acabamentos escolhidos por resistência, sensação ou estética\n\nSe estiver a encomendar uma peça personalizada, as opções de material serão discutidas consigo."
+        "question": "Que materiais utilizam?",
+        "answer": "A escolha do material depende do objetivo da peça.\n\nIsto pode incluir:\n• plásticos funcionais e duráveis\n• materiais adequados para decoração ou uso interior\n• acabamentos escolhidos por resistência, toque ou estética\n\nSe estiver a encomendar uma peça por medida, as opções serão discutidas consigo."
       },
       "q6": {
-        "question": "Estes são itens produzidos em massa?",
-        "answer": "Não.\n\nA maioria das peças são:\n• feitas sob encomenda\n• produzidas em pequenas séries\n• ou criadas como peças únicas\n\nIsto permite um melhor controlo de qualidade e personalização."
+        "question": "São itens produzidos em massa?",
+        "answer": "Não.\n\nA maioria das peças é:\n• feita por encomenda\n• produzida em pequenas séries\n• ou criada como peça única\n\nIsto permite melhor controlo de qualidade e mais personalização."
       },
       "q7": {
         "question": "Onde estão sediados? Fazem envios internacionais?",
-        "answer": "A Dr3amToReal está sediada em Portugal.\n\nO envio internacional pode estar disponível dependendo do produto e destino.\n\nOs detalhes são confirmados no momento do pedido."
+        "answer": "A Dr3amToReal está sediada em Portugal.\n\nPodem existir envios internacionais, dependendo do produto e do destino.\n\nOs detalhes são confirmados no momento da compra."
       },
       "q8": {
         "question": "Tenho uma ideia mas não sei se é possível. O que devo fazer?",
-        "answer": "Isso é perfeitamente normal — muitos projetos começam assim.\n\nPode entrar em contacto com:\n• uma descrição da ideia\n• fotos, esboços ou referências (se disponíveis)\n• o que quer que o objeto faça\n\nNós tratamos do resto."
+        "answer": "É normal — muitos projetos começam assim.\n\nPode entrar em contacto com:\n• uma descrição da ideia\n• fotos, esboços ou referências (se existirem)\n• o que precisa que o objeto faça\n\nE a partir daí, vemos o melhor caminho."
       }
     },
     "cta": {
-      "title": "Ainda tem questões?",
-      "description": "A nossa equipa de apoio está aqui para ajudar",
-      "button": "Contactar Apoio"
+      "title": "Ainda tem dúvidas?",
+      "description": "Estou aqui para ajudar",
+      "button": "Contactar"
     }
   },
   "auth": {
-    "title": "Gerador de Modelos 3D",
+    "title": "Gerador de modelos 3D",
     "subtitle": "Entre na sua conta",
-    "email": "Email",
+    "email": {
+      "prefilled": "Email pré-preenchido a partir da sua encomenda"
+    },
     "password": "Palavra-passe",
     "login": "Entrar",
-    "signup": "Criar Conta",
+    "signup": "Criar conta",
     "loggingIn": "A entrar...",
     "signingUp": "A criar conta...",
-    "switchToSignup": "Não tem conta? Registe-se",
+    "switchToSignup": "Não tem conta? Crie uma",
     "switchToLogin": "Já tem conta? Entre",
     "success": {
       "login": "Bem-vindo de volta!",
-      "signup": "Conta criada com sucesso! Bem-vindo!"
+      "signup": "Conta criada com sucesso. Bem-vindo!"
     },
     "social": {
       "title": "Ou continue com",
@@ -412,58 +414,55 @@
       "twitter": "Twitter/X",
       "github": "GitHub",
       "discord": "Discord",
-      "error": "Falha ao entrar com {provider}. Por favor, tente novamente."
-    },
-    "email": {
-      "prefilled": "Email pré-preenchido do seu pedido"
+      "error": "Falha ao entrar com {provider}. Tente novamente."
     }
   },
   "checkout": {
-    "title": "Finalizar Compra",
-    "summary": "Resumo do Pedido",
+    "title": "Finalizar compra",
+    "summary": "Resumo da encomenda",
     "total": "Total",
-    "paymentMethod": "Método de Pagamento",
-    "paymentDescription": "Aceitamos todos os principais cartões de crédito e métodos de pagamento através do Stripe",
+    "paymentMethod": "Método de pagamento",
+    "paymentDescription": "Aceitamos os principais cartões e métodos de pagamento através do Stripe",
     "payWithStripe": "Pagar com Stripe",
     "processing": "A processar...",
     "guest": {
-      "title": "Informações de Checkout como Convidado",
-      "description": "Complete a sua compra sem criar uma conta",
-      "email": "Endereço de Email",
-      "name": "Nome Completo",
-      "phone": "Número de Telefone",
-      "phone_hint": "Inclua o código do país (ex: +351 912 345 678)",
+      "title": "Checkout como convidado",
+      "description": "Conclua a compra sem criar conta",
+      "email": "Endereço de email",
+      "name": "Nome completo",
+      "phone": "Número de telefone",
+      "phone_hint": "Inclua o indicativo do país (ex.: +351 912 345 678)",
       "address": "Morada",
       "city": "Cidade",
-      "postal_code": "Código Postal",
+      "postal_code": "Código postal",
       "country": "País",
-      "gdpr_consent": "Concordo com o processamento dos meus dados pessoais de acordo com a",
+      "gdpr_consent": "Concordo com o tratamento dos meus dados pessoais de acordo com a",
       "privacy_policy": "Política de Privacidade",
-      "have_account": "Já tem uma conta?",
+      "have_account": "Já tem conta?",
       "login": "Entrar"
     },
     "validation": {
       "required": "Este campo é obrigatório",
-      "invalid_email": "Por favor, insira um endereço de email válido",
-      "gdpr_required": "Deve concordar com a política de privacidade para continuar",
-      "form_errors": "Por favor, corrija os erros no formulário"
+      "invalid_email": "Introduza um endereço de email válido",
+      "gdpr_required": "É necessário aceitar a política de privacidade para continuar",
+      "form_errors": "Corrija os erros no formulário"
     },
     "product": {
-      "title": "Checkout de Produtos",
+      "title": "Checkout de produtos",
       "cart_empty": "O seu carrinho está vazio",
-      "items_summary": "Itens do Pedido"
+      "items_summary": "Itens da encomenda"
     },
     "success": {
       "guest_prompt": {
-        "title": "Criar uma Conta?",
-        "description": "Guarde o histórico de pedidos e desfrute de checkouts mais rápidos no futuro",
-        "button": "Criar Conta"
+        "title": "Criar conta?",
+        "description": "Guarde o histórico de encomendas e faça compras mais rápido no futuro",
+        "button": "Criar conta"
       },
       "order_details": {
-        "title": "Detalhes do Pedido",
+        "title": "Detalhes da encomenda",
         "items": "Itens",
         "total": "Total",
-        "shipping": "Morada de Envio"
+        "shipping": "Morada de envio"
       }
     }
   },
@@ -483,8 +482,8 @@
   },
   "footer": {
     "brand": {
-      "description": "Geração de modelos 3D para peças de automóvel personalizadas e decorações para casa.",
-      "address": "Travessa Cabo Luis N9, 3800-294 Aveiro, Portugal",
+      "description": "Criação de modelos 3D e impressão por medida — peças automóvel e objetos de decoração.",
+      "address": "Travessa Cabo Luís N9, 3800-294 Aveiro, Portugal",
       "email": "info@pompousweek.com",
       "phone": "+351 934 924 235"
     },
@@ -492,27 +491,27 @@
     "services": "Serviços",
     "company": "Empresa",
     "help": {
-      "title": "Ajuda & Suporte",
-      "my_order": "O Meu Pedido",
-      "delivery": "Entrega e Envio",
-      "returns": "Devoluções e Reembolsos",
-      "terms": "Termos e Condições"
+      "title": "Ajuda & suporte",
+      "my_order": "A minha encomenda",
+      "delivery": "Entrega e envios",
+      "returns": "Devoluções e reembolsos",
+      "terms": "Termos e condições"
     },
     "info": {
-      "title": "Informação Útil",
+      "title": "Informação útil",
       "complaints": "Livro de Reclamações",
       "blog": "Blog"
     },
     "newsletter": {
-      "title": "Receber ofertas e descontos por e-mail:",
-      "description": "Subscreva a nossa newsletter para receber as últimas notícias e ofertas.",
+      "title": "Receber ofertas e descontos por email:",
+      "description": "Subscreva a newsletter para receber novidades e ofertas.",
       "email_label": "Email",
       "placeholder": "o.seu.email@exemplo.com",
-      "consent": "Ao confirmar o seu registo, concorda que os seus dados serão processados por nós, de acordo com a Política de Proteção de Dados.",
+      "consent": "Ao subscrever, concorda que os seus dados serão tratados por nós, de acordo com a Política de Proteção de Dados.",
       "button": "Subscrever",
       "success": "Obrigado por subscrever!",
-      "error": "Erro ao subscrever. Por favor, tente novamente.",
-      "already_subscribed": "Já está subscrito!"
+      "error": "Erro ao subscrever. Tente novamente.",
+      "already_subscribed": "Já se encontra subscrito!"
     },
     "social": {
       "title": "Siga-nos!",
@@ -523,16 +522,16 @@
       "linktree_url": "https://linktr.ee/dr3amtoreal",
       "linktree_label": "Todos os nossos links no Linktree",
       "linktree_text": "Todos os links",
-      "linktree_qr_caption": "Digitalize o QR para abrir o nosso Linktree",
-      "linktree_qr_alt": "Código QR que liga ao nosso Linktree"
+      "linktree_qr_caption": "Aponte a câmara ao QR para abrir o Linktree",
+      "linktree_qr_alt": "Código QR com ligação ao nosso Linktree"
     },
     "copyright": "© 2025 Pompousweek Unipessoal Lda. Todos os direitos reservados.",
     "payment": {
-      "title": "Métodos de Pagamento",
+      "title": "Métodos de pagamento",
       "visa_label": "Visa",
       "mastercard_label": "Mastercard",
       "paypal_label": "PayPal",
-      "mbway_label": "MBWay",
+      "mbway_label": "MB Way",
       "googlepay_label": "Google Pay",
       "applepay_label": "Apple Pay",
       "mb_label": "Multibanco"
@@ -542,15 +541,15 @@
     "settings": {
       "vat": {
         "title": "Definições de IVA",
-        "showVatInCalculator": "Mostrar IVA na Calculadora",
-        "showVatDescription": "Exibir detalhes do IVA nos cálculos de custos de impressão",
+        "showVatInCalculator": "Mostrar IVA na calculadora",
+        "showVatDescription": "Mostrar o detalhe do IVA nos cálculos de custo de impressão",
         "vatRate": "Taxa de IVA (%)",
-        "vatRateDescription": "A percentagem de IVA a aplicar aos preços"
+        "vatRateDescription": "Percentagem de IVA a aplicar aos preços"
       }
     },
     "common": {
-      "confirmDeleteTitle": "Confirmar Eliminação",
-      "confirmDeleteDescription": "Tem a certeza que pretende eliminar este item? Esta ação não pode ser desfeita."
+      "confirmDeleteTitle": "Confirmar eliminação",
+      "confirmDeleteDescription": "Tem a certeza de que pretende eliminar este item? Esta ação não pode ser desfeita."
     }
   }
 }
