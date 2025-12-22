@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Camera, X, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { getCalcPrintImageUrl, isFilePath } from '@/lib/storage';
 
 interface PrintImageUploadProps {
   imageUrl: string | null;
@@ -12,7 +13,24 @@ interface PrintImageUploadProps {
 
 export function PrintImageUpload({ imageUrl, onImageChange, disabled }: PrintImageUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [displayUrl, setDisplayUrl] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Load signed URL when imageUrl changes
+  useEffect(() => {
+    const loadDisplayUrl = async () => {
+      if (!imageUrl) {
+        setDisplayUrl(null);
+        return;
+      }
+
+      // Get signed URL if it's a file path
+      const url = await getCalcPrintImageUrl(imageUrl);
+      setDisplayUrl(url);
+    };
+
+    loadDisplayUrl();
+  }, [imageUrl]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,21 +48,25 @@ export function PrintImageUpload({ imageUrl, onImageChange, disabled }: PrintIma
 
     setUploading(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ title: 'Please sign in to upload images', variant: 'destructive' });
+        return;
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `print-${Date.now()}.${fileExt}`;
-      const filePath = `prints/${fileName}`;
+      // Use user ID folder for RLS compliance
+      const filePath = `${user.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('design-files')
+        .from('calc-prints')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('design-files')
-        .getPublicUrl(filePath);
-
-      onImageChange(publicUrl);
+      // Return the file path (not public URL)
+      onImageChange(filePath);
     } catch (error) {
       console.error('Error uploading image:', error);
       toast({ title: 'Error uploading image', variant: 'destructive' });
@@ -55,13 +77,14 @@ export function PrintImageUpload({ imageUrl, onImageChange, disabled }: PrintIma
 
   const handleRemove = () => {
     onImageChange(null);
+    setDisplayUrl(null);
   };
 
-  if (imageUrl) {
+  if (displayUrl) {
     return (
       <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-muted">
         <img 
-          src={imageUrl} 
+          src={displayUrl} 
           alt="Print photo" 
           className="w-full h-full object-cover"
         />

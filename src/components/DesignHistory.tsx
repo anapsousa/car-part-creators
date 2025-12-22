@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { Download, Loader2, FileText, Clock, Heart, Eye, Filter, Trash2 } from "
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import ModelViewer from "./ModelViewer";
+import { getDesignFileUrl, isFileAvailable } from "@/lib/storage";
 import {
   Dialog,
   DialogContent,
@@ -50,6 +51,7 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [previewDesign, setPreviewDesign] = useState<Design | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -102,10 +104,6 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const isFileAvailable = (url: string | null) => {
-    return url && !url.includes('example.com');
   };
 
   const toggleFavorite = async (designId: string, currentFavorite: boolean) => {
@@ -183,42 +181,54 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
     }
   };
 
-  const handleDownload = async (url: string, filename: string) => {
+  const handlePreview = async (design: Design) => {
+    if (!isFileAvailable(design.stl_file_url)) {
+      toast.error("Preview not available. File may be missing.");
+      return;
+    }
+
+    setPreviewDesign(design);
+    setPreviewUrl(null);
+
+    // Get signed URL for preview
+    const signedUrl = await getDesignFileUrl(design.stl_file_url);
+    if (signedUrl) {
+      setPreviewUrl(signedUrl);
+    } else {
+      toast.error("Failed to load preview. Please try again.");
+    }
+  };
+
+  const handleDownload = async (urlOrPath: string, filename: string) => {
     try {
-      // Check if URL is valid
-      if (!url || url.includes('example.com')) {
+      // Check if file is available
+      if (!isFileAvailable(urlOrPath)) {
         toast.error("File not available. Please regenerate this design.");
         return;
       }
 
-      // Check if it's a Supabase storage URL
-      if (url.includes('supabase')) {
-        // For Supabase storage, download directly
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        link.target = "_blank";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        toast.success("Download started");
-      } else {
-        // For external URLs, fetch and download
-        const response = await fetch(url, { mode: 'cors' });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(downloadUrl);
-        toast.success("Download started");
+      // Get signed URL if needed
+      const downloadUrl = await getDesignFileUrl(urlOrPath);
+      if (!downloadUrl) {
+        toast.error("Failed to get download URL. Please try again.");
+        return;
       }
+
+      // Download the file
+      const response = await fetch(downloadUrl, { mode: 'cors' });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+      toast.success("Download started");
     } catch (error: any) {
       console.error("Download error:", error);
       toast.error(error.message || "Failed to download file. The file may not exist or be accessible.");
@@ -366,13 +376,7 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                             variant={isFileAvailable(design.stl_file_url) ? "outline" : "ghost"}
                             disabled={!isFileAvailable(design.stl_file_url)}
                             className={!isFileAvailable(design.stl_file_url) ? "opacity-50 cursor-not-allowed" : ""}
-                            onClick={() => {
-                              if (isFileAvailable(design.stl_file_url)) {
-                                setPreviewDesign(design);
-                              } else {
-                                toast.error("Preview not available. File may be missing.");
-                              }
-                            }}
+                            onClick={() => handlePreview(design)}
                           >
                             <Eye className="mr-2 h-4 w-4" />
                             Preview
@@ -384,14 +388,14 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
                             className={!isFileAvailable(design.stl_file_url) ? "opacity-50 cursor-not-allowed" : ""}
                             onClick={() => {
                               if (isFileAvailable(design.stl_file_url)) {
-                                handleDownload(design.stl_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.stl`);
+                                handleDownload(design.stl_file_url!, `${design.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${design.id.slice(0, 8)}.glb`);
                               } else {
                                 toast.error("STL file not available. Please regenerate this design.");
                               }
                             }}
                           >
                             <Download className="mr-2 h-4 w-4" />
-                            STL
+                            GLB
                           </Button>
                           <Button
                             size="sm"
@@ -438,7 +442,7 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
         </CardContent>
       </Card>
 
-      <Dialog open={!!previewDesign} onOpenChange={() => setPreviewDesign(null)}>
+      <Dialog open={!!previewDesign} onOpenChange={() => { setPreviewDesign(null); setPreviewUrl(null); }}>
         <DialogContent className="max-w-4xl h-[80vh]">
           <DialogHeader>
             <DialogTitle>3D Model Preview</DialogTitle>
@@ -446,9 +450,13 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
               {previewDesign?.prompt_text}
             </DialogDescription>
           </DialogHeader>
-          {previewDesign?.stl_file_url && !previewDesign.stl_file_url.includes('example.com') ? (
+          {previewUrl ? (
             <div className="flex-1 min-h-0">
-              <ModelViewer modelUrl={previewDesign.stl_file_url} />
+              <ModelViewer modelUrl={previewUrl} />
+            </div>
+          ) : previewDesign ? (
+            <div className="flex items-center justify-center h-64">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
             <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -456,22 +464,13 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
             </div>
           )}
           <div className="flex gap-2 justify-end pt-4">
-            {previewDesign?.stl_file_url && !previewDesign.stl_file_url.includes('example.com') && (
+            {previewDesign?.stl_file_url && isFileAvailable(previewDesign.stl_file_url) && (
               <Button
                 variant="outline"
-                onClick={() => handleDownload(previewDesign.stl_file_url!, `${previewDesign.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${previewDesign.id.slice(0, 8)}.stl`)}
+                onClick={() => handleDownload(previewDesign.stl_file_url!, `${previewDesign.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${previewDesign.id.slice(0, 8)}.glb`)}
               >
                 <Download className="mr-2 h-4 w-4" />
-                Download STL
-              </Button>
-            )}
-            {previewDesign?.blend_file_url && !previewDesign.blend_file_url.includes('example.com') && (
-              <Button
-                variant="outline"
-                onClick={() => handleDownload(previewDesign.blend_file_url!, `${previewDesign.prompt_text.slice(0, 30).replace(/[^a-z0-9]/gi, '_')}-${previewDesign.id.slice(0, 8)}.blend`)}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Download BLEND
+                Download GLB
               </Button>
             )}
           </div>
@@ -488,9 +487,7 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

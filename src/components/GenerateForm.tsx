@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Loader2, Sparkles, Upload, X, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useContent } from "@/hooks/useContent";
+import { getReferenceImageUrl } from "@/lib/storage";
 
 interface GenerateFormProps {
   onGenerate: () => void;
@@ -23,7 +24,7 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [depth, setDepth] = useState("");
-  const [referenceImages, setReferenceImages] = useState<string[]>([]);
+  const [referenceImages, setReferenceImages] = useState<{ path: string; displayUrl: string }[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,26 +38,32 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
 
     setUploadingImages(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please sign in to upload images");
+        return;
+      }
+
       const uploadPromises = Array.from(files).map(async (file) => {
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `reference-images/${fileName}`;
+        // Use user ID folder for RLS compliance
+        const filePath = `${user.id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
-          .from('design-files')
+          .from('user-references')
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('design-files')
-          .getPublicUrl(filePath);
+        // Get signed URL for display
+        const signedUrl = await getReferenceImageUrl(filePath);
 
-        return publicUrl;
+        return { path: filePath, displayUrl: signedUrl || '' };
       });
 
-      const uploadedUrls = await Promise.all(uploadPromises);
-      setReferenceImages([...referenceImages, ...uploadedUrls]);
+      const uploadedImages = await Promise.all(uploadPromises);
+      setReferenceImages([...referenceImages, ...uploadedImages.filter(img => img.displayUrl)]);
       toast.success(content["generator.form.success_images_uploaded"] || "Reference images uploaded");
     } catch (error) {
       console.error("Error uploading images:", error);
@@ -109,7 +116,7 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
         body: { 
           prompt, 
           designId: design.id,
-          referenceImages: referenceImages.length > 0 ? referenceImages : undefined
+          referenceImages: referenceImages.length > 0 ? referenceImages.map(img => img.path) : undefined
         },
       });
 
@@ -187,9 +194,9 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
           <Label>{content["generator.form.reference_images_label"] || "Reference Images (Optional)"}</Label>
           <p className="text-xs text-muted-foreground mb-2">{content["generator.form.reference_images_help"] || "Upload up to 3 reference images to guide the AI generation"}</p>
           <div className="grid grid-cols-3 gap-3">
-            {referenceImages.map((url, index) => (
+            {referenceImages.map((img, index) => (
               <div key={index} className="relative aspect-square bg-muted rounded-lg overflow-hidden group">
-                <img src={url} alt={`Reference ${index + 1}`} className="w-full h-full object-cover" />
+                <img src={img.displayUrl} alt={`Reference ${index + 1}`} className="w-full h-full object-cover" />
                 <Button
                   variant="destructive"
                   size="icon"
