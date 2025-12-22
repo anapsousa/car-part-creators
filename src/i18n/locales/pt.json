@@ -385,5 +385,20 @@
       "applepay_label": "Apple Pay",
       "mb_label": "Multibanco"
     }
+  },
+  "calculator": {
+    "settings": {
+      "vat": {
+        "title": "Definições de IVA",
+        "showVatInCalculator": "Mostrar IVA na Calculadora",
+        "showVatDescription": "Exibir detalhes do IVA nos cálculos de custos de impressão",
+        "vatRate": "Taxa de IVA (%)",
+        "vatRateDescription": "A percentagem de IVA a aplicar aos preços"
+      }
+    },
+    "common": {
+      "confirmDeleteTitle": "Confirmar Eliminação",
+      "confirmDeleteDescription": "Tem a certeza que pretende eliminar este item? Esta ação não pode ser desfeita."
+    }
   }
 }
