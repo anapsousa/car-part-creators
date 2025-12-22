@@ -94,19 +94,19 @@ export default function ProductDetail() {
     
     if (product?.category === "car_parts") {
       return {
-        title: product.seoTitle || `Custom 3D Printed Replacement Part | Dr3amToReal`,
-        description: product.seoDescription || `High-quality custom 3D printed replacement part, designed and tested for fit and function. Made to order by Dr3amToReal in Portugal.`,
+        title: product.seoTitle || content["product.seo.car_parts.title"] || `Custom 3D Printed Replacement Part | Dr3amToReal`,
+        description: product.seoDescription || content["product.seo.car_parts.description"] || `High-quality custom 3D printed replacement part, designed and tested for fit and function. Made to order by Dr3amToReal in Portugal.`,
       };
     } else if (product?.category === "home_decor") {
       return {
-        title: product.seoTitle || `3D Printed Home Décor | Custom & Original Designs – Dr3amToReal`,
-        description: product.seoDescription || `Original 3D printed home décor designed with intention. Customisable, small-batch pieces made in Portugal by Dr3amToReal.`,
+        title: product.seoTitle || content["product.seo.home_decor.title"] || `3D Printed Home Décor | Custom & Original Designs – Dr3amToReal`,
+        description: product.seoDescription || content["product.seo.home_decor.description"] || `Original 3D printed home décor designed with intention. Customisable, small-batch pieces made in Portugal by Dr3amToReal.`,
       };
     } else {
       // custom_designs or personalised products
       return {
-        title: product.seoTitle || `Personalised 3D Printed Object | Made to Order – Dr3amToReal`,
-        description: product.seoDescription || `Personalised 3D printed object tailored to your needs. Designed and printed with care by Dr3amToReal, a Portugal-based studio.`,
+        title: product.seoTitle || content["product.seo.personalised.title"] || `Personalised 3D Printed Object | Made to Order – Dr3amToReal`,
+        description: product.seoDescription || content["product.seo.personalised.description"] || `Personalised 3D printed object tailored to your needs. Designed and printed with care by Dr3amToReal, a Portugal-based studio.`,
       };
     }
   };
@@ -302,14 +302,16 @@ export default function ProductDetail() {
                 disabled={product.stock_quantity === 0 || cartLoading}
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
-                {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
+                {product.stock_quantity === 0 
+                  ? (content["product.out_of_stock"] || "Out of Stock") 
+                  : (content["product.add_to_cart"] || "Add to Cart")}
               </Button>
             </div>
 
             {/* Custom Work CTA */}
             <div className="mt-6 p-4 bg-muted/50 rounded-lg border">
               <p className="text-sm text-muted-foreground mb-2">
-                Need this adapted?
+                {content["product.custom_work.question"] || "Need this adapted?"}
               </p>
               <Button
                 variant="outline"
@@ -317,7 +319,7 @@ export default function ProductDetail() {
                 onClick={() => navigate("/contact")}
                 className="w-full"
               >
-                Request custom work
+                {content["product.custom_work.cta"] || "Request custom work"}
               </Button>
             </div>
           </div>

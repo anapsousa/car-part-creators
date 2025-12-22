@@ -10,7 +10,8 @@
     "wishlist": "Wishlist",
     "dashboard": "Dashboard",
     "logout": "Logout",
-    "login": "Login"
+    "login": "Login",
+    "menu": "Menu"
   },
   "home": {
     "hero": {
@@ -18,7 +19,16 @@
       "subtitle": "Thoughtfully designed and carefully printed objects — from functional parts to personalised home décor — made in Portugal.",
       "cta_primary": "Explore the collection",
       "cta_secondary": "Request custom work",
-      "trust_line": "Small-batch. Made to order. Quality-driven."
+      "trust_line": "Small-batch. Made to order. Quality-driven.",
+      "link_about": "About Dr3amToReal",
+      "link_custom_work": "Custom Work Services"
+    },
+    "seo": {
+      "title": "Custom 3D Printing & Original Designs | Dr3amToReal Portugal",
+      "description": "Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object.",
+      "keywords": "custom 3D printing Portugal, 3D printing studio Portugal, custom 3D prints, personalised 3D printing, bespoke 3D printing, original 3D designs, small batch 3D printing, 3D printed parts Portugal, design-led 3D printing",
+      "og_title": "Custom 3D Printing & Original Designs | Dr3amToReal Portugal",
+      "og_description": "Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object."
     },
     "whatIs": {
       "title": "What is Dr3amToReal?",
@@ -135,8 +145,26 @@
     "backToShop": "Back to Shop",
     "view3D": "3D View",
     "images": "Images",
+    "custom_work": {
+      "question": "Need this adapted?",
+      "cta": "Request custom work"
+    },
     "viewer": {
       "instructions": "Click and drag to rotate • Scroll to zoom • Right-click and drag to pan"
+    },
+    "seo": {
+      "car_parts": {
+        "title": "Custom 3D Printed Replacement Part | Dr3amToReal",
+        "description": "High-quality custom 3D printed replacement part, designed and tested for fit and function. Made to order by Dr3amToReal in Portugal."
+      },
+      "home_decor": {
+        "title": "3D Printed Home Décor | Custom & Original Designs – Dr3amToReal",
+        "description": "Original 3D printed home décor designed with intention. Customisable, small-batch pieces made in Portugal by Dr3amToReal."
+      },
+      "personalised": {
+        "title": "Personalised 3D Printed Object | Made to Order – Dr3amToReal",
+        "description": "Personalised 3D printed object tailored to your needs. Designed and printed with care by Dr3amToReal, a Portugal-based studio."
+      }
     }
   },
   "cart": {
@@ -220,7 +248,14 @@
     },
     "hero": {
       "title": "From dream to real object",
-      "subtitle": "Dr3amToReal was born from a long-standing passion for building things that matter — objects that solve a problem, carry meaning, or simply feel right in your hands."
+      "subtitle": "Dr3amToReal was born from a long-standing passion for building things that matter — objects that solve a problem, carry meaning, or simply feel right in your hands.",
+      "link_manifesto": "Learn more about our values and approach"
+    },
+    "seo": {
+      "title": "About Dr3amToReal | Design-Led 3D Printing Studio in Portugal",
+      "description": "Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care.",
+      "og_title": "About Dr3amToReal | Design-Led 3D Printing Studio in Portugal",
+      "og_description": "Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care."
     },
     "intro": {
       "title": "About Dr3amToReal",
@@ -267,6 +302,12 @@
   "contact": {
     "title": "Contact Us",
     "subtitle": "Get in touch with our team",
+    "seo": {
+      "title": "Custom 3D Design & Printing Services | Dr3amToReal",
+      "description": "Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based.",
+      "og_title": "Custom 3D Design & Printing Services | Dr3amToReal",
+      "og_description": "Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based."
+    },
     "info": {
       "email": {
         "title": "Email Us",

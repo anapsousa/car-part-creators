@@ -38,11 +38,11 @@ const Contact = () => {
   };
   return <div className="min-h-screen bg-gradient-mesh">
       <Helmet>
-        <title>Custom 3D Design & Printing Services | Dr3amToReal</title>
-        <meta name="description" content="Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based." />
+        <title>{content["contact.seo.title"] || "Custom 3D Design & Printing Services | Dr3amToReal"}</title>
+        <meta name="description" content={content["contact.seo.description"] || "Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based."} />
         <link rel="canonical" href="https://dr3amtoreal.com/contact" />
-        <meta property="og:title" content="Custom 3D Design & Printing Services | Dr3amToReal" />
-        <meta property="og:description" content="Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based." />
+        <meta property="og:title" content={content["contact.seo.og_title"] || content["contact.seo.title"] || "Custom 3D Design & Printing Services | Dr3amToReal"} />
+        <meta property="og:description" content={content["contact.seo.og_description"] || content["contact.seo.description"] || "Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based."} />
         <meta property="og:url" content="https://dr3amtoreal.com/contact" />
         <meta property="og:type" content="website" />
       </Helmet>

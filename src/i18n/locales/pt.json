@@ -10,15 +10,25 @@
     "wishlist": "Favoritos",
     "dashboard": "Painel",
     "logout": "Sair",
-    "login": "Entrar"
+    "login": "Entrar",
+    "menu": "Menu"
   },
   "home": {
     "hero": {
-      "title": "Restaurar o Seu Clássico. Melhorar a Sua Casa",
+      "title": "Restaure o Seu Clássico. Melhore a Sua Casa",
       "subtitle": "Objetos pensados e cuidadosamente impressos — desde peças funcionais até decoração personalizada para casa — feitos em Portugal.",
       "cta_primary": "Explorar a coleção",
       "cta_secondary": "Solicitar trabalho personalizado",
-      "trust_line": "Pequenas séries. Feito sob encomenda. Orientado para a qualidade."
+      "trust_line": "Pequenas séries. Feito sob encomenda. Orientado para a qualidade.",
+      "link_about": "Sobre Dr3amToReal",
+      "link_custom_work": "Serviços de Trabalho Personalizado"
+    },
+    "seo": {
+      "title": "Impressão 3D Personalizada e Designs Originais | Dr3amToReal Portugal",
+      "description": "Estúdio de impressão 3D personalizada orientado para o design em Portugal. Designs originais, peças personalizadas e impressões em pequenas séries — do sonho ao objeto real.",
+      "keywords": "impressão 3D personalizada Portugal, estúdio de impressão 3D Portugal, impressões 3D personalizadas, impressão 3D personalizada, impressão 3D sob medida, designs 3D originais, impressão 3D em pequenas séries, peças impressas em 3D Portugal, impressão 3D orientada para o design",
+      "og_title": "Impressão 3D Personalizada e Designs Originais | Dr3amToReal Portugal",
+      "og_description": "Estúdio de impressão 3D personalizada orientado para o design em Portugal. Designs originais, peças personalizadas e impressões em pequenas séries — do sonho ao objeto real."
     },
     "whatIs": {
       "title": "O que é Dr3amToReal?",
@@ -135,8 +145,26 @@
     "backToShop": "Voltar à Loja",
     "view3D": "Vista 3D",
     "images": "Imagens",
+    "custom_work": {
+      "question": "Precisa de adaptação?",
+      "cta": "Solicitar trabalho personalizado"
+    },
     "viewer": {
       "instructions": "Clique e arraste para rodar • Role para ampliar • Clique com botão direito e arraste para deslocar"
+    },
+    "seo": {
+      "car_parts": {
+        "title": "Peça de Substituição Impressa em 3D Personalizada | Dr3amToReal",
+        "description": "Peça de substituição impressa em 3D personalizada de alta qualidade, desenhada e testada para ajuste e função. Feito sob encomenda pela Dr3amToReal em Portugal."
+      },
+      "home_decor": {
+        "title": "Decoração para Casa Impressa em 3D | Designs Personalizados e Originais – Dr3amToReal",
+        "description": "Decoração para casa impressa em 3D original desenhada com intenção. Peças personalizáveis em pequenas séries feitas em Portugal pela Dr3amToReal."
+      },
+      "personalised": {
+        "title": "Objeto Impresso em 3D Personalizado | Feito Sob Encomenda – Dr3amToReal",
+        "description": "Objeto impresso em 3D personalizado adaptado às suas necessidades. Desenhado e impresso com cuidado pela Dr3amToReal, um estúdio sediado em Portugal."
+      }
     }
   },
   "cart": {
@@ -220,7 +248,14 @@
     },
     "hero": {
       "title": "Do sonho ao objeto real",
-      "subtitle": "A Dr3amToReal nasceu de uma paixão de longa data por construir coisas que importam — objetos que resolvem um problema, carregam significado, ou simplesmente se sentem bem nas suas mãos."
+      "subtitle": "A Dr3amToReal nasceu de uma paixão de longa data por construir coisas que importam — objetos que resolvem um problema, carregam significado, ou simplesmente se sentem bem nas suas mãos.",
+      "link_manifesto": "Saiba mais sobre os nossos valores e abordagem"
+    },
+    "seo": {
+      "title": "Sobre Dr3amToReal | Estúdio de Impressão 3D Orientado para o Design em Portugal",
+      "description": "A Dr3amToReal é um estúdio de impressão 3D orientado para o design sediado em Portugal, criando peças personalizadas, designs originais e objetos personalizados com cuidado.",
+      "og_title": "Sobre Dr3amToReal | Estúdio de Impressão 3D Orientado para o Design em Portugal",
+      "og_description": "A Dr3amToReal é um estúdio de impressão 3D orientado para o design sediado em Portugal, criando peças personalizadas, designs originais e objetos personalizados com cuidado."
     },
     "intro": {
       "title": "Sobre Dr3amToReal",
@@ -267,6 +302,12 @@
   "contact": {
     "title": "Contacte-nos",
     "subtitle": "Entre em contacto com a nossa equipa",
+    "seo": {
+      "title": "Serviços de Design e Impressão 3D Personalizados | Dr3amToReal",
+      "description": "Design e impressão 3D sob medida para peças funcionais, objetos personalizados e projetos únicos. Pequenas séries, orientado para a qualidade, sediado em Portugal.",
+      "og_title": "Serviços de Design e Impressão 3D Personalizados | Dr3amToReal",
+      "og_description": "Design e impressão 3D sob medida para peças funcionais, objetos personalizados e projetos únicos. Pequenas séries, orientado para a qualidade, sediado em Portugal."
+    },
     "info": {
       "email": {
         "title": "Envie-nos um Email",

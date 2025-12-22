@@ -130,7 +130,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
                       alt="Dr3amToReal"
                       className="h-8 w-auto"
                     />
-                    <span>Menu</span>
+                    <span>{content["nav.menu"] || "Menu"}</span>
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-4 mt-8">

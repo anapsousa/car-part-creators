@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "validate:migrations": "node scripts/validate-migrations.js",
-    "migrate:db": "node scripts/apply-migrations.js"
+    "migrate:db": "node scripts/apply-migrations.js",
+    "import:seo": "node scripts/import-seo-translations.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

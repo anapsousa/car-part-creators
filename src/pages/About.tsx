@@ -12,11 +12,11 @@ const About = () => {
   
   return <div className="min-h-screen bg-gradient-mesh">
       <Helmet>
-        <title>About Dr3amToReal | Design-Led 3D Printing Studio in Portugal</title>
-        <meta name="description" content="Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care." />
+        <title>{content["about.seo.title"] || "About Dr3amToReal | Design-Led 3D Printing Studio in Portugal"}</title>
+        <meta name="description" content={content["about.seo.description"] || "Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care."} />
         <link rel="canonical" href="https://dr3amtoreal.com/about" />
-        <meta property="og:title" content="About Dr3amToReal | Design-Led 3D Printing Studio in Portugal" />
-        <meta property="og:description" content="Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care." />
+        <meta property="og:title" content={content["about.seo.og_title"] || content["about.seo.title"] || "About Dr3amToReal | Design-Led 3D Printing Studio in Portugal"} />
+        <meta property="og:description" content={content["about.seo.og_description"] || content["about.seo.description"] || "Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original designs, and personalised objects with care."} />
         <meta property="og:url" content="https://dr3amtoreal.com/about" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -48,7 +48,7 @@ const About = () => {
               {content["about.hero.subtitle"] || "Dr3amToReal was born from a long-standing passion for building things that matter — objects that solve a problem, carry meaning, or simply feel right in your hands."}
             </p>
             <p className="text-sm text-muted-foreground">
-              <a href="/#manifesto" className="text-primary hover:underline">Learn more about our values and approach</a>
+              <a href="/#manifesto" className="text-primary hover:underline">{content["about.hero.link_manifesto"] || "Learn more about our values and approach"}</a>
             </p>
           </div>
 

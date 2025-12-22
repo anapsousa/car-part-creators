@@ -24,12 +24,12 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-mesh">
       <Helmet>
-        <title>Custom 3D Printing & Original Designs | Dr3amToReal Portugal</title>
-        <meta name="description" content="Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object." />
-        <meta name="keywords" content="custom 3D printing Portugal, 3D printing studio Portugal, custom 3D prints, personalised 3D printing, bespoke 3D printing, original 3D designs, small batch 3D printing, 3D printed parts Portugal, design-led 3D printing" />
+        <title>{content["home.seo.title"] || "Custom 3D Printing & Original Designs | Dr3amToReal Portugal"}</title>
+        <meta name="description" content={content["home.seo.description"] || "Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object."} />
+        <meta name="keywords" content={content["home.seo.keywords"] || "custom 3D printing Portugal, 3D printing studio Portugal, custom 3D prints, personalised 3D printing, bespoke 3D printing, original 3D designs, small batch 3D printing, 3D printed parts Portugal, design-led 3D printing"} />
         <link rel="canonical" href="https://dr3amtoreal.com/" />
-        <meta property="og:title" content="Custom 3D Printing & Original Designs | Dr3amToReal Portugal" />
-        <meta property="og:description" content="Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object." />
+        <meta property="og:title" content={content["home.seo.og_title"] || content["home.seo.title"] || "Custom 3D Printing & Original Designs | Dr3amToReal Portugal"} />
+        <meta property="og:description" content={content["home.seo.og_description"] || content["home.seo.description"] || "Design-led custom 3D printing studio in Portugal. Original designs, personalised parts, and small-batch prints — from dream to real object."} />
         <meta property="og:url" content="https://dr3amtoreal.com/" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -69,9 +69,9 @@ export default function Index() {
                 </Button>
               </div>
               <div className="flex gap-4 flex-wrap text-sm">
-                <a href="/about" className="text-primary hover:underline">About Dr3amToReal</a>
+                <a href="/about" className="text-primary hover:underline">{content["home.hero.link_about"] || "About Dr3amToReal"}</a>
                 <span className="text-muted-foreground">•</span>
-                <a href="/contact" className="text-primary hover:underline">Custom Work Services</a>
+                <a href="/contact" className="text-primary hover:underline">{content["home.hero.link_custom_work"] || "Custom Work Services"}</a>
               </div>
               <p className="text-sm text-muted-foreground">
                 {content["home.hero.trust_line"] || "Small-batch. Made to order. Quality-driven."}
