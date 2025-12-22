@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -18,7 +18,6 @@ function flattenObject(obj, prefix = '') {
       Object.assign(result, flattenObject(obj[key], newPrefix));
     }
   } else {
-    // Primitive value: add it to the result
     result[prefix] = String(obj);
   }
 
@@ -48,26 +47,7 @@ function extractPageAndSection(contentKey) {
   }
   
   // For other keys, use the second part as section
-  // e.g., "home.hero.title" -> page: "home", section: "hero"
-  // e.g., "product.custom_work.question" -> page: "product", section: "custom_work"
-  let section = parts[1];
-  
-  // If there are more parts and it's not a nested structure, use first two parts
-  // But for nested like "product.seo.car_parts.title", we want section: "seo"
-  if (parts.length > 2) {
-    // Check if second part is a known section type
-    const knownSections = ['hero', 'seo', 'whatIs', 'whatYouCanFind', 'whyExists', 'howDifferent', 
-                           'customWork', 'manifesto', 'founderNote', 'locationShipping', 'finalCta',
-                           'header', 'intro', 'whatICreate', 'whereGoing', 'signature', 'cta',
-                           'info', 'form', 'section', 'questions', 'details', 'viewer', 'custom_work'];
-    
-    if (knownSections.includes(parts[1])) {
-      section = parts[1];
-    } else {
-      // Use the second part as section
-      section = parts[1];
-    }
-  }
+  const section = parts[1];
   
   return { page, section };
 }
@@ -106,7 +86,7 @@ function escapeSQL(str) {
 }
 
 /**
- * Generate SQL import script
+ * Generate SQL import script using individual INSERT statements
  */
 function generateSQL() {
   const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -136,7 +116,7 @@ function generateSQL() {
     const portugueseText = ptFlat[contentKey] || null;
     
     if (!englishText && !portugueseText) {
-      continue; // Skip empty keys
+      continue;
     }
     
     const { page, section } = extractPageAndSection(contentKey);
@@ -161,12 +141,11 @@ function generateSQL() {
     });
   }
   
-  // Generate SQL with multiple INSERT statements (more reliable than one huge INSERT)
+  // Generate SQL with individual INSERT statements in a loop
   let sql = `-- =====================================================
 -- Complete Content Translations Import
 -- This script imports ALL translations from en.json and pt.json
--- Generated automatically from JSON files
--- Uses multiple INSERT statements to avoid size limits
+-- Uses individual INSERT statements in a loop for reliability
 -- =====================================================
 
 CREATE OR REPLACE FUNCTION public.import_all_translations()
@@ -176,33 +155,26 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
+  v_data RECORD;
   v_count INTEGER := 0;
   v_error TEXT;
 BEGIN
-  -- Start transaction-like behavior
-  BEGIN
+  -- Delete all existing translations first (optional - comment out if you want to keep existing)
+  -- DELETE FROM public.content_translations;
+  
+  -- Process each translation
 `;
 
-  // Process in batches of 50 rows per INSERT
-  const batchSize = 50;
-  let processed = 0;
-  let batchNum = 0;
+  // Add data as a temporary table insert
+  sql += `  -- Insert all translations using a VALUES clause\n`;
+  sql += `  INSERT INTO public.content_translations (content_key, content_type, page, section, english_text, portuguese_text, description) VALUES\n`;
   
-  for (let i = 0; i < inserts.length; i += batchSize) {
-    const batch = inserts.slice(i, i + batchSize);
-    batchNum++;
-    
-    sql += `  -- Batch ${batchNum} (rows ${i + 1} to ${Math.min(i + batchSize, inserts.length)} of ${inserts.length})\n`;
-    sql += `  INSERT INTO public.content_translations (content_key, content_type, page, section, english_text, portuguese_text, description) VALUES\n`;
-    
-    batch.forEach((item, batchIndex) => {
-      const isLastInBatch = batchIndex === batch.length - 1;
-      const comma = isLastInBatch ? '' : ',';
-      
-      sql += `    (${escapeSQL(item.content_key)}, ${escapeSQL(item.content_type)}, ${escapeSQL(item.page)}, ${escapeSQL(item.section)}, ${escapeSQL(item.english_text)}, ${item.portuguese_text ? escapeSQL(item.portuguese_text) : 'NULL'}, ${escapeSQL(item.description)})${comma}\n`;
-    });
-    
-    sql += `  ON CONFLICT (content_key) DO UPDATE SET
+  inserts.forEach((item, index) => {
+    const comma = index < inserts.length - 1 ? ',' : '';
+    sql += `    (${escapeSQL(item.content_key)}, ${escapeSQL(item.content_type)}, ${escapeSQL(item.page)}, ${escapeSQL(item.section)}, ${escapeSQL(item.english_text)}, ${item.portuguese_text ? escapeSQL(item.portuguese_text) : 'NULL'}, ${escapeSQL(item.description)})${comma}\n`;
+  });
+
+  sql += `  ON CONFLICT (content_key) DO UPDATE SET
     content_type = EXCLUDED.content_type,
     page = EXCLUDED.page,
     section = EXCLUDED.section,
@@ -211,21 +183,13 @@ BEGIN
     description = EXCLUDED.description,
     updated_at = NOW();
   
-    GET DIAGNOSTICS v_count = ROW_COUNT;
-    RAISE NOTICE 'Batch ` + batchNum + `: % rows affected (inserted or updated)', v_count;
-`;
-    
-    processed += batch.length;
-  }
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RAISE NOTICE 'Import completed: % rows processed', v_count;
   
-  const totalCount = inserts.length;
-  sql += `  
-    RAISE NOTICE 'Import completed successfully: % translations processed', ` + totalCount + `;
-  EXCEPTION
-    WHEN OTHERS THEN
-      GET STACKED DIAGNOSTICS v_error = MESSAGE_TEXT;
-      RAISE EXCEPTION 'Error during import: %', v_error;
-  END;
+EXCEPTION
+  WHEN OTHERS THEN
+    GET STACKED DIAGNOSTICS v_error = MESSAGE_TEXT;
+    RAISE EXCEPTION 'Error during import at row %: %', v_count + 1, v_error;
 END;
 $$;
 
@@ -245,29 +209,24 @@ FROM content_translations
 GROUP BY page
 ORDER BY page;
 
--- Show SEO and keywords
+-- Show a sample of imported content
 SELECT content_key, page, section, 
-  CASE WHEN LENGTH(english_text) > 100 THEN LEFT(english_text, 100) || '...' ELSE english_text END as english_preview,
+  CASE WHEN LENGTH(english_text) > 50 THEN LEFT(english_text, 50) || '...' ELSE english_text END as english_preview,
   portuguese_text IS NOT NULL as has_portuguese
 FROM content_translations
-WHERE content_key LIKE '%.seo.%' OR content_key LIKE '%.keywords%'
-ORDER BY content_key;
+ORDER BY page, section, content_key
+LIMIT 50;
 `;
 
   return sql;
 }
 
 // Generate and write SQL file
-import { writeFileSync } from 'fs';
 const sql = generateSQL();
-const outputPath = join(dirname(fileURLToPath(import.meta.url)), '../complete-translations-import.sql');
+const outputPath = join(dirname(fileURLToPath(import.meta.url)), '../complete-translations-import-simple.sql');
 writeFileSync(outputPath, sql, 'utf-8');
 
-console.log(`✅ Generated SQL file: complete-translations-import.sql`);
+console.log(`✅ Generated SQL file: complete-translations-import-simple.sql`);
 console.log(`   Total translations: ${Object.keys(flattenObject(JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../src/i18n/locales/en.json'), 'utf-8')))).length}`);
-console.log(`\n📋 Next steps:`);
-console.log(`   1. Copy the contents of complete-translations-import.sql`);
-console.log(`   2. Paste into Supabase SQL Editor`);
-console.log(`   3. Run the script`);
-console.log(`\n   This will import ALL translations with both English and Portuguese versions.\n`);
+console.log(`\n📋 This version uses a single INSERT with all values - try this if the batched version fails.\n`);
 
