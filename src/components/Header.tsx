@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, User, LogOut, LayoutDashboard, Package, Settings, BarChart3, FileText, Calculator } from "lucide-react";
+import { ShoppingCart, Heart, User, LogOut, LayoutDashboard, Package, Settings, BarChart3, FileText, Calculator, Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -16,6 +16,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "./ui/button";
 
 interface HeaderProps {
@@ -34,6 +41,7 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
   const { wishlistItems } = useWishlist();
   const [user, setUser] = useState<any>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isAdmin = roles.includes("admin");
   const isCreator = roles.includes("creator") || isAdmin;
@@ -100,24 +108,108 @@ export function Header({ pageTitle, pageSubtitle, showCart = true, showAuth = tr
     <header className="border-b border-border/40 bg-card/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo and Title */}
-          <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate("/")}>
-            <img
-              src={dr3amtorealLogo}
-              alt="From Dream To Real 3D"
-              className="h-10 w-auto"
-            />
-            {pageTitle && (
-              <div>
-                <div className="text-xl font-bold">{pageTitle}</div>
-                {pageSubtitle && (
-                  <p className="text-xs text-muted-foreground">{pageSubtitle}</p>
-                )}
-              </div>
-            )}
+          {/* Logo and Title with Mobile Menu */}
+          <div className="flex items-center gap-4">
+            {/* Mobile Menu Button */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  aria-label="Open menu"
+                >
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-3">
+                    <img
+                      src={dr3amtorealLogo}
+                      alt="Dr3amToReal"
+                      className="h-8 w-auto"
+                    />
+                    <span>Menu</span>
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col gap-4 mt-8">
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-lg"
+                    onClick={() => {
+                      navigate("/");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {content["nav.home"] || "Home"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-lg"
+                    onClick={() => {
+                      navigate("/shop");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {content["nav.shop"] || "Shop"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-lg"
+                    onClick={() => {
+                      navigate("/about");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {content["nav.about"] || "About"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-lg"
+                    onClick={() => {
+                      navigate("/contact");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {content["nav.contact"] || "Contact"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-lg"
+                    onClick={() => {
+                      navigate("/faq");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {content["nav.faq"] || "FAQ"}
+                  </Button>
+                </nav>
+              </SheetContent>
+            </Sheet>
+
+            {/* Logo - clickable to home */}
+            <div 
+              className="flex items-center gap-4 cursor-pointer" 
+              onClick={() => navigate("/")}
+            >
+              <img
+                src={dr3amtorealLogo}
+                alt="From Dream To Real 3D"
+                className="h-10 w-auto"
+              />
+              {pageTitle && (
+                <div className="hidden sm:block">
+                  <div className="text-xl font-bold">{pageTitle}</div>
+                  {pageSubtitle && (
+                    <p className="text-xs text-muted-foreground">{pageSubtitle}</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Navigation */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink to="/">{content["nav.home"] || "Home"}</NavLink>
             <NavLink to="/shop">{content["nav.shop"] || "Shop"}</NavLink>
