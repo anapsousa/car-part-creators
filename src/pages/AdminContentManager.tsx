@@ -308,6 +308,12 @@ export default function AdminContentManager() {
                           {item.description && (
                             <p className="text-sm text-muted-foreground italic">{item.description}</p>
                           )}
+                          {item.content_key.includes('.keywords') && (
+                            <div className="mt-2 p-2 bg-muted/50 rounded text-xs">
+                              <p className="font-medium mb-1">Keywords:</p>
+                              <p className="text-muted-foreground break-words">{item.english_text}</p>
+                            </div>
+                          )}
                         </div>
                         <div className="flex gap-2">
                           {editingId === item.id ? (
@@ -334,7 +340,20 @@ export default function AdminContentManager() {
                         <div>
                           <label className="text-sm font-medium mb-2 block">English</label>
                           {editingId === item.id ? (
-                            item.content_type === "text" || item.content_type === "button" ? (
+                            item.content_key.includes('.keywords') || item.english_text.length > 100 ? (
+                              <Textarea
+                                value={item.english_text}
+                                onChange={(e) => {
+                                  const updated = contentItems.map((c) =>
+                                    c.id === item.id ? { ...c, english_text: e.target.value } : c
+                                  );
+                                  setContentItems(updated);
+                                  setFilteredContentItems(updated);
+                                }}
+                                rows={item.content_key.includes('.keywords') ? 4 : 3}
+                                className="font-mono text-xs"
+                              />
+                            ) : item.content_type === "text" || item.content_type === "button" ? (
                               <Input
                                 value={item.english_text}
                                 onChange={(e) => {
@@ -359,14 +378,35 @@ export default function AdminContentManager() {
                               />
                             )
                           ) : (
-                            <p className="text-sm p-2 bg-muted rounded">{item.english_text}</p>
+                            <p className={`text-sm p-2 bg-muted rounded ${item.content_key.includes('.keywords') ? 'font-mono text-xs break-words' : ''}`}>
+                              {item.english_text}
+                            </p>
                           )}
                         </div>
 
                         <div>
-                          <label className="text-sm font-medium mb-2 block">Portuguese</label>
+                          <label className="text-sm font-medium mb-2 block">
+                            Portuguese
+                            {!item.portuguese_text && (
+                              <span className="ml-2 text-xs text-destructive">⚠️ Missing</span>
+                            )}
+                          </label>
                           {editingId === item.id ? (
-                            item.content_type === "text" || item.content_type === "button" ? (
+                            item.content_key.includes('.keywords') || (item.portuguese_text && item.portuguese_text.length > 100) ? (
+                              <Textarea
+                                value={item.portuguese_text || ""}
+                                onChange={(e) => {
+                                  const updated = contentItems.map((c) =>
+                                    c.id === item.id ? { ...c, portuguese_text: e.target.value } : c
+                                  );
+                                  setContentItems(updated);
+                                  setFilteredContentItems(updated);
+                                }}
+                                placeholder="Add Portuguese translation..."
+                                rows={item.content_key.includes('.keywords') ? 4 : 3}
+                                className="font-mono text-xs"
+                              />
+                            ) : item.content_type === "text" || item.content_type === "button" ? (
                               <Input
                                 value={item.portuguese_text || ""}
                                 onChange={(e) => {
@@ -393,7 +433,7 @@ export default function AdminContentManager() {
                               />
                             )
                           ) : (
-                            <p className="text-sm p-2 bg-muted rounded">
+                            <p className={`text-sm p-2 bg-muted rounded ${item.content_key.includes('.keywords') ? 'font-mono text-xs break-words' : ''}`}>
                               {item.portuguese_text || (
                                 <span className="text-muted-foreground italic">Not translated yet</span>
                               )}
