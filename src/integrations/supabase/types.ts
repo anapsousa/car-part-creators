@@ -191,6 +191,78 @@ export type Database = {
         }
         Relationships: []
       }
+      calc_print_consumables: {
+        Row: {
+          consumable_id: string
+          created_at: string | null
+          id: string
+          print_id: string
+        }
+        Insert: {
+          consumable_id: string
+          created_at?: string | null
+          id?: string
+          print_id: string
+        }
+        Update: {
+          consumable_id?: string
+          created_at?: string | null
+          id?: string
+          print_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calc_print_consumables_consumable_id_fkey"
+            columns: ["consumable_id"]
+            isOneToOne: false
+            referencedRelation: "calc_consumables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calc_print_consumables_print_id_fkey"
+            columns: ["print_id"]
+            isOneToOne: false
+            referencedRelation: "calc_prints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calc_print_expenses: {
+        Row: {
+          created_at: string | null
+          expense_id: string
+          id: string
+          print_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expense_id: string
+          id?: string
+          print_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expense_id?: string
+          id?: string
+          print_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calc_print_expenses_expense_id_fkey"
+            columns: ["expense_id"]
+            isOneToOne: false
+            referencedRelation: "calc_fixed_expenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calc_print_expenses_print_id_fkey"
+            columns: ["print_id"]
+            isOneToOne: false
+            referencedRelation: "calc_prints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calc_print_filaments: {
         Row: {
           created_at: string | null
