@@ -491,6 +491,42 @@
     "products": "Produtos",
     "services": "Serviços",
     "company": "Empresa",
+    "help": {
+      "title": "Ajuda & Suporte",
+      "my_order": "O Meu Pedido",
+      "delivery": "Entrega e Envio",
+      "returns": "Devoluções e Reembolsos",
+      "terms": "Termos e Condições"
+    },
+    "info": {
+      "title": "Informação Útil",
+      "complaints": "Livro de Reclamações",
+      "blog": "Blog"
+    },
+    "newsletter": {
+      "title": "Receber ofertas e descontos por e-mail:",
+      "description": "Subscreva a nossa newsletter para receber as últimas notícias e ofertas.",
+      "email_label": "Email",
+      "placeholder": "o.seu.email@exemplo.com",
+      "consent": "Ao confirmar o seu registo, concorda que os seus dados serão processados por nós, de acordo com a Política de Proteção de Dados.",
+      "button": "Subscrever",
+      "success": "Obrigado por subscrever!",
+      "error": "Erro ao subscrever. Por favor, tente novamente.",
+      "already_subscribed": "Já está subscrito!"
+    },
+    "social": {
+      "title": "Siga-nos!",
+      "instagram_url": "https://instagram.com/dr3amtoreal",
+      "instagram_label": "Siga-nos no Instagram",
+      "facebook_url": "https://facebook.com/dr3amtoreal",
+      "facebook_label": "Siga-nos no Facebook",
+      "linktree_url": "https://linktr.ee/dr3amtoreal",
+      "linktree_label": "Todos os nossos links no Linktree",
+      "linktree_text": "Todos os links",
+      "linktree_qr_caption": "Digitalize o QR para abrir o nosso Linktree",
+      "linktree_qr_alt": "Código QR que liga ao nosso Linktree"
+    },
+    "copyright": "© 2025 Pompousweek Unipessoal Lda. Todos os direitos reservados.",
     "payment": {
       "title": "Métodos de Pagamento",
       "visa_label": "Visa",

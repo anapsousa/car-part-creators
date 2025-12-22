@@ -35,7 +35,8 @@ export interface ContentTranslation {
 
 export function useContent(page?: string) {
   const { i18n } = useTranslation();
-  const currentLanguage = i18n.language;
+  // Normalize language code (handle "pt-PT", "pt-BR", etc. -> "pt")
+  const currentLanguage = i18n.language.split('-')[0];
 
   // Use JSON files as primary source (simpler, no database/RLS issues)
   // Set USE_DB_CONTENT=true in .env if you want to use database instead
@@ -94,8 +95,11 @@ export function useContent(page?: string) {
 
   // Create a content object with keys mapped to translated text
   const content = useMemo(() => {
+    // Check if language is Portuguese (handle variants like "pt", "pt-PT", "pt-BR")
+    const isPortuguese = currentLanguage.startsWith("pt");
+    
     // Always use JSON files (primary source)
-    const selectedJSON = currentLanguage === "pt" ? ptTranslations : enTranslations;
+    const selectedJSON = isPortuguese ? ptTranslations : enTranslations;
     
     // If using database and we have translations, merge them (database overrides JSON)
     if (useDatabase && translations.length > 0) {
@@ -104,7 +108,7 @@ export function useContent(page?: string) {
 
       translations.forEach((translation) => {
         const text =
-          currentLanguage === "pt" && translation.portuguese_text
+          isPortuguese && translation.portuguese_text
             ? translation.portuguese_text
             : translation.english_text;
 

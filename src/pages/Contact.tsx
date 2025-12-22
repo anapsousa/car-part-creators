@@ -57,7 +57,7 @@ const Contact = () => {
             </div>
             <h1 className="text-4xl font-bold">
               {(() => {
-                const title = content["contact.hero.title"] || "Custom 3D Design & Printing Services";
+                const title = content["contact.title"] || "Custom 3D Design & Printing Services";
                 const parts = title.split(/\s+/);
                 if (parts.length >= 2) {
                   return (
@@ -73,7 +73,7 @@ const Contact = () => {
               })()}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {content["contact.hero.subtitle"] || "Have a question or need support? We're here to help you create amazing 3D models"}
+              {content["contact.subtitle"] || "Have a question or need support? We're here to help you create amazing 3D models"}
             </p>
           </div>
 
@@ -87,7 +87,7 @@ const Contact = () => {
                 <CardTitle className="text-lg">{content["contact.info.email.title"] || "Email"}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-sm text-muted-foreground">{content["contact.info.email.value"] || "support@pompousweek.com"}</p>
+                <p className="text-sm text-muted-foreground">{content["contact.info.email.description"] || "support@pompousweek.com"}</p>
               </CardContent>
             </Card>
 
@@ -99,7 +99,7 @@ const Contact = () => {
                 <CardTitle className="text-lg">{content["contact.info.chat.title"] || "Live Chat"}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-sm text-muted-foreground">{content["contact.info.chat.value"] || "Available 9AM - 6PM GMT"}</p>
+                <p className="text-sm text-muted-foreground">{content["contact.info.chat.description"] || "Available 9AM - 6PM GMT"}</p>
               </CardContent>
             </Card>
 
@@ -111,7 +111,7 @@ const Contact = () => {
                 <CardTitle className="text-lg">{content["contact.info.response.title"] || "Response Time"}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-sm text-muted-foreground">{content["contact.info.response.value"] || "Within 24/48 hours"}</p>
+                <p className="text-sm text-muted-foreground">{content["contact.info.response.description"] || "Within 24/48 hours"}</p>
               </CardContent>
             </Card>
           </div>
@@ -131,14 +131,14 @@ const Contact = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">{content["contact.form.name"] || "Name"}</Label>
-                    <Input id="name" placeholder={content["contact.form.name.placeholder"] || "Your name"} value={formData.name} onChange={e => setFormData({
+                    <Input id="name" placeholder={content["contact.form.namePlaceholder"] || "Your name"} value={formData.name} onChange={e => setFormData({
                     ...formData,
                     name: e.target.value
                   })} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">{content["contact.form.email"] || "Email"}</Label>
-                    <Input id="email" type="email" placeholder={content["contact.form.email.placeholder"] || "your@email.com"} value={formData.email} onChange={e => setFormData({
+                    <Input id="email" type="email" placeholder={content["contact.form.emailPlaceholder"] || "your@email.com"} value={formData.email} onChange={e => setFormData({
                     ...formData,
                     email: e.target.value
                   })} required />
@@ -146,21 +146,21 @@ const Contact = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">{content["contact.form.subject"] || "Subject"}</Label>
-                  <Input id="subject" placeholder={content["contact.form.subject.placeholder"] || "What is this about?"} value={formData.subject} onChange={e => setFormData({
+                  <Input id="subject" placeholder={content["contact.form.subjectPlaceholder"] || "What is this about?"} value={formData.subject} onChange={e => setFormData({
                   ...formData,
                   subject: e.target.value
                 })} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="message">{content["contact.form.message"] || "Message"}</Label>
-                  <Textarea id="message" placeholder={content["contact.form.message.placeholder"] || "Tell us more about your inquiry..."} value={formData.message} onChange={e => setFormData({
+                  <Textarea id="message" placeholder={content["contact.form.messagePlaceholder"] || "Tell us more about your inquiry..."} value={formData.message} onChange={e => setFormData({
                   ...formData,
                   message: e.target.value
                 })} required rows={6} />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   <Send className="mr-2 h-4 w-4" />
-                  {isSubmitting ? content["contact.form.sending"] || "Sending..." : content["contact.form.send"] || "Send Message"}
+                  {isSubmitting ? content["contact.form.sending"] || "Sending..." : content["contact.form.submit"] || "Send Message"}
                 </Button>
               </form>
             </CardContent>

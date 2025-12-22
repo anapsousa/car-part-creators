@@ -490,6 +490,42 @@
     "products": "Products",
     "services": "Services",
     "company": "Company",
+    "help": {
+      "title": "Help & Support",
+      "my_order": "My Order",
+      "delivery": "Delivery and Shipping",
+      "returns": "Returns and Refunds",
+      "terms": "Terms and Conditions"
+    },
+    "info": {
+      "title": "Useful Information",
+      "complaints": "Complaints Book",
+      "blog": "Blog"
+    },
+    "newsletter": {
+      "title": "Receive offers and discounts by email:",
+      "description": "Subscribe to our newsletter to get the latest news and offers.",
+      "email_label": "Email",
+      "placeholder": "your@email.com",
+      "consent": "By confirming your registration, you agree that your data will be processed by us, in accordance with the Data Protection Policy.",
+      "button": "Subscribe",
+      "success": "Thank you for subscribing!",
+      "error": "Error subscribing. Please try again.",
+      "already_subscribed": "You are already subscribed!"
+    },
+    "social": {
+      "title": "Follow us!",
+      "instagram_url": "https://instagram.com/dr3amtoreal",
+      "instagram_label": "Follow us on Instagram",
+      "facebook_url": "https://facebook.com/dr3amtoreal",
+      "facebook_label": "Follow us on Facebook",
+      "linktree_url": "https://linktr.ee/dr3amtoreal",
+      "linktree_label": "All our links on Linktree",
+      "linktree_text": "All links",
+      "linktree_qr_caption": "Scan the QR to open our Linktree",
+      "linktree_qr_alt": "QR code linking to our Linktree"
+    },
+    "copyright": "© 2025 Pompousweek Unipessoal Lda. All rights reserved.",
     "payment": {
       "title": "Payment Methods",
       "visa_label": "Visa",
