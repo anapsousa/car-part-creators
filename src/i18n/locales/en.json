@@ -121,13 +121,15 @@
     "categories": {
       "all": "All Products",
       "car_parts": "Car Parts",
-      "decorations": "Decorations"
+      "decorations": "Decorations",
+      "custom": "Custom Designs"
     },
     "noProducts": "No products found matching your criteria.",
     "loading": "Loading products...",
     "addToCart": "Add to Cart",
     "inStock": "In Stock",
-    "outOfStock": "Out of Stock"
+    "outOfStock": "Out of Stock",
+    "iva_disclosure": "All prices include VAT at the applicable legal rate (23%)."
   },
   "product": {
     "details": "Product Details",

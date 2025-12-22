@@ -115,19 +115,21 @@
     }
   },
   "shop": {
-    "title": "Explorar produtos",
-    "subtitle": "Descubra a nossa coleção de peças impressas em 3D e objetos de decoração",
+    "title": "Explorar os Nossos Produtos",
+    "subtitle": "Descubra a nossa coleção de peças impressas em 3D e decorações personalizadas",
     "search": "Pesquisar produtos...",
     "categories": {
-      "all": "Todos os produtos",
-      "car_parts": "Peças automóvel",
-      "decorations": "Decoração"
+      "all": "Todos os Produtos",
+      "car_parts": "Peças de Automóvel",
+      "decorations": "Decorações",
+      "custom": "Designs Personalizados"
     },
-    "noProducts": "Não foram encontrados produtos com esses critérios.",
+    "noProducts": "Não foram encontrados produtos que correspondam aos seus critérios.",
     "loading": "A carregar produtos...",
-    "addToCart": "Adicionar ao carrinho",
-    "inStock": "Em stock",
-    "outOfStock": "Esgotado"
+    "addToCart": "Adicionar ao Carrinho",
+    "inStock": "Em Stock",
+    "outOfStock": "Esgotado",
+    "iva_disclosure": "Todos os preços incluem IVA à taxa legal em vigor (23%)."
   },
   "product": {
     "details": "Detalhes do produto",
