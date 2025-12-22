@@ -51,6 +51,7 @@ serve(async (req) => {
     if (designError || !design) throw new Error("Design not found");
 
     const userId = design.user_id;
+    const userIdStr = userId;
 
     // Check user credits
     const { data: userCredits, error: creditsError } = await supabase
@@ -319,12 +320,12 @@ serve(async (req) => {
     const modelBlob = await modelResponse.blob();
     const modelBuffer = await modelBlob.arrayBuffer();
 
-    // Step 5: Upload to Supabase Storage
+    // Step 5: Upload to Supabase Storage (private bucket with user folder)
     console.log("Uploading to storage...");
-    const fileName = `${designId}.glb`;
+    const filePath = `${userIdStr}/${designId}.glb`;
     const { error: uploadError } = await supabase.storage
-      .from("design-files")
-      .upload(fileName, modelBuffer, {
+      .from("user-designs")
+      .upload(filePath, modelBuffer, {
         contentType: "model/gltf-binary",
         upsert: true,
       });
@@ -335,19 +336,17 @@ serve(async (req) => {
       throw uploadError;
     }
 
-    // Get public URL
-    const { data: urlData } = supabase.storage
-      .from("design-files")
-      .getPublicUrl(fileName);
+    // Store the file path (not public URL) - signed URLs will be generated on-demand
+    const storedFilePath = filePath;
 
-    console.log("Model uploaded successfully:", urlData.publicUrl);
+    console.log("Model uploaded successfully:", storedFilePath);
 
-    // Step 6: Update design record with model URL
+    // Step 6: Update design record with file path (not public URL)
     const { error: updateError } = await supabase
       .from("designs")
       .update({
         status: "completed",
-        stl_file_url: urlData.publicUrl,
+        stl_file_url: storedFilePath, // Store path, not public URL
       })
       .eq("id", designId);
 
@@ -362,7 +361,7 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         designId,
-        modelUrl: urlData.publicUrl,
+        filePath: storedFilePath, // Return path, not public URL
       }),
       {
         headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" },
