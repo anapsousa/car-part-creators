@@ -13,42 +13,42 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: content["faq.q1.question"] || "What file formats do you provide?",
-      answer: content["faq.q1.answer"] || "We generate both STL and BLEND files for all 3D models. STL files are ready for 3D printing, while BLEND files can be edited in Blender."
+      question: content["faq.questions.q1.question"] || "Is Dr3amToReal a new business?",
+      answer: content["faq.questions.q1.answer"] || "Yes. Dr3amToReal is a young brand, currently growing under PompousWeek Unipessoal Lda, a Portuguese company.\n\nWhile the 3D-printing studio is new, it builds on years of experience in engineering, testing, and quality-focused work."
     },
     {
-      question: content["faq.q2.question"] || "How long does it take to generate a model?",
-      answer: content["faq.q2.answer"] || "Most models are generated within 2-5 minutes. Complex designs may take up to 10 minutes. You'll receive a notification when your model is ready."
+      question: content["faq.questions.q2.question"] || "Do you only sell what's in the shop?",
+      answer: content["faq.questions.q2.answer"] || "Not always.\n\nSome designs are available as ready-to-order prints, but custom requests and personalisation are a big part of what I do.\n\nIf you have:\n• a part that's hard to find\n• an idea you want to bring to life\n• or an object you'd like adapted\n\nYou can contact me to discuss feasibility."
     },
     {
-      question: content["faq.q3.question"] || "Can I customize the dimensions?",
-      answer: content["faq.q3.answer"] || "Yes! You can specify custom width, height, and depth dimensions when creating your model. We also offer predefined sizes for common use cases."
+      question: content["faq.questions.q3.question"] || "Can you design a custom part for me?",
+      answer: content["faq.questions.q3.answer"] || "Yes — depending on complexity, purpose, and timeframe.\n\nCustom design work may include:\n• measurements or reference photos\n• iteration and testing\n• material selection guidance\n\nNot every request will be a fit, but I'm always happy to explore possibilities."
     },
     {
-      question: content["faq.q4.question"] || "What payment methods do you accept?",
-      answer: content["faq.q4.answer"] || "We accept MB Way, PayPal, and major credit cards. All payments are processed securely."
+      question: content["faq.questions.q4.question"] || "Do you sell digital files (STL)?",
+      answer: content["faq.questions.q4.answer"] || "At the moment, Dr3amToReal focuses primarily on printed objects.\n\nDigital files may be offered in the future for selected designs, but the priority right now is delivering tested, physical results."
     },
     {
-      question: content["faq.q5.question"] || "Can I request revisions to my model?",
-      answer: content["faq.q5.answer"] || "Yes! After receiving your initial model, you can request modifications. Additional charges may apply for major redesigns."
+      question: content["faq.questions.q5.question"] || "What materials do you use?",
+      answer: content["faq.questions.q5.answer"] || "Material choice depends on the object's purpose.\n\nThis can include:\n• durable functional plastics\n• materials suitable for decorative or indoor use\n• finishes chosen for strength, feel, or aesthetics\n\nIf you're ordering a custom piece, material options will be discussed with you."
     },
     {
-      question: content["faq.q6.question"] || "What materials can I choose from?",
-      answer: content["faq.q6.answer"] || "We optimize models for PLA, ABS, PETG, Resin, and TPU materials. Each material has different properties suitable for various applications."
+      question: content["faq.questions.q6.question"] || "Are these mass-produced items?",
+      answer: content["faq.questions.q6.answer"] || "No.\n\nMost pieces are:\n• made to order\n• produced in small batches\n• or created as one-offs\n\nThis allows for better quality control and personalisation."
     },
     {
-      question: content["faq.q7.question"] || "Do you offer refunds?",
-      answer: content["faq.q7.answer"] || "We offer refunds within 7 days if you're not satisfied with your model and haven't downloaded the files yet. Please contact support for assistance."
+      question: content["faq.questions.q7.question"] || "Where are you based? Do you ship internationally?",
+      answer: content["faq.questions.q7.answer"] || "Dr3amToReal is based in Portugal.\n\nInternational shipping may be available depending on the product and destination.\n\nDetails are confirmed at order time."
     },
     {
-      question: content["faq.q8.question"] || "How do I use the generated files?",
-      answer: content["faq.q8.answer"] || "Download the STL file and import it into your preferred slicing software (like Cura or PrusaSlicer) to prepare it for printing. BLEND files can be edited in Blender."
+      question: content["faq.questions.q8.question"] || "I have an idea but don't know if it's possible. What should I do?",
+      answer: content["faq.questions.q8.answer"] || "That's perfectly fine — many projects start that way.\n\nYou can get in touch with:\n• a description of the idea\n• photos, sketches, or references (if available)\n• what you want the object to do\n\nWe'll take it from there."
     }
   ];
 
   return <div className="min-h-screen bg-gradient-mesh">
       <Header
-        pageTitle={content["faq.header.pageTitle"] || "FAQ"}
+        pageTitle={content["faq.header.pageTitle"] || "FAQ – Dr3amToReal"}
         pageSubtitle={content["faq.header.subtitle"] || "Frequently Asked Questions"}
       />
 
@@ -62,16 +62,16 @@ const FAQ = () => {
             </div>
             <h2 className="text-4xl font-bold">
               {(() => {
-                const title = content["faq.hero.title"] || "How Can We Help You?";
+                const title = content["faq.hero.title"] || "FAQ – Dr3amToReal";
                 const words = title.split(/\s+/);
-                if (words.length >= 3) {
-                  const lastWords = words.slice(-2).join(" ");
-                  const firstWords = words.slice(0, -2).join(" ");
+                if (words.length >= 2) {
+                  const lastWord = words.slice(-1).join(" ");
+                  const firstWords = words.slice(0, -1).join(" ");
                   return (
                     <>
                       {firstWords}{" "}
                       <span className="bg-gradient-primary bg-clip-text text-transparent">
-                        {lastWords}
+                        {lastWord}
                       </span>
                     </>
                   );
@@ -80,7 +80,7 @@ const FAQ = () => {
               })()}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {content["faq.hero.subtitle"] || "Find answers to common questions about our 3D model generation service"}
+              {content["faq.hero.subtitle"] || "Find answers to common questions about Dr3amToReal"}
             </p>
           </div>
 
@@ -89,7 +89,7 @@ const FAQ = () => {
             <CardHeader>
               <CardTitle>{content["faq.section.title"] || "Frequently Asked Questions"}</CardTitle>
               <CardDescription>
-                {content["faq.section.description"] || "Everything you need to know about our service"}
+                {content["faq.section.description"] || "Everything you need to know about Dr3amToReal"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -99,7 +99,7 @@ const FAQ = () => {
                     <AccordionTrigger className="text-left">
                       {faq.question}
                     </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
+                    <AccordionContent className="text-muted-foreground whitespace-pre-line">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>

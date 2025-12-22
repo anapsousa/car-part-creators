@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, Shield, Users, Heart } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
@@ -10,37 +9,20 @@ const About = () => {
   const navigate = useNavigate();
   const { content } = useContent("about");
   
-  const values = [{
-    icon: Zap,
-    title: content["about.values.innovation.title"] || "Innovation",
-    description: content["about.values.innovation.description"] || "Leveraging cutting-edge AI technology to make 3D modeling accessible to everyone"
-  }, {
-    icon: Shield,
-    title: content["about.values.quality.title"] || "Quality",
-    description: content["about.values.quality.description"] || "Delivering high-quality, print-ready models that meet professional standards"
-  }, {
-    icon: Users,
-    title: content["about.values.community.title"] || "Community",
-    description: content["about.values.community.description"] || "Building a community of makers, designers, and 3D printing enthusiasts"
-  }, {
-    icon: Heart,
-    title: content["about.values.passion.title"] || "Passion",
-    description: content["about.values.passion.description"] || "Driven by our love for innovation, design, and helping others create"
-  }];
   return <div className="min-h-screen bg-gradient-mesh">
       <Header
-        pageTitle={content["about.header.pageTitle"] || "About Us"}
-        pageSubtitle={content["about.header.subtitle"] || "Our Story"}
+        pageTitle={content["about.header.pageTitle"] || "About Dr3amToReal"}
+        pageSubtitle={content["about.header.subtitle"] || "From dream to real object."}
       />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-12">
-          {/* Hero Section */}
+          {/* Hero Section - Short Version */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl font-bold">
               {(() => {
-                const title = content["about.hero.title"] || "Empowering Creators";
+                const title = content["about.hero.title"] || "From dream to real object";
                 const parts = title.split(/\s+/);
                 if (parts.length >= 2) {
                   return (
@@ -56,74 +38,109 @@ const About = () => {
               })()}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {content["about.hero.subtitle"] || "We're on a mission to democratize 3D design and make custom manufacturing accessible to everyone"}
+              {content["about.hero.subtitle"] || "Dr3amToReal was born from a long-standing passion for building things that matter — objects that solve a problem, carry meaning, or simply feel right in your hands."}
             </p>
           </div>
 
-          {/* Story Section */}
+          {/* About Dr3amToReal Section */}
           <Card className="border-2 bg-gradient-to-br from-primary/5 via-secondary/5 to-tertiary/5">
             <CardHeader>
               <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">
-                {content["about.story.title"] || "Our Story"}
+                {content["about.intro.title"] || "About Dr3amToReal"}
               </CardTitle>
-              <CardDescription>{content["about.story.subtitle"] || "How it all began"}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                {content["about.story.paragraph1"] || "Founded in 2021, Pompousweek started with a simple idea around Quality Assurance. Then we decided to grow as company and had this idea: what if anyone could create professional-quality 3D models without years of CAD training? We saw the rise of 3D printing and AI technology converging, creating a unique opportunity to bridge the gap between imagination and reality."}
+                {content["about.intro.paragraph1"] || "Dr3amToReal is a creative 3D-printing studio based in Portugal, focused on custom parts, original designs, and personalised objects — from functional components to decorative pieces."}
               </p>
               <p>
-                {content["about.story.paragraph2"] || "Our team of engineers, designers, and AI specialists came together to build a platform that understands your needs and translates them into print-ready 3D models. Whether you're a hobbyist looking to create custom car parts or a designer crafting unique home decorations, we're here to help you bring your ideas to life."}
+                {content["about.intro.paragraph2"] || "This brand started as a dream: the desire to design the right object, print it properly, test it thoroughly, and make it available for others who care about quality and detail as much as I do."}
               </p>
               <p>
-                {content["about.story.paragraph3"] || "Today, we're proud to serve a growing community of makers, DIY enthusiasts, and professional designers who use our platform to create everything from functional prototypes to artistic masterpieces."}
+                {content["about.intro.paragraph3"] || "Behind Dr3amToReal is PompousWeek Unipessoal Lda, a company originally founded around Quality Assurance, engineering services, and training. Quality has always been the foundation — and it naturally carried over into physical creation."}
+              </p>
+              <p>
+                {content["about.intro.paragraph4"] || "What began with a love for old cars and hard-to-find replacement parts quickly grew into something broader: a space to design and produce objects that are functional, beautiful, and personal."}
               </p>
             </CardContent>
           </Card>
 
-          {/* Values Section */}
-          <div className="space-y-6">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold mb-2">
-                {(() => {
-                  const title = content["about.values.heading"] || "Our Values";
-                  const parts = title.split(/\s+/);
-                  if (parts.length >= 2) {
-                    return (
-                      <>
-                        {parts[0]}{" "}
-                        <span className="bg-gradient-primary bg-clip-text text-transparent">
-                          {parts.slice(1).join(" ")}
-                        </span>
-                      </>
-                    );
-                  }
-                  return title;
-                })()}
-              </h3>
-              <p className="text-muted-foreground">{content["about.values.subtitle"] || "What drives us every day"}</p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              {values.map((value, index) => {
-              const Icon = value.icon;
-              const bgColors = ['bg-primary/10', 'bg-secondary/10', 'bg-tertiary/10', 'bg-primary/10'];
-              const textColors = ['text-primary', 'text-secondary', 'text-tertiary', 'text-primary'];
-              return <Card 
-                key={index}
-                className="transition-all duration-300 hover:scale-105 hover:shadow-glow hover:border-primary/50 bg-gradient-to-br from-card via-card to-primary/5"
-              >
-                    <CardHeader>
-                      <div className={`inline-flex h-12 w-12 items-center justify-center rounded-full ${bgColors[index]} mb-2 transition-all duration-300 hover:scale-110`}>
-                        <Icon className={`h-6 w-6 ${textColors[index]}`} />
-                      </div>
-                      <CardTitle>{value.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">{value.description}</p>
-                    </CardContent>
-                  </Card>;
-            })}
-            </div>
+          {/* What I Create Section */}
+          <Card className="border-2 bg-gradient-to-br from-primary/5 via-secondary/5 to-tertiary/5">
+            <CardHeader>
+              <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">
+                {content["about.whatICreate.title"] || "What I create"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-muted-foreground">
+              <p>
+                {content["about.whatICreate.description"] || "Dr3amToReal focuses on:"}
+              </p>
+              <ul className="list-disc list-inside space-y-2 ml-4">
+                <li>{content["about.whatICreate.item1"] || "Custom and replacement parts, especially for older or discontinued models"}</li>
+                <li>{content["about.whatICreate.item2"] || "Home décor and functional objects, designed in-house"}</li>
+                <li>{content["about.whatICreate.item3"] || "Personalised prints, adapted to your taste, dimensions, or use case"}</li>
+                <li>{content["about.whatICreate.item4"] || "Small-batch and one-off pieces — not mass production"}</li>
+              </ul>
+              <p className="mt-4">
+                {content["about.whatICreate.note"] || "Every design goes through iteration, testing, and refinement before it's offered for sale."}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* How This Is Different Section */}
+          <Card className="border-2 bg-gradient-to-br from-primary/5 via-secondary/5 to-tertiary/5">
+            <CardHeader>
+              <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">
+                {content["about.howDifferent.title"] || "How this is different"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-muted-foreground">
+              <p className="font-semibold">
+                {content["about.howDifferent.description"] || "Dr3amToReal is not a print farm."}
+              </p>
+              <p>
+                {content["about.howDifferent.subtitle"] || "It's a design-first, quality-driven studio, where:"}
+              </p>
+              <ul className="list-disc list-inside space-y-2 ml-4">
+                <li>{content["about.howDifferent.point1"] || "materials are chosen intentionally"}</li>
+                <li>{content["about.howDifferent.point2"] || "prints are tested, adjusted, and improved"}</li>
+                <li>{content["about.howDifferent.point3"] || "and customers can collaborate instead of just \"ordering a file\""}</li>
+              </ul>
+              <p className="mt-4">
+                {content["about.howDifferent.note"] || "Some pieces are available as finished prints. Others are created together with you."}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Where This Is Going Section */}
+          <Card className="border-2 bg-gradient-to-br from-primary/5 via-secondary/5 to-tertiary/5">
+            <CardHeader>
+              <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">
+                {content["about.whereGoing.title"] || "Where this is going"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-muted-foreground">
+              <p className="font-semibold">
+                {content["about.whereGoing.description"] || "This is just the beginning."}
+              </p>
+              <p>
+                {content["about.whereGoing.paragraph"] || "Dr3amToReal is growing step by step — expanding its design catalogue, refining production, and exploring new materials and techniques — always with the same goal:"}
+              </p>
+              <p className="font-semibold text-foreground">
+                {content["about.whereGoing.goal"] || "Turn ideas, memories, and needs into well-made objects that last."}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Signature Line */}
+          <div className="text-center space-y-2 py-8">
+            <p className="text-lg font-semibold">
+              {content["about.signature.line1"] || "Designed with care. Printed with intention."}
+            </p>
+            <p className="text-lg bg-gradient-primary bg-clip-text text-transparent font-bold">
+              {content["about.signature.line2"] || "From dream to real."}
+            </p>
           </div>
 
           {/* CTA Section */}

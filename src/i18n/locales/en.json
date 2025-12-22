@@ -170,40 +170,54 @@
     }
   },
   "about": {
-    "title": "About Us",
-    "subtitle": "Learn more about our mission and values",
-    "mission": {
-      "title": "Our Mission",
-      "description": "At Pompousweek, we're revolutionising the way people create custom 3D models. Our mission is to make professional-grade 3D design accessible to everyone through the power of artificial intelligence."
+    "header": {
+      "pageTitle": "About Dr3amToReal",
+      "subtitle": "From dream to real object."
     },
-    "story": {
-      "title": "Our Story",
-      "description": "Founded in 2024, Pompousweek emerged from a simple observation: creating custom car parts and home decorations shouldn't require years of 3D modelling expertise. We combined cutting-edge AI technology with user-friendly interfaces to democratise 3D design. Today, we're proud to serve thousands of creators, makers, and enthusiasts worldwide."
+    "hero": {
+      "title": "From dream to real object",
+      "subtitle": "Dr3amToReal was born from a long-standing passion for building things that matter — objects that solve a problem, carry meaning, or simply feel right in your hands."
     },
-    "values": {
-      "title": "Our Values",
-      "innovation": {
-        "title": "Innovation",
-        "description": "Pushing boundaries with AI technology"
-      },
-      "quality": {
-        "title": "Quality",
-        "description": "Delivering precise, printable 3D models"
-      },
-      "community": {
-        "title": "Community",
-        "description": "Building a supportive creator ecosystem"
-      },
-      "passion": {
-        "title": "Passion",
-        "description": "Driven by love for design and technology"
-      }
+    "intro": {
+      "title": "About Dr3amToReal",
+      "paragraph1": "Dr3amToReal is a creative 3D-printing studio based in Portugal, focused on custom parts, original designs, and personalised objects — from functional components to decorative pieces.",
+      "paragraph2": "This brand started as a dream: the desire to design the right object, print it properly, test it thoroughly, and make it available for others who care about quality and detail as much as I do.",
+      "paragraph3": "Behind Dr3amToReal is PompousWeek Unipessoal Lda, a company originally founded around Quality Assurance, engineering services, and training. Quality has always been the foundation — and it naturally carried over into physical creation.",
+      "paragraph4": "What began with a love for old cars and hard-to-find replacement parts quickly grew into something broader: a space to design and produce objects that are functional, beautiful, and personal."
+    },
+    "whatICreate": {
+      "title": "What I create",
+      "description": "Dr3amToReal focuses on:",
+      "item1": "Custom and replacement parts, especially for older or discontinued models",
+      "item2": "Home décor and functional objects, designed in-house",
+      "item3": "Personalised prints, adapted to your taste, dimensions, or use case",
+      "item4": "Small-batch and one-off pieces — not mass production",
+      "note": "Every design goes through iteration, testing, and refinement before it's offered for sale."
+    },
+    "howDifferent": {
+      "title": "How this is different",
+      "description": "Dr3amToReal is not a print farm.",
+      "subtitle": "It's a design-first, quality-driven studio, where:",
+      "point1": "materials are chosen intentionally",
+      "point2": "prints are tested, adjusted, and improved",
+      "point3": "and customers can collaborate instead of just \"ordering a file\"",
+      "note": "Some pieces are available as finished prints. Others are created together with you."
+    },
+    "whereGoing": {
+      "title": "Where this is going",
+      "description": "This is just the beginning.",
+      "paragraph": "Dr3amToReal is growing step by step — expanding its design catalogue, refining production, and exploring new materials and techniques — always with the same goal:",
+      "goal": "Turn ideas, memories, and needs into well-made objects that last."
+    },
+    "signature": {
+      "line1": "Designed with care. Printed with intention.",
+      "line2": "From dream to real."
     },
     "cta": {
       "title": "Join Our Community",
-      "description": "Become part of the 3D printing revolution",
-      "getStarted": "Get Started",
-      "contact": "Contact Us"
+      "description": "Start creating amazing 3D models today",
+      "button_get_started": "Get Started",
+      "button_contact": "Contact Us"
     }
   },
   "contact": {
@@ -239,36 +253,53 @@
     }
   },
   "faq": {
-    "title": "Frequently Asked Questions",
-    "subtitle": "How Can We Help You?",
-    "description": "Find answers to common questions about our 3D model generator",
+    "header": {
+      "pageTitle": "FAQ – Dr3amToReal",
+      "subtitle": "Frequently Asked Questions"
+    },
+    "hero": {
+      "title": "FAQ – Dr3amToReal",
+      "subtitle": "Find answers to common questions about Dr3amToReal"
+    },
+    "section": {
+      "title": "Frequently Asked Questions",
+      "description": "Everything you need to know about Dr3amToReal"
+    },
     "questions": {
       "q1": {
-        "question": "How does the AI 3D model generator work?",
-        "answer": "Our AI analyses your text description and generates a detailed 3D model based on your specifications. Simply describe what you want to create, select the category, and our advanced AI will handle the rest."
+        "question": "Is Dr3amToReal a new business?",
+        "answer": "Yes. Dr3amToReal is a young brand, currently growing under PompousWeek Unipessoal Lda, a Portuguese company.\n\nWhile the 3D-printing studio is new, it builds on years of experience in engineering, testing, and quality-focused work."
       },
       "q2": {
-        "question": "What file formats do you support?",
-        "answer": "We provide models in both STL and BLEND formats. STL files are perfect for 3D printing, whilst BLEND files can be further edited in Blender."
+        "question": "Do you only sell what's in the shop?",
+        "answer": "Not always.\n\nSome designs are available as ready-to-order prints, but custom requests and personalisation are a big part of what I do.\n\nIf you have:\n• a part that's hard to find\n• an idea you want to bring to life\n• or an object you'd like adapted\n\nYou can contact me to discuss feasibility."
       },
       "q3": {
-        "question": "Can I edit the generated models?",
-        "answer": "Yes! BLEND files can be opened and modified in Blender, a free 3D modelling software. STL files can be edited using various 3D editing tools."
+        "question": "Can you design a custom part for me?",
+        "answer": "Yes — depending on complexity, purpose, and timeframe.\n\nCustom design work may include:\n• measurements or reference photos\n• iteration and testing\n• material selection guidance\n\nNot every request will be a fit, but I'm always happy to explore possibilities."
       },
       "q4": {
-        "question": "How long does generation take?",
-        "answer": "Most models are generated within 2-5 minutes, depending on complexity. You'll receive a notification once your model is ready to download."
+        "question": "Do you sell digital files (STL)?",
+        "answer": "At the moment, Dr3amToReal focuses primarily on printed objects.\n\nDigital files may be offered in the future for selected designs, but the priority right now is delivering tested, physical results."
       },
       "q5": {
-        "question": "What if I'm not satisfied with the result?",
-        "answer": "You can regenerate models with different descriptions at no extra cost. We're committed to helping you achieve the perfect result."
+        "question": "What materials do you use?",
+        "answer": "Material choice depends on the object's purpose.\n\nThis can include:\n• durable functional plastics\n• materials suitable for decorative or indoor use\n• finishes chosen for strength, feel, or aesthetics\n\nIf you're ordering a custom piece, material options will be discussed with you."
       },
       "q6": {
-        "question": "Do you offer commercial licences?",
-        "answer": "Yes! All generated models come with a commercial licence, allowing you to use them for personal or commercial projects."
+        "question": "Are these mass-produced items?",
+        "answer": "No.\n\nMost pieces are:\n• made to order\n• produced in small batches\n• or created as one-offs\n\nThis allows for better quality control and personalisation."
+      },
+      "q7": {
+        "question": "Where are you based? Do you ship internationally?",
+        "answer": "Dr3amToReal is based in Portugal.\n\nInternational shipping may be available depending on the product and destination.\n\nDetails are confirmed at order time."
+      },
+      "q8": {
+        "question": "I have an idea but don't know if it's possible. What should I do?",
+        "answer": "That's perfectly fine — many projects start that way.\n\nYou can get in touch with:\n• a description of the idea\n• photos, sketches, or references (if available)\n• what you want the object to do\n\nWe'll take it from there."
       }
     },
-    "support": {
+    "cta": {
       "title": "Still have questions?",
       "description": "Our support team is here to help",
       "button": "Contact Support"
