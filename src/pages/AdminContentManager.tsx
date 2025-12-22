@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Save, Trash2, Plus } from "lucide-react";
+import { Search, Save, Trash2, Plus, RefreshCw } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -86,24 +86,49 @@ export default function AdminContentManager() {
 
   const fetchContent = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("content_translations")
-      .select("*")
-      .order("page")
-      .order("section")
-      .order("content_key");
+    try {
+      const { data, error } = await supabase
+        .from("content_translations")
+        .select("*")
+        .order("page")
+        .order("section")
+        .order("content_key");
 
-    if (error) {
+      if (error) {
+        console.error("Error fetching content:", error);
+        toast({
+          title: "Error",
+          description: `Failed to load content: ${error.message}`,
+          variant: "destructive",
+        });
+        setContentItems([]);
+        setFilteredContentItems([]);
+      } else {
+        const items = data || [];
+        console.log(`Loaded ${items.length} content items`);
+        setContentItems(items);
+        setFilteredContentItems(items);
+        
+        if (items.length === 0) {
+          toast({
+            title: "No Content Found",
+            description: "No content translations found in the database. Make sure the content has been imported.",
+            variant: "destructive",
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
       toast({
         title: "Error",
-        description: "Failed to load content",
+        description: "An unexpected error occurred while loading content",
         variant: "destructive",
       });
-    } else {
-      setContentItems(data || []);
-      setFilteredContentItems(data || []);
+      setContentItems([]);
+      setFilteredContentItems([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSearch = (term: string) => {
@@ -218,11 +243,22 @@ export default function AdminContentManager() {
       <main className="container mx-auto px-4 py-8">
         <Card className="p-6 bg-card/90 backdrop-blur-md">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">{content["admin.content.title"] || "Content Translations"}</h2>
-            <Button onClick={() => setShowAddDialog(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              {content["admin.content.add_button"] || "Add Content"}
-            </Button>
+            <div>
+              <h2 className="text-2xl font-bold">{content["admin.content.title"] || "Content Translations"}</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Total: {contentItems.length} items | Filtered: {filteredContentItems.length} items
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={fetchContent} disabled={loading}>
+                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+              <Button onClick={() => setShowAddDialog(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                {content["admin.content.add_button"] || "Add Content"}
+              </Button>
+            </div>
           </div>
 
           <div className="relative mb-6">
@@ -244,9 +280,23 @@ export default function AdminContentManager() {
               ))}
             </TabsList>
 
-            {allPages.map((page) => (
+            {allPages.map((page) => {
+              const pageItems = page === "all" 
+                ? filteredContentItems 
+                : filteredContentItems.filter((item) => item.page === page);
+              
+              return (
               <TabsContent key={page} value={page} className="space-y-4">
-                {(page === "all" ? filteredContentItems : filteredContentItems.filter((item) => item.page === page)).map((item) => (
+                {pageItems.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground">
+                      {page === "all" 
+                        ? "No content found. Use the search bar or check if content has been imported." 
+                        : `No content found for page "${page}".`}
+                    </p>
+                  </Card>
+                ) : (
+                  pageItems.map((item) => (
                   <Card key={item.id} className="p-4">
                     <div className="space-y-4">
                       <div className="flex justify-between items-start">
@@ -353,9 +403,11 @@ export default function AdminContentManager() {
                       </div>
                     </div>
                   </Card>
-                ))}
+                  ))
+                )}
               </TabsContent>
-            ))}
+            );
+            })}
           </Tabs>
         </Card>
       </main>
