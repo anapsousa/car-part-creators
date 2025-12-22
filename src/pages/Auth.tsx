@@ -123,6 +123,7 @@ const Auth = () => {
   const handleSocialLogin = async (provider: "google" | "facebook" | "twitter" | "github" | "discord") => {
     setIsLoading(true);
     try {
+      // Use the current origin for redirect (works for both localhost and production)
       const redirectUrl = `${window.location.origin}/auth`;
       
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -134,16 +135,21 @@ const Auth = () => {
       });
       
       if (error) {
-        if (error.message.includes("provider is not enabled")) {
-          toast.error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not configured. Please use email/password or contact support.`);
+        console.error(`OAuth error for ${provider}:`, error);
+        if (error.message?.includes("provider is not enabled") || error.message?.includes("not configured")) {
+          toast.error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not configured in Supabase. Please configure it in the Supabase dashboard or use email/password.`);
+        } else if (error.message?.includes("redirect_uri_mismatch")) {
+          toast.error(`Redirect URL mismatch. Please add "${redirectUrl}" to your ${provider} OAuth app settings.`);
         } else {
-          throw error;
+          toast.error((content["auth.social.error"] || "Failed to sign in with {provider}. Please try again.").replace("{provider}", provider.charAt(0).toUpperCase() + provider.slice(1)));
         }
+        setIsLoading(false);
       }
+      // If successful, the browser will redirect to the OAuth provider
+      // and then back to /auth, so we don't need to handle success here
     } catch (error: any) {
-      console.error("OAuth error:", error);
+      console.error(`OAuth error for ${provider}:`, error);
       toast.error((content["auth.social.error"] || "Failed to sign in with {provider}. Please try again.").replace("{provider}", provider.charAt(0).toUpperCase() + provider.slice(1)));
-    } finally {
       setIsLoading(false);
     }
   };
@@ -294,7 +300,7 @@ const Auth = () => {
                 <Facebook className="h-4 w-4" />
                 {content["auth.social.facebook"] || "Facebook"}
               </Button>
-              <Button
+{/*               <Button
                 variant="outline"
                 type="button"
                 className="w-full flex items-center justify-center gap-2"
@@ -323,7 +329,7 @@ const Auth = () => {
               >
                 <MessageCircle className="h-4 w-4" />
                 {content["auth.social.discord"] || "Discord"}
-              </Button>
+              </Button> */}
             </div>
             <div className="mt-4 text-center text-sm">
               <button

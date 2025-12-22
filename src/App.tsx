@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { initFacebookSDK } from "@/utils/facebook-sdk";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Checkout from "./pages/Checkout";
@@ -42,8 +44,18 @@ import { SetupWizard } from "./components/calculator/onboarding/SetupWizard";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+const App = () => {
+  // Optionally initialize Facebook SDK if VITE_FACEBOOK_APP_ID is set
+  useEffect(() => {
+    if (import.meta.env.VITE_FACEBOOK_APP_ID) {
+      initFacebookSDK().catch((error) => {
+        console.warn('Facebook SDK initialization failed (this is optional):', error);
+      });
+    }
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <WishlistProvider>
         <CartProvider>
@@ -92,6 +104,7 @@ const App = () => (
       </WishlistProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
