@@ -384,5 +384,20 @@
       "applepay_label": "Apple Pay",
       "mb_label": "Multibanco"
     }
+  },
+  "calculator": {
+    "settings": {
+      "vat": {
+        "title": "VAT Settings",
+        "showVatInCalculator": "Show VAT in Calculator",
+        "showVatDescription": "Display VAT breakdown in print cost calculations",
+        "vatRate": "VAT Rate (%)",
+        "vatRateDescription": "The VAT percentage to apply to prices"
+      }
+    },
+    "common": {
+      "confirmDeleteTitle": "Confirm Delete",
+      "confirmDeleteDescription": "Are you sure you want to delete this item? This action cannot be undone."
+    }
   }
 }

@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { FILAMENT_BRANDS, FILAMENT_MATERIALS, FILAMENT_COLORS, getMaterialDensity, calculateCostPerGram } from '@/lib/calculator/filamentData';
 import { useContent } from '@/hooks/useContent';
+import { DeleteConfirmDialog } from '@/components/calculator/DeleteConfirmDialog';
 
 interface FilamentForm {
   name: string;
@@ -49,6 +50,8 @@ export default function CalcFilaments() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FilamentForm>(defaultForm);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
   const t = (key: string, fallback: string) => content[key] || fallback;
 
@@ -153,16 +156,24 @@ export default function CalcFilaments() {
     setDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('calculator.common.confirmDelete', 'Are you sure you want to delete this?'))) return;
+  const openDeleteDialog = (filament: any) => {
+    setDeleteTarget({ id: filament.id, name: filament.name });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     
     try {
-      const { error } = await supabase.from('calc_filaments').delete().eq('id', id);
+      const { error } = await supabase.from('calc_filaments').delete().eq('id', deleteTarget.id);
       if (error) throw error;
       toast({ title: t('calculator.common.deleted', 'Filament deleted') });
       await fetchFilaments();
     } catch (error: any) {
       toast({ title: t('calculator.common.error', 'Error'), description: error.message, variant: 'destructive' });
+    } finally {
+      setDeleteDialogOpen(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -363,7 +374,7 @@ export default function CalcFilaments() {
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(filament)}>
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(filament.id)}>
+                            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog(filament)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
@@ -379,6 +390,14 @@ export default function CalcFilaments() {
       </main>
       
       <Footer />
+      
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title={t('calculator.common.confirmDeleteTitle', 'Delete Filament')}
+        description={t('calculator.common.confirmDeleteDescription', `Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`)}
+      />
     </div>
   );
 }
