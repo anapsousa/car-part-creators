@@ -6,6 +6,7 @@ import { useContent } from '@/hooks/useContent';
 import { useUserRole } from '@/hooks/useUserRole';
 import { CalculatorLayout } from '@/components/calculator/CalculatorLayout';
 import { MultiFilamentSelector } from '@/components/calculator/MultiFilamentSelector';
+import { ConsumableExpenseSelector } from '@/components/calculator/ConsumableExpenseSelector';
 import { PrintListItem } from '@/components/calculator/PrintListItem';
 import { PrintImageUpload } from '@/components/calculator/PrintImageUpload';
 import { DeleteConfirmDialog } from '@/components/calculator/DeleteConfirmDialog';
@@ -104,6 +105,14 @@ export default function CalcPrints() {
   const [markupPercent, setMarkupPercent] = useState(50);
   const [notes, setNotes] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  
+  // Per-print consumables and expenses selections
+  const [selectedConsumableIds, setSelectedConsumableIds] = useState<string[]>([]);
+  const [selectedExpenseIds, setSelectedExpenseIds] = useState<string[]>([]);
+  
+  // Junction table data for existing prints
+  const [printConsumables, setPrintConsumables] = useState<{ print_id: string; consumable_id: string }[]>([]);
+  const [printExpenses, setPrintExpenses] = useState<{ print_id: string; expense_id: string }[]>([]);
 
   // Check auth and load data
   useEffect(() => {
@@ -124,7 +133,8 @@ export default function CalcPrints() {
     try {
       const [
         printsRes, printersRes, filamentsRes, electricityRes, shippingRes,
-        laborRes, consumablesRes, expensesRes, printFilamentsRes, vatRes
+        laborRes, consumablesRes, expensesRes, printFilamentsRes, vatRes,
+        printConsumablesRes, printExpensesRes
       ] = await Promise.all([
         supabase.from('calc_prints').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
         supabase.from('calc_printers').select('*').eq('user_id', userId).eq('is_active', true),
@@ -135,7 +145,9 @@ export default function CalcPrints() {
         supabase.from('calc_consumables').select('*').eq('user_id', userId).eq('is_active', true),
         supabase.from('calc_fixed_expenses').select('*').eq('user_id', userId).eq('is_active', true),
         supabase.from('calc_print_filaments').select('*, calc_prints!inner(user_id)').eq('calc_prints.user_id', userId),
-        supabase.from('calc_vat_settings').select('*').eq('user_id', userId).maybeSingle()
+        supabase.from('calc_vat_settings').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('calc_print_consumables').select('print_id, consumable_id'),
+        supabase.from('calc_print_expenses').select('print_id, expense_id')
       ]);
 
       if (printsRes.data) setPrints(printsRes.data);
@@ -147,6 +159,8 @@ export default function CalcPrints() {
       if (consumablesRes.data) setConsumables(consumablesRes.data);
       if (expensesRes.data) setFixedExpenses(expensesRes.data);
       if (printFilamentsRes.data) setPrintFilaments(printFilamentsRes.data);
+      if (printConsumablesRes.data) setPrintConsumables(printConsumablesRes.data);
+      if (printExpensesRes.data) setPrintExpenses(printExpensesRes.data);
       
       // Load VAT settings
       if (vatRes.data) {
@@ -242,11 +256,19 @@ export default function CalcPrints() {
   const selectedPrinter = useMemo(() => printers.find(p => p.id === selectedPrinterId), [printers, selectedPrinterId]);
   const selectedElectricity = useMemo(() => electricitySettings.find(e => e.id === selectedElectricityId), [electricitySettings, selectedElectricityId]);
   const selectedShipping = useMemo(() => shippingOptions.find(s => s.id === selectedShippingId), [shippingOptions, selectedShippingId]);
-  const totalConsumablesCost = useMemo(() => consumables.reduce((sum, c) => sum + Number(c.cost), 0), [consumables]);
-  const totalFixedExpensesCost = useMemo(() => {
-    const monthlyTotal = fixedExpenses.reduce((sum, e) => sum + Number(e.monthly_amount), 0);
-    return monthlyTotal / 100;
-  }, [fixedExpenses]);
+  // Calculate selected consumables and expenses costs
+  const selectedConsumablesCost = useMemo(() => {
+    return consumables
+      .filter(c => selectedConsumableIds.includes(c.id))
+      .reduce((sum, c) => sum + Number(c.cost), 0);
+  }, [consumables, selectedConsumableIds]);
+  
+  const selectedExpensesCost = useMemo(() => {
+    const monthlyTotal = fixedExpenses
+      .filter(e => selectedExpenseIds.includes(e.id))
+      .reduce((sum, e) => sum + Number(e.monthly_amount), 0);
+    return monthlyTotal / 100; // Prorated per print
+  }, [fixedExpenses, selectedExpenseIds]);
 
   const printTimeMinutes = useMemo(() => parseTimeToMinutes(printTimeInput), [printTimeInput]);
 
@@ -273,14 +295,14 @@ export default function CalcPrints() {
       hourlyRate: Number(laborSettings?.hourly_rate) || 10,
       includeLaborInCost: laborSettings?.include_in_cost ?? true,
       shippingCost: Number(selectedShipping?.price) || 0,
-      consumablesCost: totalConsumablesCost,
-      fixedExpensesCost: totalFixedExpensesCost,
+      consumablesCost: selectedConsumablesCost,
+      fixedExpensesCost: selectedExpensesCost,
       modelCost,
       wastagePercent,
       failureRatePercent,
       quantity,
     });
-  }, [filamentCosts, selectedPrinter, printTimeMinutes, selectedElectricity, laborTimeMinutes, laborSettings, selectedShipping, totalConsumablesCost, totalFixedExpensesCost, modelCost, wastagePercent, failureRatePercent, quantity]);
+  }, [filamentCosts, selectedPrinter, printTimeMinutes, selectedElectricity, laborTimeMinutes, laborSettings, selectedShipping, selectedConsumablesCost, selectedExpensesCost, modelCost, wastagePercent, failureRatePercent, quantity]);
 
   const pricing: PricingResult = useMemo(() => calculatePricingFromMarkup(costBreakdown.costPerUnit, markupPercent), [costBreakdown.costPerUnit, markupPercent]);
 
@@ -301,6 +323,8 @@ export default function CalcPrints() {
     setNotes('');
     setImageUrl(null);
     setEditingPrint(null);
+    setSelectedConsumableIds([]);
+    setSelectedExpenseIds([]);
   };
 
   const handleNewPrint = () => {
@@ -324,6 +348,7 @@ export default function CalcPrints() {
     setNotes(print.notes || '');
     setImageUrl((print as any).image_url || null);
 
+    // Load filament usages
     const usages = printFilaments
       .filter(pf => pf.print_id === print.id)
       .map(pf => {
@@ -337,6 +362,18 @@ export default function CalcPrints() {
         };
       });
     setFilamentUsages(usages);
+    
+    // Load selected consumables and expenses for this print
+    const consumableIds = printConsumables
+      .filter(pc => pc.print_id === print.id)
+      .map(pc => pc.consumable_id);
+    setSelectedConsumableIds(consumableIds);
+    
+    const expenseIds = printExpenses
+      .filter(pe => pe.print_id === print.id)
+      .map(pe => pe.expense_id);
+    setSelectedExpenseIds(expenseIds);
+    
     setIsDialogOpen(true);
   };
 
@@ -388,6 +425,7 @@ export default function CalcPrints() {
         printId = data.id;
       }
 
+      // Save filament usages
       await supabase.from('calc_print_filaments').delete().eq('print_id', printId);
       if (filamentUsages.length > 0) {
         const filamentData = filamentUsages.map(fu => ({
@@ -396,6 +434,26 @@ export default function CalcPrints() {
           grams_used: fu.gramsUsed,
         }));
         await supabase.from('calc_print_filaments').insert(filamentData);
+      }
+      
+      // Save selected consumables
+      await supabase.from('calc_print_consumables').delete().eq('print_id', printId);
+      if (selectedConsumableIds.length > 0) {
+        const consumableData = selectedConsumableIds.map(cId => ({
+          print_id: printId,
+          consumable_id: cId,
+        }));
+        await supabase.from('calc_print_consumables').insert(consumableData);
+      }
+      
+      // Save selected expenses
+      await supabase.from('calc_print_expenses').delete().eq('print_id', printId);
+      if (selectedExpenseIds.length > 0) {
+        const expenseData = selectedExpenseIds.map(eId => ({
+          print_id: printId,
+          expense_id: eId,
+        }));
+        await supabase.from('calc_print_expenses').insert(expenseData);
       }
 
       toast({ title: editingPrint ? t('calculator.prints.updated', 'Print updated') : t('calculator.prints.saved', 'Print saved') });
@@ -1045,6 +1103,19 @@ export default function CalcPrints() {
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder={t('calculator.prints.notesPlaceholder', 'Any additional notes...')}
                     rows={3}
+                  />
+                </div>
+                
+                {/* Consumables and Fixed Expenses Selection */}
+                <div className="col-span-2">
+                  <Separator className="my-4" />
+                  <ConsumableExpenseSelector
+                    consumables={consumables}
+                    fixedExpenses={fixedExpenses}
+                    selectedConsumableIds={selectedConsumableIds}
+                    selectedExpenseIds={selectedExpenseIds}
+                    onConsumablesChange={setSelectedConsumableIds}
+                    onExpensesChange={setSelectedExpenseIds}
                   />
                 </div>
               </div>
