@@ -14,50 +14,94 @@
   },
   "home": {
     "hero": {
-      "title": "Transform Your Ideas into 3D Reality",
-      "subtitle": "AI-powered 3D model generation for custom car parts and home decorations. Design, customize, and bring your vision to life.",
-      "cta": "Start Creating",
-      "learnMore": "Learn More"
+      "title": "Restore Your Classic. Enhance Your Home",
+      "subtitle": "Thoughtfully designed and carefully printed objects — from functional parts to personalised home décor — made in Portugal.",
+      "cta_primary": "Explore the collection",
+      "cta_secondary": "Request custom work",
+      "trust_line": "Small-batch. Made to order. Quality-driven."
     },
-    "howItWorks": {
-      "title": "How It Works",
-      "subtitle": "Create stunning 3D models in three simple steps",
-      "step1": {
-        "title": "Describe Your Vision",
-        "description": "Tell us what you want to create using natural language"
+    "whatIs": {
+      "title": "What is Dr3amToReal?",
+      "paragraph1": "Dr3amToReal is a design-led 3D printing studio based in Portugal, creating custom parts, original objects, and personalised prints.",
+      "paragraph2": "This is not mass production.",
+      "paragraph3": "Every piece is designed, tested, and refined before it's made available.",
+      "paragraph4": "Some designs start as functional solutions — others as creative experiments — but all of them are built with the same attention to detail."
+    },
+    "whatYouCanFind": {
+      "title": "What I Create",
+      "column1": {
+        "title": "Functional & Replacement Parts",
+        "description": "Custom or hard-to-find components, especially for older or discontinued models."
       },
-      "step2": {
-        "title": "AI Generation",
-        "description": "Our advanced AI transforms your description into a 3D model"
+      "column2": {
+        "title": "Home Décor & Everyday Objects",
+        "description": "Original designs created to be both useful and visually meaningful."
       },
-      "step3": {
-        "title": "Download & Use",
-        "description": "Get your model in STL or BLEND format, ready for 3D printing"
+      "column3": {
+        "title": "Personalised Prints",
+        "description": "Objects adapted to your taste, size, or use case — no generic solutions."
       }
     },
-    "features": {
-      "title": "Why Choose Us",
-      "feature1": {
-        "title": "AI-Powered Design",
-        "description": "Cutting-edge artificial intelligence creates detailed 3D models from your descriptions"
+    "whyExists": {
+      "title": "Why Dr3amToReal Exists",
+      "paragraph1": "Dr3amToReal started with a simple frustration: needing a part that no longer existed.",
+      "paragraph2": "That frustration turned into designing replacements, improving them, and eventually creating entirely new objects — first for old cars, then for everyday life.",
+      "paragraph3": "Backed by years of experience in quality engineering and testing, this studio applies the same mindset to physical objects:",
+      "paragraph4": "test, refine, improve — then share."
+    },
+    "howDifferent": {
+      "title": "Not a Print Farm",
+      "positive": {
+        "title": "What we do:",
+        "point1": "Designed, not just printed",
+        "point2": "Small batches and one-off pieces",
+        "point3": "Collaboration instead of anonymous orders",
+        "point4": "Material and function considered first"
       },
-      "feature2": {
-        "title": "Custom Car Parts",
-        "description": "Generate precise car parts tailored to your vehicle's specifications"
-      },
-      "feature3": {
-        "title": "Home Decorations",
-        "description": "Create unique decorative pieces that perfectly match your style"
-      },
-      "feature4": {
-        "title": "Community Driven",
-        "description": "Join a growing community of creators and enthusiasts"
+      "negative": {
+        "title": "What we don't do:",
+        "point1": "No mass production",
+        "point2": "No rushed jobs",
+        "point3": "No \"print anything instantly\" promises"
       }
     },
-    "cta": {
-      "title": "Ready to Start Creating?",
-      "subtitle": "Join thousands of satisfied creators using our AI-powered 3D model generator",
-      "button": "Get Started Now"
+    "customWork": {
+      "title": "Have an Idea That Doesn't Exist Yet?",
+      "description": "Some projects don't belong in a catalogue.",
+      "paragraph": "If you have an idea, a problem to solve, or an object you want adapted to your needs, Dr3amToReal offers select custom design and 3D printing services.",
+      "paragraph2": "Custom work is collaborative, intentional, and quoted based on complexity — not rushed or automated.",
+      "cta": "Request custom work",
+      "cta_note": "Please include as much detail as possible for a meaningful response."
+    },
+    "manifesto": {
+      "title": "What This Studio Believes In",
+      "point1": "Objects should exist for a reason",
+      "point2": "Quality comes from iteration, not speed",
+      "point3": "Custom means listening first",
+      "point4": "Small-batch beats mass production",
+      "point5": "Well-made things are meant to last"
+    },
+    "founderNote": {
+      "title": "From the Founder",
+      "paragraph1": "Dr3amToReal began as a personal dream.",
+      "paragraph2": "After years working in quality engineering — testing systems before they reached people — I found myself applying the same discipline to physical creation.",
+      "paragraph3": "Designing, testing, refining, and improving objects until they feel right.",
+      "paragraph4": "This studio is my way of combining engineering precision with creativity — and sharing that process with others who care about how things are made.",
+      "paragraph5": "Thank you for being here at the very beginning.",
+      "signature": "— Ana",
+      "signature_title": "Founder, Dr3amToReal"
+    },
+    "locationShipping": {
+      "title": "Based in Portugal, Shipping Worldwide",
+      "paragraph1": "Dr3amToReal is proudly based in Portugal.",
+      "paragraph2": "Orders are produced locally and shipped with care.",
+      "paragraph3": "Availability and shipping options depend on the product and destination and are confirmed during checkout."
+    },
+    "finalCta": {
+      "title": "Every Object Starts as an Idea",
+      "description": "Whether you're looking for a finished design or want to bring something new to life, Dr3amToReal exists to turn ideas into real, well-made objects.",
+      "button_primary": "Explore the collection",
+      "button_secondary": "Request custom work"
     }
   },
   "shop": {

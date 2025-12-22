@@ -14,50 +14,94 @@
   },
   "home": {
     "hero": {
-      "title": "Transforme as Suas Ideias em Realidade 3D",
-      "subtitle": "Geração de modelos 3D com inteligência artificial para peças de automóvel personalizadas e decorações para casa. Desenhe, personalize e dê vida à sua visão.",
-      "cta": "Começar a Criar",
-      "learnMore": "Saber Mais"
+      "title": "Restaurar o Seu Clássico. Melhorar a Sua Casa",
+      "subtitle": "Objetos pensados e cuidadosamente impressos — desde peças funcionais até decoração personalizada para casa — feitos em Portugal.",
+      "cta_primary": "Explorar a coleção",
+      "cta_secondary": "Solicitar trabalho personalizado",
+      "trust_line": "Pequenas séries. Feito sob encomenda. Orientado para a qualidade."
     },
-    "howItWorks": {
-      "title": "Como Funciona",
-      "subtitle": "Crie modelos 3D impressionantes em três passos simples",
-      "step1": {
-        "title": "Descreva a Sua Visão",
-        "description": "Diga-nos o que pretende criar usando linguagem natural"
+    "whatIs": {
+      "title": "O que é Dr3amToReal?",
+      "paragraph1": "A Dr3amToReal é um estúdio de impressão 3D orientado para o design, sediado em Portugal, criando peças personalizadas, objetos originais e impressões personalizadas.",
+      "paragraph2": "Isto não é produção em massa.",
+      "paragraph3": "Cada peça é desenhada, testada e refinada antes de estar disponível.",
+      "paragraph4": "Alguns designs começam como soluções funcionais — outros como experiências criativas — mas todos são construídos com a mesma atenção ao detalhe."
+    },
+    "whatYouCanFind": {
+      "title": "O que crio",
+      "column1": {
+        "title": "Peças Funcionais e de Substituição",
+        "description": "Componentes personalizados ou difíceis de encontrar, especialmente para modelos antigos ou descontinuados."
       },
-      "step2": {
-        "title": "Geração com IA",
-        "description": "A nossa IA avançada transforma a sua descrição num modelo 3D"
+      "column2": {
+        "title": "Decoração para Casa e Objetos do Dia a Dia",
+        "description": "Designs originais criados para serem úteis e visualmente significativos."
       },
-      "step3": {
-        "title": "Descarregar e Usar",
-        "description": "Obtenha o seu modelo em formato STL ou BLEND, pronto para impressão 3D"
+      "column3": {
+        "title": "Impressões Personalizadas",
+        "description": "Objetos adaptados ao seu gosto, tamanho ou caso de uso — sem soluções genéricas."
       }
     },
-    "features": {
-      "title": "Por Que Escolher-nos",
-      "feature1": {
-        "title": "Design com IA",
-        "description": "Inteligência artificial de ponta cria modelos 3D detalhados a partir das suas descrições"
+    "whyExists": {
+      "title": "Por que existe a Dr3amToReal",
+      "paragraph1": "A Dr3amToReal começou com uma simples frustração: precisar de uma peça que já não existia.",
+      "paragraph2": "Essa frustração transformou-se em desenhar substituições, melhorá-las e, eventualmente, criar objetos completamente novos — primeiro para carros antigos, depois para o dia a dia.",
+      "paragraph3": "Apoiado por anos de experiência em engenharia de qualidade e testes, este estúdio aplica a mesma mentalidade a objetos físicos:",
+      "paragraph4": "testar, refinar, melhorar — depois partilhar."
+    },
+    "howDifferent": {
+      "title": "Não é uma Quinta de Impressão",
+      "positive": {
+        "title": "O que fazemos:",
+        "point1": "Desenhado, não apenas impresso",
+        "point2": "Pequenas séries e peças únicas",
+        "point3": "Colaboração em vez de encomendas anónimas",
+        "point4": "Material e função considerados primeiro"
       },
-      "feature2": {
-        "title": "Peças de Automóvel Personalizadas",
-        "description": "Gere peças de automóvel precisas adaptadas às especificações do seu veículo"
-      },
-      "feature3": {
-        "title": "Decorações para Casa",
-        "description": "Crie peças decorativas únicas que combinam perfeitamente com o seu estilo"
-      },
-      "feature4": {
-        "title": "Impulsionado pela Comunidade",
-        "description": "Junte-se a uma comunidade crescente de criadores e entusiastas"
+      "negative": {
+        "title": "O que não fazemos:",
+        "point1": "Sem produção em massa",
+        "point2": "Sem trabalhos apressados",
+        "point3": "Sem promessas de \"imprimir qualquer coisa instantaneamente\""
       }
     },
-    "cta": {
-      "title": "Pronto para Começar a Criar?",
-      "subtitle": "Junte-se a milhares de criadores satisfeitos a usar o nosso gerador de modelos 3D com IA",
-      "button": "Começar Agora"
+    "customWork": {
+      "title": "Tem uma Ideia que Ainda Não Existe?",
+      "description": "Alguns projetos não pertencem a um catálogo.",
+      "paragraph": "Se tem uma ideia, um problema para resolver, ou um objeto que quer adaptado às suas necessidades, a Dr3amToReal oferece serviços selecionados de design personalizado e impressão 3D.",
+      "paragraph2": "O trabalho personalizado é colaborativo, intencional e cotado com base na complexidade — não apressado ou automatizado.",
+      "cta": "Solicitar trabalho personalizado",
+      "cta_note": "Por favor, inclua o máximo de detalhes possível para uma resposta significativa."
+    },
+    "manifesto": {
+      "title": "Em que Acredita Este Estúdio",
+      "point1": "Os objetos devem existir por uma razão",
+      "point2": "A qualidade vem da iteração, não da velocidade",
+      "point3": "Personalizado significa ouvir primeiro",
+      "point4": "Pequenas séries superam a produção em massa",
+      "point5": "Coisas bem feitas são feitas para durar"
+    },
+    "founderNote": {
+      "title": "Da Fundadora",
+      "paragraph1": "A Dr3amToReal começou como um sonho pessoal.",
+      "paragraph2": "Após anos a trabalhar em engenharia de qualidade — testando sistemas antes de chegarem às pessoas — encontrei-me a aplicar a mesma disciplina à criação física.",
+      "paragraph3": "Desenhando, testando, refinando e melhorando objetos até sentirem bem.",
+      "paragraph4": "Este estúdio é a minha forma de combinar precisão de engenharia com criatividade — e partilhar esse processo com outros que se importam com a forma como as coisas são feitas.",
+      "paragraph5": "Obrigada por estarem aqui desde o início.",
+      "signature": "— Ana",
+      "signature_title": "Fundadora, Dr3amToReal"
+    },
+    "locationShipping": {
+      "title": "Sediada em Portugal, Envios para Todo o Mundo",
+      "paragraph1": "A Dr3amToReal está orgulhosamente sediada em Portugal.",
+      "paragraph2": "As encomendas são produzidas localmente e enviadas com cuidado.",
+      "paragraph3": "A disponibilidade e opções de envio dependem do produto e destino e são confirmadas durante o checkout."
+    },
+    "finalCta": {
+      "title": "Cada Objeto Começa como uma Ideia",
+      "description": "Quer esteja à procura de um design acabado ou queira dar vida a algo novo, a Dr3amToReal existe para transformar ideias em objetos reais e bem feitos.",
+      "button_primary": "Explorar a coleção",
+      "button_secondary": "Solicitar trabalho personalizado"
     }
   },
   "shop": {
