@@ -1,14 +1,31 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+const ALLOWED_ORIGINS = [
+  'https://dr3amtoreal.com',
+  'https://www.dr3amtoreal.com',
+  'https://pompousweek.com',
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'https://lovable.dev',
+  'https://khdczrzplqssygwoyjte.lovable.app',
+  'https://id-preview--1f05c717-5032-4e33-8db0-cd1f4a64f257.lovable.app',
+];
+
+const getCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  };
 };
 
 serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -17,20 +34,29 @@ serve(async (req) => {
     const { designId } = await req.json();
 
     if (!designId) {
+      console.error('create-checkout: Missing designId');
       throw new Error("Missing designId");
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    console.log('create-checkout: Processing design', designId);
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
 
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('create-checkout: Missing Supabase configuration');
+      throw new Error("Missing Supabase configuration");
+    }
+
     if (!stripeKey) {
+      console.error('create-checkout: Missing STRIPE_SECRET_KEY');
       throw new Error("STRIPE_SECRET_KEY is not configured");
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
     const stripe = new Stripe(stripeKey, {
-      apiVersion: "2023-10-16",
+      apiVersion: "2025-08-27.basil",
     });
 
     // Get the authorization header
@@ -69,8 +95,11 @@ serve(async (req) => {
       throw paymentError;
     }
 
-    // Create Stripe checkout session
-    const origin = req.headers.get("origin") || "https://your-app.lovable.app";
+    // Get origin for redirect URLs with fallback
+    const requestOrigin = req.headers.get("origin");
+    const baseUrl = requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin) 
+      ? requestOrigin 
+      : ALLOWED_ORIGINS[0]; // Default to dr3amtoreal.com
     
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "paypal", "multibanco"],
@@ -88,8 +117,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&payment_id=${payment.id}`,
-      cancel_url: `${origin}/checkout?design=${designId}`,
+      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&payment_id=${payment.id}`,
+      cancel_url: `${baseUrl}/checkout?design=${designId}`,
       metadata: {
         payment_id: payment.id,
         design_id: designId,
@@ -97,13 +126,13 @@ serve(async (req) => {
       },
     });
 
+    console.log('create-checkout: Stripe session created', session.id);
+
     // Update payment with Stripe session ID
     await supabase
       .from("payments")
       .update({ payment_reference: session.id })
       .eq("id", payment.id);
-
-    console.log("Stripe checkout session created:", session.id);
 
     return new Response(
       JSON.stringify({
