@@ -18,9 +18,12 @@ function isValidEmail(email: string): boolean {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
+  // Handle CORS preflight - must return 200 status
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { 
+      status: 200,
+      headers: corsHeaders 
+    });
   }
 
   if (req.method !== "POST") {

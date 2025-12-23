@@ -39,9 +39,16 @@ const Contact = () => {
       };
 
       // Call the Supabase Edge Function
-      const response = await fetch("https://aliqjghojatlklyvcurs.supabase.co/functions/v1/contact", {
+      // Note: Supabase Edge Functions require Authorization header even when verify_jwt = false
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://aliqjghojatlklyvcurs.supabase.co';
+      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+      
+      const response = await fetch(`${supabaseUrl}/functions/v1/contact`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseKey}`
+        },
         body: JSON.stringify(formPayload),
       });
 
