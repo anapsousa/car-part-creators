@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
-import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -30,51 +29,34 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
+      // Prepare form data
+      const formPayload = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+        honeypot: formData.honeypot, // Send honeypot field
+      };
+
       // Call the Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('contact', {
-        body: {
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          subject: formData.subject.trim(),
-          message: formData.message.trim(),
-          honeypot: formData.honeypot, // Send honeypot field
-        }
+      const response = await fetch("https://aliqjghojatlklyvcurs.supabase.co/functions/v1/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formPayload),
       });
 
-      if (error) {
-        console.error('Contact form error:', error);
-        
-        // Extract error message from response
-        let errorMessage = content["contact.form.error"] || "Failed to send message. Please try again.";
-        let errorDetails = "";
-        
-        if (error.message) {
-          errorMessage = error.message;
-        }
-        
-        // Try to get more details from the error response
-        if (error.context?.body) {
-          try {
-            const errorBody = typeof error.context.body === 'string' 
-              ? JSON.parse(error.context.body) 
-              : error.context.body;
-            errorMessage = errorBody.error || errorMessage;
-            errorDetails = errorBody.details || "";
-            if (errorBody.errorId) {
-              console.error('Error ID for support:', errorBody.errorId);
-            }
-          } catch (parseError) {
-            // Ignore parse errors
-          }
-        }
+      const data = await response.json();
 
-        toast.error(errorMessage + (errorDetails ? ` ${errorDetails}` : ""), {
+      // Check if the response indicates success
+      if (!response.ok) {
+        // Handle error response
+        const errorMessage = data.error || content["contact.form.error"] || "Failed to send message. Please try again.";
+        toast.error(errorMessage, {
           duration: 5000,
         });
         return;
       }
 
-      // Check if the response indicates success
       if (data?.success) {
         toast.success(data.message || content["contact.form.success"] || "Message sent successfully! We'll get back to you soon.");
         
@@ -86,14 +68,6 @@ const Contact = () => {
           message: "",
           honeypot: ""
         });
-      } else if (data?.error) {
-        // Handle error response from function
-        toast.error(data.error + (data.details ? ` ${data.details}` : ""), {
-          duration: 5000,
-        });
-        if (data.errorId) {
-          console.error('Error ID for support:', data.errorId);
-        }
       } else {
         // Unexpected response format
         toast.error(content["contact.form.error"] || "Failed to send message. Please try again.");
