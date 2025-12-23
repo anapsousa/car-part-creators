@@ -35,28 +35,43 @@ const Contact = () => {
         email: formData.email.trim(),
         subject: formData.subject.trim(),
         message: formData.message.trim(),
-        honeypot: formData.honeypot, // Send honeypot field
+        honeypot: formData.honeypot,
       };
 
-      // Call the Supabase Edge Function
-      // Note: Supabase Edge Functions require Authorization header even when verify_jwt = false
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://aliqjghojatlklyvcurs.supabase.co';
-      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+      // Use the correct Supabase project URL from environment variables
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      
+      // Validate environment variables
+      if (!supabaseUrl || !supabaseKey) {
+        console.error('Missing Supabase environment variables:', { 
+          hasUrl: !!supabaseUrl, 
+          hasKey: !!supabaseKey 
+        });
+        throw new Error('Configuration error. Please contact support.');
+      }
+
+      // Create AbortController for timeout handling
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
       
       const response = await fetch(`${supabaseUrl}/functions/v1/contact`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${supabaseKey}`
+          "Authorization": `Bearer ${supabaseKey}`,
+          "apikey": supabaseKey
         },
         body: JSON.stringify(formPayload),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
       // Check if the response indicates success
       if (!response.ok) {
-        // Handle error response
         const errorMessage = data.error || content["contact.form.error"] || "Failed to send message. Please try again.";
         toast.error(errorMessage, {
           duration: 5000,
@@ -76,20 +91,27 @@ const Contact = () => {
           honeypot: ""
         });
       } else {
-        // Unexpected response format
         toast.error(content["contact.form.error"] || "Failed to send message. Please try again.");
       }
     } catch (err: any) {
       console.error('Network or unexpected error:', err);
-      toast.error(
-        err.message || content["contact.form.error"] || "Failed to send message. Please check your connection and try again.",
-        { duration: 5000 }
-      );
+      
+      // Handle specific error types
+      if (err.name === 'AbortError') {
+        toast.error("Request timed out. Please check your connection and try again.", { duration: 5000 });
+      } else {
+        toast.error(
+          err.message || content["contact.form.error"] || "Failed to send message. Please check your connection and try again.",
+          { duration: 5000 }
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
-  return <div className="min-h-screen bg-gradient-mesh">
+
+  return (
+    <div className="min-h-screen bg-gradient-mesh">
       <Helmet>
         <title>{content["contact.seo.title"] || "Custom 3D Design & Printing Services | Dr3amToReal"}</title>
         <meta name="description" content={content["contact.seo.description"] || "Bespoke 3D design and printing for functional parts, personalised objects, and unique projects. Small-batch, quality-driven, Portugal-based."} />
@@ -265,6 +287,8 @@ const Contact = () => {
         </div>
       </main>
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default Contact;

@@ -1,4 +1,4 @@
-project_id = "aliqjghojatlklyvcurs"
+project_id = "khdczrzplqssygwoyjte"
 
 [functions.generate-model]
 verify_jwt = true
@@ -20,4 +20,3 @@ verify_jwt = false
 
 [functions.contact]
 verify_jwt = false
-
