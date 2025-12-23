@@ -11,6 +11,31 @@ import { supabase } from "@/integrations/supabase/client";
 import { useContent } from "@/hooks/useContent";
 import { getReferenceImageUrl } from "@/lib/storage";
 
+// Prompt validation constants
+const MAX_PROMPT_LENGTH = 2000;
+const MIN_PROMPT_LENGTH = 10;
+
+// Validate AI prompt for security and quality
+const validatePrompt = (prompt: string): { valid: boolean; error?: string } => {
+  const trimmed = prompt.trim();
+  
+  if (trimmed.length < MIN_PROMPT_LENGTH) {
+    return { valid: false, error: `Prompt must be at least ${MIN_PROMPT_LENGTH} characters` };
+  }
+  
+  if (trimmed.length > MAX_PROMPT_LENGTH) {
+    return { valid: false, error: `Prompt must be less than ${MAX_PROMPT_LENGTH} characters` };
+  }
+  
+  // Reject prompts with excessive special characters (potential injection)
+  const specialCharRatio = (trimmed.match(/[^a-zA-Z0-9\s.,!?'"()-]/g) || []).length / trimmed.length;
+  if (specialCharRatio > 0.3) {
+    return { valid: false, error: 'Prompt contains too many special characters' };
+  }
+  
+  return { valid: true };
+};
+
 interface GenerateFormProps {
   onGenerate: () => void;
 }
@@ -78,8 +103,10 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
   };
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) {
-      toast.error(content["generator.form.error_empty_prompt"] || "Please enter a prompt");
+    // Validate prompt with security checks
+    const validation = validatePrompt(prompt);
+    if (!validation.valid) {
+      toast.error(validation.error || content["generator.form.error_empty_prompt"] || "Please enter a valid prompt");
       return;
     }
 
@@ -183,11 +210,16 @@ const GenerateForm = ({ onGenerate }: GenerateFormProps) => {
             id="prompt"
             placeholder={content["generator.form.description_placeholder"] || "Example: A front bumper for a 2020 Honda Civic, with mounting holes for standard headlights..."}
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e) => setPrompt(e.target.value.slice(0, MAX_PROMPT_LENGTH))}
             disabled={isGenerating}
             rows={4}
             className="resize-none"
+            maxLength={MAX_PROMPT_LENGTH}
           />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>{prompt.length < MIN_PROMPT_LENGTH ? `Minimum ${MIN_PROMPT_LENGTH} characters` : ''}</span>
+            <span className={prompt.length > MAX_PROMPT_LENGTH * 0.9 ? 'text-destructive' : ''}>{prompt.length}/{MAX_PROMPT_LENGTH}</span>
+          </div>
         </div>
 
         <div className="space-y-2">
