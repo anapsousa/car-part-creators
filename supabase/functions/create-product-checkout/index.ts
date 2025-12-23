@@ -7,6 +7,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getSecurityHeaders, sanitizeGuestInfo, checkRateLimit, logAudit, extractClientIp, sanitizeString } from '../_shared/security.ts';
 
 const ALLOWED_ORIGINS = [
+  'https://dr3amtoreal.com',
   'https://pompousweek.com',
   'http://localhost:5173',
   'http://localhost:8080',
@@ -19,6 +20,7 @@ const getCorsHeaders = (origin: string | null) => {
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
   };
 };
 
@@ -164,14 +166,20 @@ serve(async (req) => {
       });
     }
 
+    // Get origin for redirect URLs with fallback
+    const requestOrigin = req.headers.get("origin");
+    const baseUrl = requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin) 
+      ? requestOrigin 
+      : ALLOWED_ORIGINS[0]; // Default to dr3amtoreal.com
+
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : (user?.email || sanitizedGuestInfo?.email),
       line_items: lineItems,
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/checkout/success?order_id=${order.id}`,
-      cancel_url: `${req.headers.get("origin")}/cart`,
+      success_url: `${baseUrl}/checkout/success?order_id=${order.id}`,
+      cancel_url: `${baseUrl}/cart`,
       metadata: {
         order_id: order.id,
         is_guest: (!user).toString(),
