@@ -8,11 +8,13 @@ import { getSecurityHeaders, sanitizeGuestInfo, checkRateLimit, logAudit, extrac
 
 const ALLOWED_ORIGINS = [
   'https://dr3amtoreal.com',
+  'https://www.dr3amtoreal.com',
   'https://pompousweek.com',
   'http://localhost:5173',
   'http://localhost:8080',
   'https://lovable.dev',
   'https://khdczrzplqssygwoyjte.lovable.app',
+  'https://id-preview--1f05c717-5032-4e33-8db0-cd1f4a64f257.lovable.app',
 ];
 
 const getCorsHeaders = (origin: string | null) => {
@@ -107,14 +109,20 @@ serve(async (req) => {
         throw new Error(`Product ${item.product_id} not found`);
       }
 
+      const productData: any = {
+        name: product.name,
+        images: product.images && product.images.length > 0 ? [product.images[0]] : [],
+      };
+      
+      // Only add description if it exists and is not empty
+      if (product.description && product.description.trim()) {
+        productData.description = product.description;
+      }
+
       lineItems.push({
         price_data: {
           currency: "eur",
-          product_data: {
-            name: product.name,
-            description: product.description,
-            images: product.images && product.images.length > 0 ? [product.images[0]] : [],
-          },
+          product_data: productData,
           unit_amount: Math.round(product.price * 100),
         },
         quantity: item.quantity,

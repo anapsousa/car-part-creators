@@ -10,7 +10,7 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.create-product-checkout]
-verify_jwt = true
+verify_jwt = false
 
 [functions.buy-credits]
 verify_jwt = true
