@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
+import { supabase } from "@/integrations/supabase/client";
+
 const Contact = () => {
   const navigate = useNavigate();
   const { content } = useContent("contact");
@@ -18,23 +20,93 @@ const Contact = () => {
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
+    honeypot: "" // Spam protection field (hidden)
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success(content["contact.form.success"] || "Message sent successfully! We'll get back to you soon.");
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: ""
-    });
-    setIsSubmitting(false);
+    try {
+      // Call the Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('contact', {
+        body: {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
+          honeypot: formData.honeypot, // Send honeypot field
+        }
+      });
+
+      if (error) {
+        console.error('Contact form error:', error);
+        
+        // Extract error message from response
+        let errorMessage = content["contact.form.error"] || "Failed to send message. Please try again.";
+        let errorDetails = "";
+        
+        if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        // Try to get more details from the error response
+        if (error.context?.body) {
+          try {
+            const errorBody = typeof error.context.body === 'string' 
+              ? JSON.parse(error.context.body) 
+              : error.context.body;
+            errorMessage = errorBody.error || errorMessage;
+            errorDetails = errorBody.details || "";
+            if (errorBody.errorId) {
+              console.error('Error ID for support:', errorBody.errorId);
+            }
+          } catch (parseError) {
+            // Ignore parse errors
+          }
+        }
+
+        toast.error(errorMessage + (errorDetails ? ` ${errorDetails}` : ""), {
+          duration: 5000,
+        });
+        return;
+      }
+
+      // Check if the response indicates success
+      if (data?.success) {
+        toast.success(data.message || content["contact.form.success"] || "Message sent successfully! We'll get back to you soon.");
+        
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+          honeypot: ""
+        });
+      } else if (data?.error) {
+        // Handle error response from function
+        toast.error(data.error + (data.details ? ` ${data.details}` : ""), {
+          duration: 5000,
+        });
+        if (data.errorId) {
+          console.error('Error ID for support:', data.errorId);
+        }
+      } else {
+        // Unexpected response format
+        toast.error(content["contact.form.error"] || "Failed to send message. Please try again.");
+      }
+    } catch (err: any) {
+      console.error('Network or unexpected error:', err);
+      toast.error(
+        err.message || content["contact.form.error"] || "Failed to send message. Please check your connection and try again.",
+        { duration: 5000 }
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return <div className="min-h-screen bg-gradient-mesh">
       <Helmet>
@@ -128,35 +200,79 @@ const Contact = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot field for spam protection - hidden from users */}
+                <div style={{ position: 'absolute', left: '-9999px', opacity: 0, pointerEvents: 'none' }}>
+                  <Label htmlFor="website">Website</Label>
+                  <Input 
+                    id="website" 
+                    type="text" 
+                    name="website" 
+                    value={formData.honeypot} 
+                    onChange={e => setFormData({ ...formData, honeypot: e.target.value })}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+                
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">{content["contact.form.name"] || "Name"}</Label>
-                    <Input id="name" placeholder={content["contact.form.namePlaceholder"] || "Your name"} value={formData.name} onChange={e => setFormData({
-                    ...formData,
-                    name: e.target.value
-                  })} required />
+                    <Input 
+                      id="name" 
+                      placeholder={content["contact.form.namePlaceholder"] || "Your name"} 
+                      value={formData.name} 
+                      onChange={e => setFormData({
+                        ...formData,
+                        name: e.target.value
+                      })} 
+                      required 
+                      disabled={isSubmitting}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">{content["contact.form.email"] || "Email"}</Label>
-                    <Input id="email" type="email" placeholder={content["contact.form.emailPlaceholder"] || "your@email.com"} value={formData.email} onChange={e => setFormData({
-                    ...formData,
-                    email: e.target.value
-                  })} required />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder={content["contact.form.emailPlaceholder"] || "your@email.com"} 
+                      value={formData.email} 
+                      onChange={e => setFormData({
+                        ...formData,
+                        email: e.target.value
+                      })} 
+                      required 
+                      disabled={isSubmitting}
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">{content["contact.form.subject"] || "Subject"}</Label>
-                  <Input id="subject" placeholder={content["contact.form.subjectPlaceholder"] || "What is this about?"} value={formData.subject} onChange={e => setFormData({
-                  ...formData,
-                  subject: e.target.value
-                })} required />
+                  <Input 
+                    id="subject" 
+                    placeholder={content["contact.form.subjectPlaceholder"] || "What is this about?"} 
+                    value={formData.subject} 
+                    onChange={e => setFormData({
+                      ...formData,
+                      subject: e.target.value
+                    })} 
+                    required 
+                    disabled={isSubmitting}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="message">{content["contact.form.message"] || "Message"}</Label>
-                  <Textarea id="message" placeholder={content["contact.form.messagePlaceholder"] || "Tell us more about your inquiry..."} value={formData.message} onChange={e => setFormData({
-                  ...formData,
-                  message: e.target.value
-                })} required rows={6} />
+                  <Textarea 
+                    id="message" 
+                    placeholder={content["contact.form.messagePlaceholder"] || "Tell us more about your inquiry..."} 
+                    value={formData.message} 
+                    onChange={e => setFormData({
+                      ...formData,
+                      message: e.target.value
+                    })} 
+                    required 
+                    rows={6} 
+                    disabled={isSubmitting}
+                  />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   <Send className="mr-2 h-4 w-4" />
