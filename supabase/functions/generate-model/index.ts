@@ -23,6 +23,35 @@ const COSTS = {
   REPLICATE_3D: 0.10, // ~$0.10 per 3D model
 };
 
+// Prompt validation constants (server-side validation)
+const MAX_PROMPT_LENGTH = 2000;
+const MIN_PROMPT_LENGTH = 10;
+
+// Validate AI prompt for security
+const validatePrompt = (prompt: string): { valid: boolean; error?: string } => {
+  if (typeof prompt !== 'string') {
+    return { valid: false, error: 'Invalid prompt type' };
+  }
+  
+  const trimmed = prompt.trim();
+  
+  if (trimmed.length < MIN_PROMPT_LENGTH) {
+    return { valid: false, error: `Prompt must be at least ${MIN_PROMPT_LENGTH} characters` };
+  }
+  
+  if (trimmed.length > MAX_PROMPT_LENGTH) {
+    return { valid: false, error: `Prompt must be less than ${MAX_PROMPT_LENGTH} characters` };
+  }
+  
+  // Reject prompts with excessive special characters (potential injection)
+  const specialCharRatio = (trimmed.match(/[^a-zA-Z0-9\s.,!?'"()-]/g) || []).length / trimmed.length;
+  if (specialCharRatio > 0.3) {
+    return { valid: false, error: 'Prompt contains too many special characters' };
+  }
+  
+  return { valid: true };
+};
+
 serve(async (req) => {
   const origin = req.headers.get("origin");
 
@@ -39,6 +68,22 @@ serve(async (req) => {
 
     if (!prompt || !designId) {
       throw new Error("Missing required parameters");
+    }
+
+    // Server-side prompt validation
+    const promptValidation = validatePrompt(prompt);
+    if (!promptValidation.valid) {
+      console.log("Prompt validation failed:", promptValidation.error);
+      return new Response(
+        JSON.stringify({
+          error: promptValidation.error,
+          code: "INVALID_PROMPT",
+        }),
+        {
+          status: 400,
+          headers: { ...getCorsHeaders(origin), "Content-Type": "application/json" },
+        },
+      );
     }
 
     // Get user from design
