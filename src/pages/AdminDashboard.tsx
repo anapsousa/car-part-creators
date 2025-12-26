@@ -140,6 +140,9 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => navigate("/admin/orders")}>
+                Orders
+              </Button>
               <Button variant="outline" onClick={() => navigate("/admin/profit-margins")}>
                 Profit Margins
               </Button>
