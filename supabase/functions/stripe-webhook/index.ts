@@ -3,8 +3,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
 import { getSecurityHeaders, logAudit, extractClientIp } from '../_shared/security.ts';
 
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const FROM_EMAIL = Deno.env.get("CONTACT_FROM_EMAIL") || "noreply@dr3amtoreal.com";
+const SITE_URL = Deno.env.get("SITE_URL") || "https://dr3amtoreal.com";
+
 const ALLOWED_ORIGINS = [
-  "https://pompousweek.com",
+  "https://dr3amtoreal.com",
+  "https://www.dr3amtoreal.com",
   "http://localhost:5173",
   "https://lovable.dev",
   "https://khdczrzplqssygwoyjte.lovable.app",
@@ -15,9 +20,159 @@ const getCorsHeaders = (origin: string | null) => {
 
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   };
 };
+
+// Helper function to format currency
+function formatCurrency(amount: number, currency: string = 'eur'): string {
+  return new Intl.NumberFormat('pt-PT', { 
+    style: 'currency', 
+    currency: currency.toUpperCase() 
+  }).format(amount / 100);
+}
+
+// Helper function to send order confirmation email
+async function sendOrderConfirmationEmail(
+  email: string,
+  customerName: string,
+  orderId: string,
+  orderItems: Array<{ name: string; quantity: number; price: number }>,
+  totalAmount: number,
+  shippingAddress: any,
+  paymentMethod: string
+): Promise<boolean> {
+  if (!RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY not configured - skipping email notification");
+    return false;
+  }
+
+  const itemsHtml = orderItems.map(item => `
+    <tr>
+      <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.name}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${formatCurrency(item.price * item.quantity)}</td>
+    </tr>
+  `).join('');
+
+  const addressHtml = shippingAddress ? `
+    <p><strong>Shipping Address:</strong><br>
+    ${shippingAddress.name || customerName}<br>
+    ${shippingAddress.address || ''}<br>
+    ${shippingAddress.postal_code || ''} ${shippingAddress.city || ''}<br>
+    ${shippingAddress.country || 'Portugal'}</p>
+  ` : '';
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #5D3FD3; margin-bottom: 5px;">Dr3amToReal</h1>
+        <p style="color: #666; font-size: 14px;">Custom 3D Design & Printing</p>
+      </div>
+      
+      <div style="background: linear-gradient(135deg, #5D3FD3 0%, #7C3AED 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h2 style="margin: 0 0 10px 0;">🎉 Order Confirmed!</h2>
+        <p style="margin: 0; opacity: 0.9;">Thank you for your purchase, ${customerName}!</p>
+      </div>
+      
+      <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <p style="margin: 0 0 10px 0;"><strong>Order ID:</strong> ${orderId.substring(0, 8).toUpperCase()}</p>
+        <p style="margin: 0 0 10px 0;"><strong>Payment Method:</strong> ${paymentMethod === 'card' ? 'Credit/Debit Card' : paymentMethod.toUpperCase()}</p>
+        <p style="margin: 0;"><strong>Date:</strong> ${new Date().toLocaleDateString('pt-PT', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+      </div>
+      
+      <h3 style="border-bottom: 2px solid #5D3FD3; padding-bottom: 10px;">Order Details</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: #f0f0f0;">
+            <th style="padding: 10px; text-align: left;">Product</th>
+            <th style="padding: 10px; text-align: center;">Qty</th>
+            <th style="padding: 10px; text-align: right;">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold; font-size: 18px;">Total:</td>
+            <td style="padding: 15px 10px; text-align: right; font-weight: bold; font-size: 18px; color: #5D3FD3;">${formatCurrency(totalAmount)}</td>
+          </tr>
+        </tfoot>
+      </table>
+      
+      ${addressHtml}
+      
+      <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <p style="margin: 0;"><strong>📦 What's Next?</strong></p>
+        <p style="margin: 10px 0 0 0;">We'll start preparing your order shortly. You'll receive another email when it's shipped!</p>
+      </div>
+      
+      <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="color: #666; font-size: 14px;">Questions about your order? Reply to this email or contact us at <a href="mailto:dr3amtoreal@gmail.com" style="color: #5D3FD3;">dr3amtoreal@gmail.com</a></p>
+        <p style="color: #999; font-size: 12px;">${SITE_URL}</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+Order Confirmed - Dr3amToReal
+
+Thank you for your purchase, ${customerName}!
+
+Order ID: ${orderId.substring(0, 8).toUpperCase()}
+Payment Method: ${paymentMethod}
+Date: ${new Date().toLocaleDateString('pt-PT')}
+
+Order Details:
+${orderItems.map(item => `- ${item.name} x${item.quantity}: ${formatCurrency(item.price * item.quantity)}`).join('\n')}
+
+Total: ${formatCurrency(totalAmount)}
+
+What's Next?
+We'll start preparing your order shortly. You'll receive another email when it's shipped!
+
+Questions? Contact us at dr3amtoreal@gmail.com
+
+${SITE_URL}
+  `.trim();
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `Dr3amToReal <${FROM_EMAIL}>`,
+        to: [email],
+        subject: `Order Confirmed #${orderId.substring(0, 8).toUpperCase()} — Dr3amToReal`,
+        html,
+        text,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("Resend error sending order confirmation:", err);
+      return false;
+    }
+
+    console.log("Order confirmation email sent:", { email, orderId });
+    return true;
+  } catch (error) {
+    console.error("Error sending order confirmation email:", error);
+    return false;
+  }
+}
 
 // Helper function to handle successful PaymentIntent
 async function handlePaymentIntentSuccess(
@@ -30,6 +185,7 @@ async function handlePaymentIntentSuccess(
   const paymentId = session.metadata?.payment_id;
   const isGuest = session.metadata?.is_guest === 'true';
   const guestEmail = session.metadata?.guest_email;
+  const guestName = session.metadata?.guest_name;
   const sessionId = session.metadata?.session_id;
 
   // Handle design payment
@@ -65,23 +221,23 @@ async function handlePaymentIntentSuccess(
       return;
     }
 
-        try {
-          // Get payment method from PaymentIntent (card, mbway, multibanco, etc.)
-          const paymentMethod = paymentIntent.payment_method_types?.[0] || 'unknown';
-          
-          // Update order with payment confirmation (source of truth)
-          const updateData: any = {
-            status: 'paid',
-            stripe_session_id: session.id,
-            stripe_payment_intent_id: paymentIntent.id,
-            payment_method: paymentMethod,
-            paid_at: new Date().toISOString(), // Timestamp when payment confirmed
-          };
-          
-          const { error } = await supabase
-            .from("orders")
-            .update(updateData)
-            .eq("id", orderId);
+    try {
+      // Get payment method from PaymentIntent (card, mbway, multibanco, etc.)
+      const paymentMethod = paymentIntent.payment_method_types?.[0] || 'unknown';
+      
+      // Update order with payment confirmation (source of truth)
+      const updateData: any = {
+        status: 'paid',
+        stripe_session_id: session.id,
+        stripe_payment_intent_id: paymentIntent.id,
+        payment_method: paymentMethod,
+        paid_at: new Date().toISOString(),
+      };
+      
+      const { error } = await supabase
+        .from("orders")
+        .update(updateData)
+        .eq("id", orderId);
 
       if (error) {
         console.error('Error updating order from PaymentIntent:', { orderId, error });
@@ -89,17 +245,45 @@ async function handlePaymentIntentSuccess(
         console.log('Order updated from PaymentIntent:', { orderId, isGuest });
 
         // Audit logging
-        if (isGuest && guestEmail) {
-          await logAudit(supabase, orderId, 'paid', guestEmail, req, { 
+        const customerEmail = isGuest ? guestEmail : session.customer_email;
+        if (customerEmail) {
+          await logAudit(supabase, orderId, 'paid', customerEmail, req, { 
             stripe_session_id: session.id,
             stripe_payment_intent_id: paymentIntent.id,
             amount: paymentIntent.amount 
           });
-        } else if (!isGuest) {
-          await logAudit(supabase, orderId, 'paid', session.customer_email || 'unknown', req, { 
-            stripe_session_id: session.id,
-            stripe_payment_intent_id: paymentIntent.id 
-          });
+        }
+
+        // Send order confirmation email
+        if (customerEmail) {
+          try {
+            // Fetch order with items for email
+            const { data: orderData } = await supabase
+              .from("orders")
+              .select("*, order_items(*, products(name, price))")
+              .eq("id", orderId)
+              .single();
+
+            if (orderData) {
+              const orderItems = (orderData.order_items || []).map((item: any) => ({
+                name: item.products?.name || 'Product',
+                quantity: item.quantity,
+                price: item.price_at_purchase * 100, // Convert to cents for formatting
+              }));
+
+              await sendOrderConfirmationEmail(
+                customerEmail,
+                guestName || orderData.guest_name || 'Customer',
+                orderId,
+                orderItems,
+                orderData.total_amount * 100, // Convert to cents
+                orderData.shipping_address,
+                paymentMethod
+              );
+            }
+          } catch (emailError) {
+            console.error('Failed to send order confirmation email (non-critical):', emailError);
+          }
         }
 
         // Cart cleanup for guest orders
@@ -471,15 +655,42 @@ serve(async (req) => {
             console.log('Order updated successfully:', { orderId, isGuest });
 
             // Audit logging for compliance - silent fail to not break webhook processing
-            if (isGuest && guestEmail) {
-              await logAudit(supabase, orderId, 'paid', guestEmail, req, { stripe_session_id: session.id, amount: session.amount_total });
-            } else if (!isGuest) {
-              await logAudit(supabase, orderId, 'paid', session.customer_email || 'unknown', req, { stripe_session_id: session.id });
+            const customerEmail = isGuest ? guestEmail : session.customer_email;
+            if (customerEmail) {
+              await logAudit(supabase, orderId, 'paid', customerEmail, req, { stripe_session_id: session.id, amount: session.amount_total });
             }
 
-            if (isGuest) {
-              console.log('Guest order confirmed - email notification pending:', { orderId, guestEmail });
-              // TODO: Implement email notification service for guest orders
+            // Send order confirmation email
+            if (customerEmail) {
+              try {
+                // Fetch order with items for email
+                const { data: orderData } = await supabase
+                  .from("orders")
+                  .select("*, order_items(*, products(name, price))")
+                  .eq("id", orderId)
+                  .single();
+
+                if (orderData) {
+                  const guestName = session.metadata?.guest_name;
+                  const orderItems = (orderData.order_items || []).map((item: any) => ({
+                    name: item.products?.name || 'Product',
+                    quantity: item.quantity,
+                    price: item.price_at_purchase * 100, // Convert to cents for formatting
+                  }));
+
+                  await sendOrderConfirmationEmail(
+                    customerEmail,
+                    guestName || orderData.guest_name || 'Customer',
+                    orderId,
+                    orderItems,
+                    orderData.total_amount * 100, // Convert to cents
+                    orderData.shipping_address,
+                    paymentMethod
+                  );
+                }
+              } catch (emailError) {
+                console.error('Failed to send order confirmation email (non-critical):', emailError);
+              }
             }
 
             // Optional cart cleanup for guest orders
