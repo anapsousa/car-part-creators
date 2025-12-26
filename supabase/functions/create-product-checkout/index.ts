@@ -131,11 +131,22 @@ serve(async (req) => {
       totalAmount += product.price * item.quantity;
     }
 
-    // Create order in database
+    // Create order in database BEFORE Stripe checkout (source of truth)
+    // This ensures order exists regardless of payment outcome
+    const customerEmail = user?.email || sanitizedGuestInfo?.email || '';
+    const customerName = sanitizedGuestInfo?.name || user?.user_metadata?.full_name || '';
+
     const orderData: any = {
       total_amount: totalAmount,
-      status: "pending",
+      status: "pending", // Will be updated by webhook when payment succeeds
       shipping_address: shippingInfo,
+      currency: "EUR",
+      // Normalized customer fields for Sage invoicing (source of truth)
+      customer_email: customerEmail,
+      customer_name: customerName,
+      // Payment method will be set by webhook from PaymentIntent
+      payment_method: null,
+      invoice_created: false, // For manual Sage invoicing workflow
     };
     if (user) {
       orderData.user_id = user.id;
@@ -156,11 +167,11 @@ serve(async (req) => {
 
     await logAudit(supabaseClient, order.id, 'created', sanitizedGuestInfo?.email || user?.email || 'unknown', req, { total_amount: totalAmount, item_count: cartItems.length });
 
-    // Create order items
+    // Create order items with product name snapshot (for Sage invoicing)
     for (const item of cartItems) {
       const { data: product } = await supabaseClient
         .from("products")
-        .select("price")
+        .select("price, name")
         .eq("id", item.product_id)
         .single();
 
@@ -171,6 +182,7 @@ serve(async (req) => {
         product_id: item.product_id,
         quantity: item.quantity,
         price_at_purchase: product.price,
+        product_name: product.name, // Snapshot for Sage invoicing (even if product deleted/renamed)
       });
     }
 
