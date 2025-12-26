@@ -26,6 +26,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminProfitMargins from "./pages/AdminProfitMargins";
 import AdminProducts from "./pages/AdminProducts";
 import AdminProductForm from "./pages/AdminProductForm";
+import AdminOrders from "./pages/AdminOrders";
 import AdminContentManager from "./pages/AdminContentManager";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
@@ -87,6 +88,7 @@ const App = () => {
             <Route path="/admin/products/edit/:id" element={<AdminProductForm />} />
             <Route path="/admin/content" element={<AdminContentManager />} />
             <Route path="/admin/profit-margins" element={<AdminProfitMargins />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/price-calculator" element={<PriceCalculator />} />
             <Route path="/costcalculator" element={<CostCalculator />} />
             {/* Calculator routes - Protected for creators and admins only */}
