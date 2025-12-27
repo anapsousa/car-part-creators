@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
-import { RefreshCw, AlertCircle, Package } from "lucide-react";
+import { RefreshCw, AlertCircle, Package, Eye } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -9,6 +9,7 @@ import { useContent } from "@/hooks/useContent";
 import { useShopProducts } from "@/hooks/useShopProducts";
 import { ShopPagination } from "@/components/shop/ShopPagination";
 import { ShopFilters } from "@/components/shop/ShopFilters";
+import { ProductQuickView } from "@/components/shop/ProductQuickView";
 import {
   parseShopQuery,
   shopQueryToParams,
@@ -16,6 +17,7 @@ import {
   saveScrollPosition,
   restoreScrollPosition,
   calculatePagination,
+  Product,
 } from "@/lib/shopUtils";
 
 export default function Shop() {
@@ -25,6 +27,10 @@ export default function Shop() {
   const location = useLocation();
   const resultsRef = useRef<HTMLDivElement>(null);
   const isRestoringScroll = useRef(false);
+  
+  // Quick view state
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   
   // Parse query from URL
   const query = parseShopQuery(searchParams);
@@ -82,6 +88,16 @@ export default function Shop() {
     updateQuery({ page });
   }, [updateQuery]);
   
+  const handleQuickView = useCallback((product: Product) => {
+    setQuickViewProduct(product);
+    setIsQuickViewOpen(true);
+  }, []);
+  
+  const handleCloseQuickView = useCallback(() => {
+    setIsQuickViewOpen(false);
+    setQuickViewProduct(null);
+  }, []);
+  
   // Clamp page if it exceeds total pages after data loads
   useEffect(() => {
     if (data && data.page !== query.page) {
@@ -93,6 +109,9 @@ export default function Shop() {
   const products = data?.products || [];
   const totalCount = data?.totalCount || 0;
   const pagination = calculatePagination(totalCount, query.page, query.pageSize);
+  
+  // Calculate max price for filter
+  const maxProductPrice = 500; // Could be fetched dynamically
   
   return (
     <div className="min-h-screen bg-gradient-mesh">
@@ -131,6 +150,7 @@ export default function Shop() {
           <ShopFilters
             query={query}
             onQueryChange={updateQuery}
+            maxProductPrice={maxProductPrice}
             isLoading={isLoading}
           />
         </div>
@@ -155,11 +175,11 @@ export default function Shop() {
             <div className="text-center py-16">
               <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
               <p className="text-lg text-muted-foreground mb-4">
-                {error?.message || "Failed to load products"}
+                {error?.message || (content["shop.loadError"] || "Failed to load products")}
               </p>
               <Button onClick={() => refetch()} variant="outline">
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Try again
+                {content["shop.tryAgain"] || "Try again"}
               </Button>
             </div>
           )}
@@ -182,7 +202,7 @@ export default function Shop() {
                 })}
                 variant="outline"
               >
-                Clear filters
+                {content["shop.clearFilters"] || "Clear filters"}
               </Button>
             </div>
           )}
@@ -194,22 +214,40 @@ export default function Shop() {
                 {products.map((product) => (
                   <div
                     key={product.id}
-                    onClick={() => {
-                      // Save scroll position before navigating
-                      saveScrollPosition(query);
-                    }}
+                    className="relative group"
                   >
-                    <ProductCard
-                      id={product.id}
-                      name={product.name}
-                      description={product.description || undefined}
-                      price={product.price}
-                      images={product.images}
-                      stock_quantity={product.stock_quantity}
-                      base_price={product.base_price}
-                      discount_enabled={product.discount_enabled || false}
-                      discount_percent={product.discount_percent}
-                    />
+                    <div
+                      onClick={() => {
+                        // Save scroll position before navigating
+                        saveScrollPosition(query);
+                      }}
+                    >
+                      <ProductCard
+                        id={product.id}
+                        name={product.name}
+                        description={product.description || undefined}
+                        price={product.price}
+                        images={product.images}
+                        stock_quantity={product.stock_quantity}
+                        base_price={product.base_price}
+                        discount_enabled={product.discount_enabled || false}
+                        discount_percent={product.discount_percent}
+                      />
+                    </div>
+                    
+                    {/* Quick view button overlay */}
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="absolute bottom-20 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleQuickView(product);
+                      }}
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      {content["shop.quickView"] || "Quick View"}
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -233,6 +271,13 @@ export default function Shop() {
       </main>
       
       <Footer />
+      
+      {/* Quick View Modal */}
+      <ProductQuickView
+        product={quickViewProduct}
+        isOpen={isQuickViewOpen}
+        onClose={handleCloseQuickView}
+      />
     </div>
   );
 }
