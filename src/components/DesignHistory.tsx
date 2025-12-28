@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, Loader2, FileText, Clock, Heart, Eye, Filter, Trash2 } from "lucide-react";
+import { Download, Loader2, FileText, Clock, Heart, Eye, Filter, Trash2, Box } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
-import ModelViewer from "./ModelViewer";
 import { getDesignFileUrl, isFileAvailable } from "@/lib/storage";
 import {
   Dialog,
@@ -450,19 +449,13 @@ const DesignHistory = ({ refreshTrigger }: DesignHistoryProps) => {
               {previewDesign?.prompt_text}
             </DialogDescription>
           </DialogHeader>
-          {previewUrl ? (
-            <div className="flex-1 min-h-0">
-              <ModelViewer modelUrl={previewUrl} />
-            </div>
-          ) : previewDesign ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-64 text-muted-foreground">
-              Preview not available. The model file may not exist or be accessible.
-            </div>
-          )}
+          <div className="flex-1 min-h-0 flex flex-col items-center justify-center bg-muted/30 rounded-lg">
+            <Box className="h-16 w-16 text-muted-foreground/50 mb-4" />
+            <p className="text-muted-foreground text-center">3D Preview</p>
+            <p className="text-xs text-muted-foreground/60 mt-2">
+              Download the file to view in your preferred 3D software
+            </p>
+          </div>
           <div className="flex gap-2 justify-end pt-4">
             {previewDesign?.stl_file_url && isFileAvailable(previewDesign.stl_file_url) && (
               <Button
