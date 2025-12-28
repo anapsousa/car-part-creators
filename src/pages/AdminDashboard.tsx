@@ -5,10 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, CheckCircle, XCircle, Loader2, Eye, Download } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, Loader2, Eye, Download, Box } from "lucide-react";
 import { toast } from "sonner";
 import pompousweekLogo from "@/assets/pompousweek-logo.png";
-import ModelViewer from "@/components/ModelViewer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/useContent";
@@ -252,8 +251,12 @@ const AdminDashboard = () => {
             <DialogTitle>{previewDesign?.prompt_text}</DialogTitle>
           </DialogHeader>
           {previewDesign?.stl_file_url && (
-            <div className="h-[500px]">
-              <ModelViewer modelUrl={previewDesign.stl_file_url} />
+            <div className="h-[500px] flex flex-col items-center justify-center bg-muted/30 rounded-lg">
+              <Box className="h-16 w-16 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground text-center">3D Preview</p>
+              <p className="text-xs text-muted-foreground/60 mt-2">
+                Download the file to view in your preferred 3D software
+              </p>
             </div>
           )}
         </DialogContent>

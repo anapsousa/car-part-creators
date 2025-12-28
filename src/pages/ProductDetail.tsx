@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useContent } from "@/hooks/useContent";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
-import { ArrowLeft, ShoppingCart, Minus, Plus, Heart } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Minus, Plus, Heart, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Footer } from "@/components/Footer";
-import { Model3DViewer } from "@/components/Model3DViewer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslation } from "react-i18next";
+
+interface ProductTag {
+  id: string;
+  slug: string;
+  name_en: string;
+  name_pt: string;
+}
 
 interface Product {
   id: string;
@@ -34,19 +40,25 @@ interface Product {
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const { addToCart, isLoading: cartLoading } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [product, setProduct] = useState<Product | null>(null);
+  const [productTags, setProductTags] = useState<ProductTag[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const { content } = useContent("product");
+  const isPT = i18n.language?.startsWith("pt");
 
   const inWishlist = product ? isInWishlist(product.id) : false;
 
   useEffect(() => {
-    if (id) fetchProduct();
+    if (id) {
+      fetchProduct();
+      fetchProductTags();
+    }
   }, [id]);
 
   const fetchProduct = async () => {
@@ -65,6 +77,22 @@ export default function ProductDetail() {
     }
     setIsLoading(false);
   };
+
+  const fetchProductTags = async () => {
+    const { data, error } = await supabase
+      .from("product_tags")
+      .select("tag_id, tags(id, slug, name_en, name_pt)")
+      .eq("product_id", id);
+
+    if (error) {
+      console.error("Error fetching product tags:", error);
+    } else if (data) {
+      const tags = data.map((pt: any) => pt.tags).filter(Boolean);
+      setProductTags(tags);
+    }
+  };
+
+  const getTagName = (tag: ProductTag) => isPT ? tag.name_pt : tag.name_en;
 
   const handleAddToCart = async () => {
     if (product) {
@@ -165,45 +193,30 @@ export default function ProductDetail() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8">
+          {/* Image Gallery - No 3D preview */}
           <div className="space-y-4">
-            <Tabs defaultValue="images" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="images">Images</TabsTrigger>
-                <TabsTrigger value="3d-view">3D View</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="images" className="mt-4">
-                <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-4">
-                  <img
-                    src={mainImage}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {product.images && product.images.length > 1 && (
-                  <div className="grid grid-cols-4 gap-2">
-                    {product.images.map((img, idx) => (
-                      <div
-                        key={idx}
-                        className={`aspect-square bg-muted rounded cursor-pointer overflow-hidden ${
-                          selectedImageIndex === idx ? "ring-2 ring-primary" : ""
-                        }`}
-                        onClick={() => setSelectedImageIndex(idx)}
-                      >
-                        <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
-                      </div>
-                    ))}
+            <div className="aspect-square bg-muted rounded-lg overflow-hidden">
+              <img
+                src={mainImage}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {product.images && product.images.length > 1 && (
+              <div className="grid grid-cols-4 gap-2">
+                {product.images.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className={`aspect-square bg-muted rounded cursor-pointer overflow-hidden ${
+                      selectedImageIndex === idx ? "ring-2 ring-primary" : ""
+                    }`}
+                    onClick={() => setSelectedImageIndex(idx)}
+                  >
+                    <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
                   </div>
-                )}
-              </TabsContent>
-              
-              <TabsContent value="3d-view" className="mt-4">
-                <Model3DViewer modelUrl={undefined} />
-                <p className="text-xs text-muted-foreground text-center mt-2">
-                  Interactive 3D preview - Product visualization coming soon
-                </p>
-              </TabsContent>
-            </Tabs>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
@@ -219,6 +232,22 @@ export default function ProductDetail() {
               </Button>
             </div>
             <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
+            
+            {/* Product Tags */}
+            {productTags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {productTags.map((tag) => (
+                  <Link
+                    key={tag.id}
+                    to={`/shop?tags=${tag.slug}`}
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm hover:bg-secondary/80 transition-colors"
+                  >
+                    <Tag className="h-3 w-3" />
+                    {getTagName(tag)}
+                  </Link>
+                ))}
+              </div>
+            )}
             
             {/* Price Display with Discount */}
             {product.discount_enabled && product.discount_percent && product.discount_percent > 0 ? (
