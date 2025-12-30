@@ -14,11 +14,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageUpload } from "@/components/ImageUpload";
-import { ArrowLeft, Calculator, Percent } from "lucide-react";
+import { ArrowLeft, Calculator, Percent, Tag, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useContent } from "@/hooks/useContent";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useTags, useLocalizedTagName, Tag as TagType } from "@/hooks/useTags";
 
 interface CalcPrint {
   id: string;
@@ -57,6 +60,10 @@ export default function AdminProductForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [calcPrints, setCalcPrints] = useState<CalcPrint[]>([]);
   const [isLoadingCalcPrints, setIsLoadingCalcPrints] = useState(false);
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  
+  const { data: allTags, isLoading: isLoadingTags } = useTags();
+  const getTagName = useLocalizedTagName();
 
   useEffect(() => {
     fetchCalcPrints();
@@ -116,6 +123,24 @@ export default function AdminProductForm() {
       cost_price: data.cost_price?.toString() || "",
     });
     setImages(data.images || []);
+    
+    // Fetch product tags
+    const { data: productTags, error: tagsError } = await supabase
+      .from("product_tags")
+      .select("tag_id")
+      .eq("product_id", id);
+    
+    if (!tagsError && productTags) {
+      setSelectedTagIds(productTags.map(pt => pt.tag_id));
+    }
+  };
+  
+  const handleTagToggle = (tagId: string) => {
+    setSelectedTagIds(prev => 
+      prev.includes(tagId) 
+        ? prev.filter(id => id !== tagId)
+        : [...prev, tagId]
+    );
   };
 
   const handleCalcPrintSelect = (printId: string) => {
@@ -173,25 +198,50 @@ export default function AdminProductForm() {
       cost_price: formData.cost_price ? parseFloat(formData.cost_price) : null,
     };
 
-    const { error } = isEditMode
-      ? await supabase.from("products").update(productData).eq("id", id)
-      : await supabase.from("products").insert(productData);
-
-    if (error) {
-      console.error("Error saving product:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save product",
-        variant: "destructive",
-      });
+    let productId = id;
+    
+    if (isEditMode) {
+      const { error } = await supabase.from("products").update(productData).eq("id", id);
+      if (error) {
+        console.error("Error updating product:", error);
+        toast({ title: "Error", description: "Failed to update product", variant: "destructive" });
+        setIsLoading(false);
+        return;
+      }
     } else {
-      toast({
-        title: "Success",
-        description: `Product ${isEditMode ? "updated" : "created"} successfully`,
-      });
-      navigate("/admin/products");
+      const { data, error } = await supabase.from("products").insert(productData).select("id").single();
+      if (error || !data) {
+        console.error("Error creating product:", error);
+        toast({ title: "Error", description: "Failed to create product", variant: "destructive" });
+        setIsLoading(false);
+        return;
+      }
+      productId = data.id;
     }
 
+    // Update product tags
+    if (productId) {
+      // Remove existing tags
+      await supabase.from("product_tags").delete().eq("product_id", productId);
+      
+      // Add new tags
+      if (selectedTagIds.length > 0) {
+        const tagInserts = selectedTagIds.map(tagId => ({
+          product_id: productId!,
+          tag_id: tagId,
+        }));
+        const { error: tagError } = await supabase.from("product_tags").insert(tagInserts);
+        if (tagError) {
+          console.error("Error saving product tags:", tagError);
+        }
+      }
+    }
+
+    toast({
+      title: "Success",
+      description: `Product ${isEditMode ? "updated" : "created"} successfully`,
+    });
+    navigate("/admin/products");
     setIsLoading(false);
   };
 
@@ -428,6 +478,68 @@ export default function AdminProductForm() {
               </div>
             </div>
           </div>
+
+          {/* Tags Section */}
+          <Card className="border-secondary/20 bg-secondary/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Tag className="h-5 w-5 text-secondary-foreground" />
+                Product Tags
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoadingTags ? (
+                <div className="text-sm text-muted-foreground">Loading tags...</div>
+              ) : allTags && allTags.length > 0 ? (
+                <div className="space-y-4">
+                  {/* Selected tags */}
+                  {selectedTagIds.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pb-3 border-b">
+                      {selectedTagIds.map(tagId => {
+                        const tag = allTags.find(t => t.id === tagId);
+                        if (!tag) return null;
+                        return (
+                          <Badge key={tagId} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
+                            {getTagName(tag)}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-4 w-4 ml-1 hover:bg-destructive/20"
+                              onClick={() => handleTagToggle(tagId)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  )}
+                  
+                  {/* Tag selection list */}
+                  <div className="max-h-48 overflow-y-auto space-y-1 border rounded-lg p-2">
+                    {allTags.map(tag => (
+                      <label
+                        key={tag.id}
+                        className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-muted cursor-pointer"
+                      >
+                        <Checkbox
+                          checked={selectedTagIds.includes(tag.id)}
+                          onCheckedChange={() => handleTagToggle(tag.id)}
+                        />
+                        <span className="text-sm">{getTagName(tag)}</span>
+                        <span className="text-xs text-muted-foreground ml-auto">{tag.slug}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No tags available. <a href="/admin/tags" className="text-primary underline">Create some tags first.</a>
+                </p>
+              )}
+            </CardContent>
+          </Card>
 
           <div>
             <Label className="mb-2 block">Product Images</Label>
