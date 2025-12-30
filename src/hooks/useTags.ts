@@ -132,7 +132,7 @@ export function useLocalizedTagName() {
   const { i18n } = useTranslation();
   const isPT = i18n.language?.startsWith("pt");
 
-  return (tag: Tag) => (isPT ? tag.name_pt : tag.name_en);
+  return (tag: { name_en: string; name_pt: string }) => (isPT ? tag.name_pt : tag.name_en);
 }
 
 export function useCreateTag() {

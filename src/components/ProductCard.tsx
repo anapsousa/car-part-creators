@@ -4,8 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useContent } from "@/hooks/useContent";
+import { useLocalizedTagName } from "@/hooks/useTags";
+
+interface ProductTag {
+  id: string;
+  slug: string;
+  name_en: string;
+  name_pt: string;
+}
 
 interface ProductCardProps {
   id: string;
@@ -17,6 +25,7 @@ interface ProductCardProps {
   base_price?: number | null;
   discount_enabled?: boolean;
   discount_percent?: number | null;
+  tags?: ProductTag[];
 }
 
 export const ProductCard = ({ 
@@ -28,13 +37,16 @@ export const ProductCard = ({
   stock_quantity,
   base_price,
   discount_enabled,
-  discount_percent 
+  discount_percent,
+  tags = [],
 }: ProductCardProps) => {
   const { addToCart, isLoading } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const inWishlist = isInWishlist(id);
   const { content } = useContent("shop");
+  const getTagName = useLocalizedTagName();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,6 +62,11 @@ export const ProductCard = ({
     }
   };
 
+  const handleTagClick = (e: React.MouseEvent, slug: string) => {
+    e.stopPropagation();
+    navigate(`/shop?tags=${slug}`);
+  };
+
   const imageUrl = images && images.length > 0 ? images[0] : '/placeholder.svg';
 
   // Calculate displayed prices
@@ -58,6 +75,11 @@ export const ProductCard = ({
   const finalPrice = hasDiscount 
     ? originalPrice * (1 - (discount_percent || 0) / 100) 
     : price;
+
+  // Show max 3 tags, with "+X more" indicator
+  const maxTagsToShow = 3;
+  const visibleTags = tags.slice(0, maxTagsToShow);
+  const remainingTagsCount = tags.length - maxTagsToShow;
 
   return (
     <Card 
@@ -97,6 +119,27 @@ export const ProductCard = ({
         <h3 className="font-semibold text-lg line-clamp-1">{name}</h3>
         {description && (
           <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{description}</p>
+        )}
+        
+        {/* Tags Display */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-2">
+            {visibleTags.map((tag) => (
+              <Badge
+                key={tag.id}
+                variant="outline"
+                className="text-xs cursor-pointer hover:bg-primary/10 transition-colors"
+                onClick={(e) => handleTagClick(e, tag.slug)}
+              >
+                {getTagName(tag)}
+              </Badge>
+            ))}
+            {remainingTagsCount > 0 && (
+              <Badge variant="outline" className="text-xs text-muted-foreground">
+                +{remainingTagsCount}
+              </Badge>
+            )}
+          </div>
         )}
         
         {/* Price Display */}

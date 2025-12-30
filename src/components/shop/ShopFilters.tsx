@@ -27,6 +27,7 @@ import {
 import { useContent } from "@/hooks/useContent";
 import { cn } from "@/lib/utils";
 import { TagFilter } from "./TagFilter";
+import { useTags, useLocalizedTagName } from "@/hooks/useTags";
 
 interface ShopFiltersProps {
   query: ShopQuery;
@@ -187,11 +188,15 @@ export function ShopFilters({
         </Select>
       </div>
       
-      {/* Tag Filter Component */}
-      <TagFilter
-        selectedTags={query.tags}
-        onTagsChange={(tags) => onQueryChange({ tags, page: 1 })}
-      />
+      {/* Selected Tags Chips - always visible */}
+      {query.tags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          <SelectedTagsChips 
+            selectedTags={query.tags} 
+            onTagsChange={(tags) => onQueryChange({ tags, page: 1 })} 
+          />
+        </div>
+      )}
       
       {/* Clear filters button */}
       {hasActiveFilters && (
@@ -222,53 +227,105 @@ export function ShopFilters({
         </CollapsibleTrigger>
         
         <CollapsibleContent className="mt-4">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 bg-muted/50 rounded-lg">
-            {/* Price range filter */}
-            <div className="space-y-4">
-              <Label className="text-sm font-medium">
-                {content["shop.priceRange"] || "Price Range"}
-              </Label>
-              <div className="px-2">
-                <Slider
-                  value={priceRange}
-                  min={0}
-                  max={maxProductPrice}
-                  step={5}
-                  onValueChange={handlePriceRangeChange}
-                  onValueCommit={handlePriceRangeCommit}
-                  disabled={isLoading}
-                  className="w-full"
-                />
-              </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>€{priceRange[0]}</span>
-                <span>€{priceRange[1]}{priceRange[1] >= maxProductPrice ? "+" : ""}</span>
-              </div>
-            </div>
+          <div className="space-y-6 p-4 bg-muted/50 rounded-lg">
+            {/* Tag Filter - inside advanced filters */}
+            <TagFilter
+              selectedTags={query.tags}
+              onTagsChange={(tags) => onQueryChange({ tags, page: 1 })}
+              showSelectedChips={false}
+            />
             
-            {/* In stock filter */}
-            <div className="space-y-4">
-              <Label className="text-sm font-medium">
-                {content["shop.availability"] || "Availability"}
-              </Label>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="in-stock"
-                  checked={query.inStock === true}
-                  onCheckedChange={handleInStockChange}
-                  disabled={isLoading}
-                />
-                <Label
-                  htmlFor="in-stock"
-                  className="text-sm font-normal cursor-pointer"
-                >
-                  {content["shop.inStockOnly"] || "In stock only"}
+            <div className="grid sm:grid-cols-2 gap-6">
+              {/* Price range filter */}
+              <div className="space-y-4">
+                <Label className="text-sm font-medium">
+                  {content["shop.priceRange"] || "Price Range"}
                 </Label>
+                <div className="px-2">
+                  <Slider
+                    value={priceRange}
+                    min={0}
+                    max={maxProductPrice}
+                    step={5}
+                    onValueChange={handlePriceRangeChange}
+                    onValueCommit={handlePriceRangeCommit}
+                    disabled={isLoading}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>€{priceRange[0]}</span>
+                  <span>€{priceRange[1]}{priceRange[1] >= maxProductPrice ? "+" : ""}</span>
+                </div>
+              </div>
+              
+              {/* In stock filter */}
+              <div className="space-y-4">
+                <Label className="text-sm font-medium">
+                  {content["shop.availability"] || "Availability"}
+                </Label>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="in-stock"
+                    checked={query.inStock === true}
+                    onCheckedChange={handleInStockChange}
+                    disabled={isLoading}
+                  />
+                  <Label
+                    htmlFor="in-stock"
+                    className="text-sm font-normal cursor-pointer"
+                  >
+                    {content["shop.inStockOnly"] || "In stock only"}
+                  </Label>
+                </div>
               </div>
             </div>
           </div>
         </CollapsibleContent>
       </Collapsible>
     </div>
+  );
+}
+
+// Helper component to show selected tags as chips
+function SelectedTagsChips({ selectedTags, onTagsChange }: { selectedTags: string[], onTagsChange: (tags: string[]) => void }) {
+  const { content } = useContent("shop");
+  const { data: tags } = useTags();
+  const getTagName = useLocalizedTagName();
+  
+  const selectedTagObjects = tags?.filter(tag => selectedTags.includes(tag.slug)) || [];
+  
+  const handleRemoveTag = (slug: string) => {
+    onTagsChange(selectedTags.filter(t => t !== slug));
+  };
+  
+  return (
+    <>
+      {selectedTagObjects.map((tag) => (
+        <Badge
+          key={tag.id}
+          variant="secondary"
+          className="pl-2 pr-1 py-1 flex items-center gap-1"
+        >
+          {getTagName(tag)}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-4 w-4 ml-1 hover:bg-destructive/20"
+            onClick={() => handleRemoveTag(tag.slug)}
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        </Badge>
+      ))}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onTagsChange([])}
+        className="h-6 text-xs text-muted-foreground"
+      >
+        {content["shop.clearTags"] || "Clear all"}
+      </Button>
+    </>
   );
 }
