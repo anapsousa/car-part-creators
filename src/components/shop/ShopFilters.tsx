@@ -23,10 +23,10 @@ import {
   SortKey,
   SortDir,
   PAGE_SIZE_OPTIONS,
-  SORT_OPTIONS,
 } from "@/lib/shopUtils";
 import { useContent } from "@/hooks/useContent";
 import { cn } from "@/lib/utils";
+import { TagFilter } from "./TagFilter";
 
 interface ShopFiltersProps {
   query: ShopQuery;
@@ -85,13 +85,6 @@ export function ShopFilters({
     onQueryChange({ pageSize, page: 1 });
   }, [onQueryChange]);
   
-  const handleCategoryToggle = useCallback((category: string) => {
-    const newTags = query.tags.includes(category)
-      ? query.tags.filter(t => t !== category)
-      : [...query.tags, category];
-    onQueryChange({ tags: newTags, page: 1 });
-  }, [query.tags, onQueryChange]);
-  
   const handlePriceRangeChange = useCallback((values: number[]) => {
     setPriceRange([values[0], values[1]]);
   }, []);
@@ -123,12 +116,6 @@ export function ShopFilters({
   
   const hasActiveFilters = query.search || query.tags.length > 0 || 
     query.minPrice !== null || query.maxPrice !== null || query.inStock !== null;
-  
-  const categoryLabels: Record<string, string> = {
-    car_parts: content["shop.categories.car_parts"] || "Car Parts",
-    home_decor: content["shop.categories.decorations"] || "Home Decor",
-    custom_designs: content["shop.categories.custom"] || "Custom Designs",
-  };
   
   // Localized sort options
   const localizedSortOptions = [
@@ -200,42 +187,26 @@ export function ShopFilters({
         </Select>
       </div>
       
-      {/* Category filter chips */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted-foreground mr-2">
-          {content["shop.categoriesLabel"] || "Categories"}:
-        </span>
-        <Badge
-          variant={query.tags.length === 0 ? "default" : "outline"}
-          className="cursor-pointer hover:bg-primary/80 transition-colors"
-          onClick={() => onQueryChange({ tags: [], page: 1 })}
-        >
-          {content["shop.categories.all"] || "All"}
-        </Badge>
-        {availableCategories.map((category) => (
-          <Badge
-            key={category}
-            variant={query.tags.includes(category) ? "default" : "outline"}
-            className="cursor-pointer hover:bg-primary/80 transition-colors"
-            onClick={() => handleCategoryToggle(category)}
-          >
-            {categoryLabels[category] || category}
-          </Badge>
-        ))}
-        
-        {/* Clear filters button */}
-        {hasActiveFilters && (
+      {/* Tag Filter Component */}
+      <TagFilter
+        selectedTags={query.tags}
+        onTagsChange={(tags) => onQueryChange({ tags, page: 1 })}
+      />
+      
+      {/* Clear filters button */}
+      {hasActiveFilters && (
+        <div className="flex justify-end">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleClearFilters}
-            className="ml-auto text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4 mr-1" />
             {content["shop.clearFilters"] || "Clear filters"}
           </Button>
-        )}
-      </div>
+        </div>
+      )}
       
       {/* Advanced filters (collapsible) */}
       <Collapsible open={showAdvancedFilters} onOpenChange={setShowAdvancedFilters}>
