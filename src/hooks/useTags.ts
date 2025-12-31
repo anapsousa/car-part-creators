@@ -9,6 +9,7 @@ export interface Tag {
   name_pt: string;
   description_en: string | null;
   description_pt: string | null;
+  is_featured: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -19,6 +20,7 @@ export interface TagInsert {
   name_pt: string;
   description_en?: string | null;
   description_pt?: string | null;
+  is_featured?: boolean;
 }
 
 async function fetchTags(): Promise<Tag[]> {

@@ -120,12 +120,13 @@ export function ShopFilters({
   
   // Localized sort options
   const localizedSortOptions = [
-    { key: 'name', dir: 'asc', label: content["shop.sort.nameAsc"] || 'Name (A–Z)' },
-    { key: 'name', dir: 'desc', label: content["shop.sort.nameDesc"] || 'Name (Z–A)' },
-    { key: 'price', dir: 'asc', label: content["shop.sort.priceLow"] || 'Price (low → high)' },
-    { key: 'price', dir: 'desc', label: content["shop.sort.priceHigh"] || 'Price (high → low)' },
-    { key: 'newest', dir: 'desc', label: content["shop.sort.newest"] || 'Newest first' },
-    { key: 'newest', dir: 'asc', label: content["shop.sort.oldest"] || 'Oldest first' },
+    { key: 'popularity', dir: 'desc', label: content["shop.sort.popularity"] || 'Most Popular' },
+    { key: 'name', dir: 'asc', label: content["shop.sort.name_asc"] || 'Name (A–Z)' },
+    { key: 'name', dir: 'desc', label: content["shop.sort.name_desc"] || 'Name (Z–A)' },
+    { key: 'price', dir: 'asc', label: content["shop.sort.price_asc"] || 'Price (low → high)' },
+    { key: 'price', dir: 'desc', label: content["shop.sort.price_desc"] || 'Price (high → low)' },
+    { key: 'newest', dir: 'desc', label: content["shop.sort.newest_desc"] || 'Newest first' },
+    { key: 'newest', dir: 'asc', label: content["shop.sort.newest_asc"] || 'Oldest first' },
     { key: 'tags', dir: 'asc', label: content["shop.sort.category"] || 'Category (A–Z)' },
   ];
   

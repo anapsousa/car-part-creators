@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
-import { Plus, Edit, Trash2, Tag, X, Check } from "lucide-react";
+import { Plus, Edit, Trash2, Tag, X, Check, Star } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -56,6 +56,7 @@ export default function AdminTags() {
     name_pt: "",
     description_en: "",
     description_pt: "",
+    is_featured: false,
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -125,6 +126,7 @@ export default function AdminTags() {
       name_pt: "",
       description_en: "",
       description_pt: "",
+      is_featured: false,
     });
     setFormErrors({});
     setIsCreateOpen(true);
@@ -138,6 +140,7 @@ export default function AdminTags() {
       name_pt: tag.name_pt,
       description_en: tag.description_en || "",
       description_pt: tag.description_pt || "",
+      is_featured: tag.is_featured || false,
     });
     setFormErrors({});
   };
@@ -246,6 +249,7 @@ export default function AdminTags() {
                 <TableHead>Slug</TableHead>
                 <TableHead>English Name</TableHead>
                 <TableHead>Portuguese Name</TableHead>
+                <TableHead className="text-center">Featured</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -255,6 +259,11 @@ export default function AdminTags() {
                   <TableCell className="font-mono text-sm">{tag.slug}</TableCell>
                   <TableCell>{tag.name_en}</TableCell>
                   <TableCell>{tag.name_pt}</TableCell>
+                  <TableCell className="text-center">
+                    {tag.is_featured && (
+                      <Star className="h-4 w-4 text-yellow-500 mx-auto fill-yellow-500" />
+                    )}
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button
@@ -366,6 +375,22 @@ export default function AdminTags() {
                   rows={2}
                 />
               </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="is_featured"
+                checked={formData.is_featured}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, is_featured: e.target.checked }))
+                }
+                className="h-4 w-4 rounded border-input"
+              />
+              <Label htmlFor="is_featured" className="cursor-pointer">
+                <Star className="h-4 w-4 inline mr-1 text-yellow-500" />
+                Featured on homepage
+              </Label>
             </div>
           </div>
 
