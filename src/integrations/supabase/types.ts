@@ -911,8 +911,10 @@ export type Database = {
           material: string | null
           name: string
           price: number
+          sales_count: number
           stock_quantity: number
           updated_at: string
+          view_count: number
           width: number | null
         }
         Insert: {
@@ -932,8 +934,10 @@ export type Database = {
           material?: string | null
           name: string
           price: number
+          sales_count?: number
           stock_quantity?: number
           updated_at?: string
+          view_count?: number
           width?: number | null
         }
         Update: {
@@ -953,8 +957,10 @@ export type Database = {
           material?: string | null
           name?: string
           price?: number
+          sales_count?: number
           stock_quantity?: number
           updated_at?: string
+          view_count?: number
           width?: number | null
         }
         Relationships: []
@@ -1034,6 +1040,7 @@ export type Database = {
           description_en: string | null
           description_pt: string | null
           id: string
+          is_featured: boolean
           name_en: string
           name_pt: string
           slug: string
@@ -1044,6 +1051,7 @@ export type Database = {
           description_en?: string | null
           description_pt?: string | null
           id?: string
+          is_featured?: boolean
           name_en: string
           name_pt: string
           slug: string
@@ -1054,6 +1062,7 @@ export type Database = {
           description_en?: string | null
           description_pt?: string | null
           id?: string
+          is_featured?: boolean
           name_en?: string
           name_pt?: string
           slug?: string
@@ -1193,6 +1202,14 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_product_sales: {
+        Args: { p_product_id: string; p_quantity?: number }
+        Returns: undefined
+      }
+      increment_product_view: {
+        Args: { p_product_id: string }
+        Returns: undefined
       }
       increment_user_credits: {
         Args: { p_amount: number; p_user_id: string }

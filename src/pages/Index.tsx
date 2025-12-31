@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X, Package, Home, Sparkles, Wrench, Heart, MapPin, Lightbulb } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { FeaturedTags } from "@/components/FeaturedTags";
 import heroCarParts from "@/assets/hero-car-parts.jpg";
 import { useContent } from "@/hooks/useContent";
 
@@ -89,6 +90,12 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Featured Tags Section */}
+      <FeaturedTags 
+        title={content["home.featuredTags.title"] || "Browse by "}
+        subtitle={content["home.featuredTags.subtitle"] || "Explore our curated collections"}
+      />
 
       {/* 2️⃣ What Dr3amToReal Is */}
       <section className="py-20">

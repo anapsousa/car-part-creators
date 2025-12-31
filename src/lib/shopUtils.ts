@@ -1,6 +1,6 @@
 // Shop utilities for query parsing, pagination math, and validation
 
-export type SortKey = 'name' | 'price' | 'newest' | 'tags';
+export type SortKey = 'name' | 'price' | 'newest' | 'tags' | 'popularity';
 export type SortDir = 'asc' | 'desc';
 
 export interface ShopQuery {
@@ -55,6 +55,7 @@ export const DEFAULT_SHOP_QUERY: ShopQuery = {
 export const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const;
 
 export const SORT_OPTIONS = [
+  { key: 'popularity', dir: 'desc', label: 'Most Popular' },
   { key: 'name', dir: 'asc', label: 'Name (A–Z)' },
   { key: 'name', dir: 'desc', label: 'Name (Z–A)' },
   { key: 'price', dir: 'asc', label: 'Price (low → high)' },
@@ -76,7 +77,7 @@ export function parseShopQuery(searchParams: URLSearchParams): ShopQuery {
   }
   
   let sortKey = (searchParams.get('sort') || 'newest') as SortKey;
-  if (!['name', 'price', 'newest', 'tags'].includes(sortKey)) {
+  if (!['name', 'price', 'newest', 'tags', 'popularity'].includes(sortKey)) {
     sortKey = 'newest';
   }
   
@@ -236,6 +237,8 @@ export function getSortColumn(sortKey: SortKey): string {
       return 'created_at';
     case 'tags':
       return 'category';
+    case 'popularity':
+      return 'view_count';
     default:
       return 'created_at';
   }

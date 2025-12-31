@@ -112,6 +112,10 @@
       "description": "Whether you're looking for a finished design or want to bring something new to life, Dr3amToReal exists to turn ideas into real, well-made objects.",
       "button_primary": "Explore the collection",
       "button_secondary": "Request custom work"
+    },
+    "featuredTags": {
+      "title": "Browse by ",
+      "subtitle": "Explore our curated collections"
     }
   },
   "shop": {
@@ -123,6 +127,16 @@
       "car_parts": "Car Parts",
       "decorations": "Decorations",
       "custom": "Custom Designs"
+    },
+    "sort": {
+      "popularity": "Most Popular",
+      "name_asc": "Name (A–Z)",
+      "name_desc": "Name (Z–A)",
+      "price_asc": "Price (low → high)",
+      "price_desc": "Price (high → low)",
+      "newest_desc": "Newest first",
+      "newest_asc": "Oldest first",
+      "category": "Category (A–Z)"
     },
     "noProducts": "No products found matching your criteria.",
     "loading": "Loading products...",

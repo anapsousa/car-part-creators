@@ -10,6 +10,7 @@ import { ArrowLeft, ShoppingCart, Minus, Plus, Heart, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
+import { useProductView } from "@/hooks/useProductViews";
 
 interface ProductTag {
   id: string;
@@ -53,6 +54,9 @@ export default function ProductDetail() {
   const isPT = i18n.language?.startsWith("pt");
 
   const inWishlist = product ? isInWishlist(product.id) : false;
+  
+  // Track product view for analytics
+  useProductView(id);
 
   useEffect(() => {
     if (id) {
