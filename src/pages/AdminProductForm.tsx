@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageUpload } from "@/components/ImageUpload";
-import { ArrowLeft, Calculator, Percent, Tag, X } from "lucide-react";
+import { ArrowLeft, Calculator, Percent, Tag, X, Palette } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useContent } from "@/hooks/useContent";
 import { Footer } from "@/components/Footer";
@@ -22,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTags, useLocalizedTagName, Tag as TagType } from "@/hooks/useTags";
+import { ColorManager, ProductColor } from "@/components/admin/ColorManager";
 
 interface CalcPrint {
   id: string;
@@ -57,6 +59,7 @@ export default function AdminProductForm() {
     cost_price: "",
   });
   const [images, setImages] = useState<string[]>([]);
+  const [colors, setColors] = useState<ProductColor[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [calcPrints, setCalcPrints] = useState<CalcPrint[]>([]);
   const [isLoadingCalcPrints, setIsLoadingCalcPrints] = useState(false);
@@ -124,6 +127,11 @@ export default function AdminProductForm() {
     });
     setImages(data.images || []);
     
+    // Parse colors from JSONB
+    if (data.colors && Array.isArray(data.colors)) {
+      setColors(data.colors as unknown as ProductColor[]);
+    }
+    
     // Fetch product tags
     const { data: productTags, error: tagsError } = await supabase
       .from("product_tags")
@@ -190,6 +198,7 @@ export default function AdminProductForm() {
       height: formData.height ? parseFloat(formData.height) : null,
       depth: formData.depth ? parseFloat(formData.depth) : null,
       images,
+      colors: JSON.parse(JSON.stringify(colors)) as Json,
       is_active: formData.is_active,
       calc_print_id: formData.calc_print_id || null,
       base_price: formData.base_price ? parseFloat(formData.base_price) : null,
@@ -538,6 +547,22 @@ export default function AdminProductForm() {
                   No tags available. <a href="/admin/tags" className="text-primary underline">Create some tags first.</a>
                 </p>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Colors Section */}
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Palette className="h-5 w-5 text-primary" />
+                Product Colors
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Add available color options for this product. Customers will be able to select their preferred color.
+              </p>
+              <ColorManager colors={colors} onChange={setColors} />
             </CardContent>
           </Card>
 

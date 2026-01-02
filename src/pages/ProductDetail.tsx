@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { useProductView } from "@/hooks/useProductViews";
+import { ColorSelector, ProductColor } from "@/components/ColorSelector";
 
 interface ProductTag {
   id: string;
@@ -34,6 +35,7 @@ interface Product {
   base_price: number | null;
   discount_enabled: boolean | null;
   discount_percent: number | null;
+  colors: ProductColor[] | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
 }
@@ -49,6 +51,7 @@ export default function ProductDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(null);
 
   const { content } = useContent("product");
   const isPT = i18n.language?.startsWith("pt");
@@ -77,7 +80,17 @@ export default function ProductDetail() {
     if (error) {
       console.error("Error fetching product:", error);
     } else {
-      setProduct(data);
+      // Parse colors from JSONB
+      const productWithColors = {
+        ...data,
+        colors: Array.isArray(data.colors) ? (data.colors as unknown as ProductColor[]) : null
+      };
+      setProduct(productWithColors);
+      
+      // Auto-select first color if available
+      if (productWithColors.colors && productWithColors.colors.length > 0) {
+        setSelectedColor(productWithColors.colors[0]);
+      }
     }
     setIsLoading(false);
   };
@@ -273,6 +286,26 @@ export default function ProductDetail() {
               <div className="mb-6">
                 <p className="text-3xl font-bold text-primary">€{product.price.toFixed(2)}</p>
                 <p className="text-xs text-muted-foreground mt-1">* Preço inclui IVA (23%)</p>
+              </div>
+            )}
+
+            {/* Color Selection */}
+            {product.colors && product.colors.length > 0 && (
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold mb-3">
+                  {content["product.color_title"] || "Color"}
+                  {selectedColor && (
+                    <span className="font-normal text-muted-foreground ml-2">
+                      — {selectedColor.name}
+                    </span>
+                  )}
+                </h2>
+                <ColorSelector
+                  colors={product.colors}
+                  selectedColor={selectedColor}
+                  onColorSelect={setSelectedColor}
+                  size="lg"
+                />
               </div>
             )}
 
