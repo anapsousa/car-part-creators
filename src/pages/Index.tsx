@@ -7,6 +7,7 @@ import { Check, X, Package, Home, Sparkles, Wrench, Heart, MapPin, Lightbulb } f
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FeaturedTags } from "@/components/FeaturedTags";
+import { BestSellers } from "@/components/BestSellers";
 import heroCarParts from "@/assets/hero-car-parts.jpg";
 import { useContent } from "@/hooks/useContent";
 
@@ -95,6 +96,13 @@ export default function Index() {
       <FeaturedTags 
         title={content["home.featuredTags.title"] || "Browse by "}
         subtitle={content["home.featuredTags.subtitle"] || "Explore our curated collections"}
+      />
+
+      {/* Best Sellers Section */}
+      <BestSellers 
+        title={content["home.bestSellers.title"]}
+        subtitle={content["home.bestSellers.subtitle"]}
+        limit={4}
       />
 
       {/* 2️⃣ What Dr3amToReal Is */}

@@ -898,6 +898,7 @@ export type Database = {
           base_price: number | null
           calc_print_id: string | null
           category: string
+          colors: Json | null
           cost_price: number | null
           created_at: string
           depth: number | null
@@ -921,6 +922,7 @@ export type Database = {
           base_price?: number | null
           calc_print_id?: string | null
           category: string
+          colors?: Json | null
           cost_price?: number | null
           created_at?: string
           depth?: number | null
@@ -944,6 +946,7 @@ export type Database = {
           base_price?: number | null
           calc_print_id?: string | null
           category?: string
+          colors?: Json | null
           cost_price?: number | null
           created_at?: string
           depth?: number | null
