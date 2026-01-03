@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X, AlertCircle } from "lucide-react";
+import { Plus, X, AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
   ProductColor, 
@@ -12,6 +12,8 @@ import {
   validateProductColors,
   getLocalizedColorName 
 } from "@/lib/productColors";
+import { ColorImageUpload } from "./ColorImageUpload";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ColorManagerProps {
   colors: ProductColor[];
@@ -26,6 +28,7 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
   const [newColorNameEn, setNewColorNameEn] = useState("");
   const [newColorHex, setNewColorHex] = useState("#000000");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [expandedColorId, setExpandedColorId] = useState<string | null>(null);
 
   const addColor = () => {
     // Validate required fields
@@ -77,6 +80,19 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
     onChange(colors.filter((_, i) => i !== index));
   };
 
+  const updateColorImage = (index: number, imageUrl: string | undefined) => {
+    const updatedColors = [...colors];
+    updatedColors[index] = {
+      ...updatedColors[index],
+      image_url: imageUrl,
+    };
+    onChange(updatedColors);
+  };
+
+  const toggleExpanded = (colorId: string) => {
+    setExpandedColorId(expandedColorId === colorId ? null : colorId);
+  };
+
   return (
     <div className="space-y-4">
       {/* Validation Errors */}
@@ -91,35 +107,95 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
         </div>
       )}
 
-      {/* Current Colors */}
+      {/* Current Colors with Image Upload */}
       {colors.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {colors.map((color, index) => (
-            <div
-              key={`${color.id}-${index}`}
-              className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full"
-            >
-              {color.hex && (
-                <div
-                  className="w-5 h-5 rounded-full border border-border"
-                  style={{ backgroundColor: color.hex }}
-                />
-              )}
-              <span className="text-sm">
-                {getLocalizedColorName(color, currentLang)}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                ({color.id})
-              </span>
-              <button
-                type="button"
-                onClick={() => removeColor(index)}
-                className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
+        <div className="space-y-2">
+          <Label className="text-sm text-muted-foreground">
+            {t("admin.colors.addedColors")}
+          </Label>
+          <div className="space-y-2">
+            {colors.map((color, index) => (
+              <Collapsible 
+                key={`${color.id}-${index}`}
+                open={expandedColorId === color.id}
+                onOpenChange={() => toggleExpanded(color.id)}
               >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))}
+                <div className="flex items-center gap-3 p-2 bg-muted rounded-lg">
+                  {/* Color swatch or image */}
+                  <div 
+                    className="w-8 h-8 rounded-full border border-border flex-shrink-0 overflow-hidden"
+                    style={{ backgroundColor: color.hex || '#ccc' }}
+                  >
+                    {color.image_url && (
+                      <img 
+                        src={color.image_url} 
+                        alt={getLocalizedColorName(color, currentLang)}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+
+                  {/* Color info */}
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium truncate block">
+                      {getLocalizedColorName(color, currentLang)}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {color.id}
+                      {color.image_url && (
+                        <span className="ml-2 text-primary">
+                          • {t("admin.colors.hasImage")}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Expand/collapse button */}
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      {expandedColorId === color.id ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </CollapsibleTrigger>
+
+                  {/* Remove button */}
+                  <button
+                    type="button"
+                    onClick={() => removeColor(index)}
+                    className="text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Expanded content with image upload */}
+                <CollapsibleContent>
+                  <div className="mt-2 ml-11 p-3 bg-background border rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div>
+                        <Label className="text-xs text-muted-foreground mb-2 block">
+                          {t("admin.colors.image.label")}
+                        </Label>
+                        <ColorImageUpload
+                          imageUrl={color.image_url}
+                          onChange={(url) => updateColorImage(index, url)}
+                          colorName={getLocalizedColorName(color, currentLang)}
+                          hexColor={color.hex}
+                          size="md"
+                        />
+                      </div>
+                      <div className="flex-1 text-sm text-muted-foreground">
+                        <p>{t("admin.colors.image.description")}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
+          </div>
         </div>
       )}
 

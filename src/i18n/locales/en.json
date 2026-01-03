@@ -192,6 +192,8 @@
     "colors": {
       "quickAdd": "Quick Add Preset Colors",
       "customColor": "Custom Color",
+      "addedColors": "Added Colors",
+      "hasImage": "has image",
       "namePt": "Name (Portuguese)",
       "nameEn": "Name (English)",
       "namePtPlaceholder": "e.g., Azul Marinho",
@@ -204,6 +206,17 @@
         "namesRequired": "Both Portuguese and English names are required",
         "duplicateColor": "This color is already added",
         "invalidHex": "Invalid hex color format"
+      },
+      "image": {
+        "label": "Color Image",
+        "description": "Upload an image to show this color variant. This will be displayed instead of the hex color swatch.",
+        "upload": "Upload image",
+        "change": "Change image",
+        "remove": "Remove image",
+        "uploaded": "Image uploaded",
+        "uploadFailed": "Failed to upload image",
+        "invalidType": "Please select an image file",
+        "tooLarge": "Image must be less than 5MB"
       }
     }
   },
