@@ -183,6 +183,28 @@
         "title": "Personalised 3D Printed Object | Made to Order – Dr3amToReal",
         "description": "Personalised 3D printed object tailored to your needs. Designed and printed with care by Dr3amToReal, a Portugal-based studio."
       }
+    },
+    "selectColor": "Color",
+    "selectColorLabel": "Select {{color}}",
+    "filamentRef": "Filament"
+  },
+  "admin": {
+    "colors": {
+      "quickAdd": "Quick Add Preset Colors",
+      "customColor": "Custom Color",
+      "namePt": "Name (Portuguese)",
+      "nameEn": "Name (English)",
+      "namePtPlaceholder": "e.g., Azul Marinho",
+      "nameEnPlaceholder": "e.g., Navy Blue",
+      "hexColor": "Color",
+      "addButton": "Add",
+      "addColor": "Add {{name}}",
+      "alreadyAdded": "{{name}} already added",
+      "validation": {
+        "namesRequired": "Both Portuguese and English names are required",
+        "duplicateColor": "This color is already added",
+        "invalidHex": "Invalid hex color format"
+      }
     }
   },
   "cart": {
