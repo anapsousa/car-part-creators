@@ -1,57 +1,76 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X, Palette } from "lucide-react";
+import { Plus, X, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-export interface ProductColor {
-  name: string;
-  hex: string;
-}
+import { 
+  ProductColor, 
+  PRESET_COLORS, 
+  generateColorId,
+  validateProductColors,
+  getLocalizedColorName 
+} from "@/lib/productColors";
 
 interface ColorManagerProps {
   colors: ProductColor[];
   onChange: (colors: ProductColor[]) => void;
 }
 
-const PRESET_COLORS = [
-  { name: "Black", hex: "#000000" },
-  { name: "White", hex: "#FFFFFF" },
-  { name: "Red", hex: "#EF4444" },
-  { name: "Blue", hex: "#3B82F6" },
-  { name: "Green", hex: "#22C55E" },
-  { name: "Yellow", hex: "#EAB308" },
-  { name: "Purple", hex: "#A855F7" },
-  { name: "Pink", hex: "#EC4899" },
-  { name: "Orange", hex: "#F97316" },
-  { name: "Gray", hex: "#6B7280" },
-];
-
 export function ColorManager({ colors, onChange }: ColorManagerProps) {
-  const [newColorName, setNewColorName] = useState("");
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
+  
+  const [newColorNamePt, setNewColorNamePt] = useState("");
+  const [newColorNameEn, setNewColorNameEn] = useState("");
   const [newColorHex, setNewColorHex] = useState("#000000");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   const addColor = () => {
-    if (!newColorName.trim() || !newColorHex) return;
-    
-    // Check for duplicates
-    const exists = colors.some(
-      c => c.hex.toLowerCase() === newColorHex.toLowerCase()
-    );
-    if (exists) return;
+    // Validate required fields
+    if (!newColorNamePt.trim() || !newColorNameEn.trim()) {
+      setValidationErrors([t("admin.colors.validation.namesRequired")]);
+      return;
+    }
 
-    onChange([...colors, { name: newColorName.trim(), hex: newColorHex }]);
-    setNewColorName("");
+    const id = generateColorId(newColorNameEn);
+    
+    // Check for duplicate IDs
+    if (colors.some(c => c.id === id)) {
+      setValidationErrors([t("admin.colors.validation.duplicateColor")]);
+      return;
+    }
+
+    const newColor: ProductColor = {
+      id,
+      name_pt: newColorNamePt.trim(),
+      name_en: newColorNameEn.trim(),
+      hex: newColorHex || undefined,
+    };
+
+    const newColors = [...colors, newColor];
+    const validation = validateProductColors(newColors);
+    
+    if (!validation.success) {
+      setValidationErrors(validation.errors);
+      return;
+    }
+
+    onChange(newColors);
+    setNewColorNamePt("");
+    setNewColorNameEn("");
     setNewColorHex("#000000");
+    setValidationErrors([]);
   };
 
   const addPresetColor = (preset: ProductColor) => {
-    const exists = colors.some(
-      c => c.hex.toLowerCase() === preset.hex.toLowerCase()
-    );
-    if (exists) return;
-    onChange([...colors, preset]);
+    // Check for duplicate IDs
+    if (colors.some(c => c.id === preset.id)) {
+      return;
+    }
+    
+    onChange([...colors, { ...preset }]);
   };
 
   const removeColor = (index: number) => {
@@ -60,19 +79,38 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
 
   return (
     <div className="space-y-4">
+      {/* Validation Errors */}
+      {validationErrors.length > 0 && (
+        <div className="flex items-start gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+          <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
+          <div className="text-sm text-destructive">
+            {validationErrors.map((error, i) => (
+              <p key={i}>{error}</p>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Current Colors */}
       {colors.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {colors.map((color, index) => (
             <div
-              key={`${color.hex}-${index}`}
+              key={`${color.id}-${index}`}
               className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full"
             >
-              <div
-                className="w-5 h-5 rounded-full border border-border"
-                style={{ backgroundColor: color.hex }}
-              />
-              <span className="text-sm">{color.name}</span>
+              {color.hex && (
+                <div
+                  className="w-5 h-5 rounded-full border border-border"
+                  style={{ backgroundColor: color.hex }}
+                />
+              )}
+              <span className="text-sm">
+                {getLocalizedColorName(color, currentLang)}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                ({color.id})
+              </span>
               <button
                 type="button"
                 onClick={() => removeColor(index)}
@@ -88,16 +126,14 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
       {/* Preset Colors */}
       <div>
         <Label className="text-sm text-muted-foreground mb-2 block">
-          Quick Add Preset Colors
+          {t("admin.colors.quickAdd")}
         </Label>
         <div className="flex flex-wrap gap-2">
           {PRESET_COLORS.map((preset) => {
-            const isAdded = colors.some(
-              c => c.hex.toLowerCase() === preset.hex.toLowerCase()
-            );
+            const isAdded = colors.some(c => c.id === preset.id);
             return (
               <button
-                key={preset.hex}
+                key={preset.id}
                 type="button"
                 disabled={isAdded}
                 onClick={() => addPresetColor(preset)}
@@ -109,7 +145,10 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
                     : "border-border hover:border-primary"
                 )}
                 style={{ backgroundColor: preset.hex }}
-                title={isAdded ? `${preset.name} already added` : `Add ${preset.name}`}
+                title={isAdded 
+                  ? t("admin.colors.alreadyAdded", { name: getLocalizedColorName(preset, currentLang) })
+                  : t("admin.colors.addColor", { name: getLocalizedColorName(preset, currentLang) })
+                }
               />
             );
           })}
@@ -117,23 +156,41 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
       </div>
 
       {/* Custom Color Input */}
-      <div className="flex gap-2 items-end">
-        <div className="flex-1">
-          <Label htmlFor="color-name" className="text-sm">
-            Custom Color Name
-          </Label>
-          <Input
-            id="color-name"
-            value={newColorName}
-            onChange={(e) => setNewColorName(e.target.value)}
-            placeholder="e.g., Navy Blue"
-          />
+      <div className="space-y-3 border-t pt-4">
+        <Label className="text-sm font-medium">
+          {t("admin.colors.customColor")}
+        </Label>
+        
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label htmlFor="color-name-pt" className="text-xs text-muted-foreground">
+              {t("admin.colors.namePt")} *
+            </Label>
+            <Input
+              id="color-name-pt"
+              value={newColorNamePt}
+              onChange={(e) => setNewColorNamePt(e.target.value)}
+              placeholder={t("admin.colors.namePtPlaceholder")}
+            />
+          </div>
+          <div>
+            <Label htmlFor="color-name-en" className="text-xs text-muted-foreground">
+              {t("admin.colors.nameEn")} *
+            </Label>
+            <Input
+              id="color-name-en"
+              value={newColorNameEn}
+              onChange={(e) => setNewColorNameEn(e.target.value)}
+              placeholder={t("admin.colors.nameEnPlaceholder")}
+            />
+          </div>
         </div>
-        <div className="w-24">
-          <Label htmlFor="color-hex" className="text-sm">
-            Color
-          </Label>
-          <div className="relative">
+
+        <div className="flex gap-2 items-end">
+          <div className="w-24">
+            <Label htmlFor="color-hex" className="text-xs text-muted-foreground">
+              {t("admin.colors.hexColor")}
+            </Label>
             <Input
               id="color-hex"
               type="color"
@@ -142,17 +199,21 @@ export function ColorManager({ colors, onChange }: ColorManagerProps) {
               className="h-10 p-1 cursor-pointer"
             />
           </div>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addColor}
+            disabled={!newColorNamePt.trim() || !newColorNameEn.trim()}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            {t("admin.colors.addButton")}
+          </Button>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={addColor}
-          disabled={!newColorName.trim()}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
       </div>
     </div>
   );
 }
+
+// Re-export ProductColor type for backward compatibility
+export type { ProductColor } from "@/lib/productColors";

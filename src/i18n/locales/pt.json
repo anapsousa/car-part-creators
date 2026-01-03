@@ -183,6 +183,28 @@
         "title": "Objeto impresso em 3D personalizado | Por encomenda – Dr3amToReal",
         "description": "Objeto impresso em 3D personalizado e adaptado às suas necessidades. Desenhado e impresso com cuidado pela Dr3amToReal, em Portugal."
       }
+    },
+    "selectColor": "Cor",
+    "selectColorLabel": "Selecionar {{color}}",
+    "filamentRef": "Filamento"
+  },
+  "admin": {
+    "colors": {
+      "quickAdd": "Adicionar cores predefinidas",
+      "customColor": "Cor personalizada",
+      "namePt": "Nome (Português)",
+      "nameEn": "Nome (Inglês)",
+      "namePtPlaceholder": "ex.: Azul Marinho",
+      "nameEnPlaceholder": "ex.: Navy Blue",
+      "hexColor": "Cor",
+      "addButton": "Adicionar",
+      "addColor": "Adicionar {{name}}",
+      "alreadyAdded": "{{name}} já adicionada",
+      "validation": {
+        "namesRequired": "Os nomes em português e inglês são obrigatórios",
+        "duplicateColor": "Esta cor já está adicionada",
+        "invalidHex": "Formato de cor hexadecimal inválido"
+      }
     }
   },
   "cart": {
