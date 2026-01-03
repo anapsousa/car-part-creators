@@ -192,6 +192,8 @@
     "colors": {
       "quickAdd": "Adicionar cores predefinidas",
       "customColor": "Cor personalizada",
+      "addedColors": "Cores adicionadas",
+      "hasImage": "tem imagem",
       "namePt": "Nome (Português)",
       "nameEn": "Nome (Inglês)",
       "namePtPlaceholder": "ex.: Azul Marinho",
@@ -204,6 +206,17 @@
         "namesRequired": "Os nomes em português e inglês são obrigatórios",
         "duplicateColor": "Esta cor já está adicionada",
         "invalidHex": "Formato de cor hexadecimal inválido"
+      },
+      "image": {
+        "label": "Imagem da cor",
+        "description": "Carregue uma imagem para mostrar esta variante de cor. Esta será exibida em vez da amostra de cor hexadecimal.",
+        "upload": "Carregar imagem",
+        "change": "Alterar imagem",
+        "remove": "Remover imagem",
+        "uploaded": "Imagem carregada",
+        "uploadFailed": "Falha ao carregar imagem",
+        "invalidType": "Por favor selecione um ficheiro de imagem",
+        "tooLarge": "A imagem deve ter menos de 5MB"
       }
     }
   },
